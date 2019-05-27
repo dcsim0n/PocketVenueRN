@@ -26,12 +26,10 @@ class App extends Component {
   render() {
     return (
 	<View style={{flex:1}}>
-        <Text>More Tests</Text>
 	<FlatList
 	style={{paddingTop:100, flex:1}} 
         data={this.state.venues}
-        renderItem={(item)=><VenueItem title={item.name}/>} />
-	<Text>This is a test {this.state.venues[0].name}</Text>
+        renderItem={({item})=><Text>{item.name}</Text>} />
 	</View>
 
     );
