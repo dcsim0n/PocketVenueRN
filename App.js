@@ -7,16 +7,33 @@
  */
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {Platform, StyleSheet, Text, View, FlatList} from 'react-native';
 import { createStackNavigator, createAppContainer } from 'react-navigation'
+import VenueItem from './src/VenueItem'
 
-type Props = {};
-class App extends Component<Props> {
+
+class App extends Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      venues: [
+        {key: 'a', name: "Venue 1", address: "127.0.0.1", port: 4080},
+        {key: 'b', name: "Venue 2", address: "127.0.0.2", port: 4080},
+	{key: 'c', name: "Venue 3", address: "" , port: 0}
+      ]
+    }
+  }
   render() {
     return (
-      <View style={styles.container}>
-        <Text>Home Screen</Text>
-      </View>
+	<View style={{flex:1}}>
+        <Text>More Tests</Text>
+	<FlatList
+	style={{paddingTop:100, flex:1}} 
+        data={this.state.venues}
+        renderItem={(item)=><VenueItem title={item.name}/>} />
+	<Text>This is a test {this.state.venues[0].name}</Text>
+	</View>
+
     );
   }
 }
@@ -29,21 +46,3 @@ const AppNavigator = createStackNavigator({
 
 export default createAppContainer(AppNavigator)
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
