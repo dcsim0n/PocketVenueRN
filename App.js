@@ -8,13 +8,17 @@
 
 import React, {Component} from 'react';
 import { createStackNavigator, createAppContainer } from 'react-navigation'
-import {Platform, StyleSheet, Text, View, FlatList, Button} from 'react-native';
+import {StyleSheet, Text, View, FlatList, Button} from 'react-native';
+import NewVenueDialog from './src/NewVeneuDialog'
+
+import styles from './src/stylesheets/appStyles'
 
 
 class App extends Component {
   constructor(props){
     super(props)
     this.state = {
+      isEditing: false,
       venues: [
         {key: 'a', name: "Venue 1", address: "127.0.0.1", port: 4080},
         {key: 'b', name: "Venue 2", address: "127.0.0.2", port: 4080},
@@ -22,17 +26,23 @@ class App extends Component {
       ]
     }
   }
+  addNewVenue(venue){
+    const {venues} = this.state
+    this.setState({venues:[...venues, venue]})
+  }
   render() {
     return (
 	<View style={{flex: 1}}>
     <View style={styles.toolbar}>
-      <Button title={"New Venue"} />
+      <NewVenueDialog 
+        addNewVenue={(data)=>this.addNewVenue(data)}/>
       <Button title={"Edit"}/>
     </View>
     <FlatList
     contentContainerStyle={styles.listView}
     data={this.state.venues}
     renderItem={({item})=><Text style={styles.listItem}>{item.name}</Text>} />
+    
 	</View>
 
     )}
@@ -45,20 +55,5 @@ const AppNavigator = createStackNavigator({
 })
 export default createAppContainer(AppNavigator)
 
-const styles = StyleSheet.create({
-  toolbar: {
-    fontSize: 22,
-    backgroundColor: '#CCC',
-    flexDirection: 'row'
-  },
-  listView:{
-    flexDirection: 'column',
-    backgroundColor: '#EEE',
-    borderWidth: 1
-  },
-  listItem:{
-    borderWidth: 1,
-    fontSize: 22
-  }
-})
+
 
