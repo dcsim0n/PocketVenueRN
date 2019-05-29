@@ -26,11 +26,16 @@ class App extends Component {
       ]
     }
   }
+  addNewVenue(venue){
+    const {venues} = this.state
+    this.setState({venues:[...venues, venue]})
+  }
   render() {
     return (
 	<View style={{flex: 1}}>
     <View style={styles.toolbar}>
-      <NewVenueDialog />
+      <NewVenueDialog 
+        addNewVenue={(data)=>this.addNewVenue(data)}/>
       <Button title={"Edit"}/>
     </View>
     <FlatList
