@@ -9,6 +9,7 @@
 import React, {Component} from 'react';
 import {Text, View, FlatList, Button} from 'react-native';
 import NewDevice from './NewDevice'
+import DeviceListItem from './DeviceListItem'
 
 import styles from '../stylesheets/appStyles'
 
@@ -25,10 +26,20 @@ export default class DeviceList extends Component {
       ]
     }
   }
+  
   addNewVenue(venue){
     const {venues} = this.state
     this.setState({venues:[...venues, venue]})
   }
+  _onPressItem = (device) =>{
+    this.props.navigation.push("Details",{device})
+  }
+  _renderItem = ({item}) =>(
+    <DeviceListItem
+        device={item}
+        onPressItem={this._onPressItem}/>
+  )
+  
   render() {
     return (
 	<View style={{flex: 1}}>
@@ -37,11 +48,11 @@ export default class DeviceList extends Component {
         addNewVenue={(data)=>this.addNewVenue(data)}/>
       <Button title={"Edit"}/>
     </View>
-    
+
     <FlatList
     contentContainerStyle={styles.listView}
     data={this.state.venues}
-    renderItem={({item})=><Text style={styles.listItem}>{item.name}</Text>} />
+    renderItem={this._renderItem} />
     
 	</View>
 

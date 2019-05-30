@@ -5,7 +5,8 @@ const defaultTextSize = 22
 export default styles = StyleSheet.create({
     toolbar: {
       fontSize: defaultTextSize,
-      flexDirection: 'row'
+      flexDirection: 'row',
+      justifyContent:'space-around'
     },
     listView:{
       flexDirection: 'column',
@@ -27,5 +28,9 @@ export default styles = StyleSheet.create({
       margin: 22,
       marginTop: 22,
       justifyContent: 'center'
+    },
+    
+    container:{
+      flex: 1
     }
   })
