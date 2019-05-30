@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import {View, Modal, Text, TouchableHighlight,Button} from 'react-native'
 import { TextInput } from 'react-native-gesture-handler';
-import styles from './stylesheets/appStyles'
+import styles from '../stylesheets/appStyles'
 
-export default class NewVeneuDialog extends Component {
+export default class NewDevice extends Component {
     constructor(props){
         super(props)
         this.state ={
@@ -61,6 +61,12 @@ export default class NewVeneuDialog extends Component {
                     onPress={() => {
                         this.props.addNewVenue(this.state.venue)
                         this.setModalVisible(!this.state.modalVisible);
+                    }} />
+
+                    <Button
+                    title={"Cancel"}
+                    onPress={()=> {
+                        this.setModalVisible(!this.state.modalVisible)
                     }} />
                 </View>
             </Modal>

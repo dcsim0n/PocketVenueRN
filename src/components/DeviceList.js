@@ -7,14 +7,13 @@
  */
 
 import React, {Component} from 'react';
-import { createStackNavigator, createAppContainer } from 'react-navigation'
-import {StyleSheet, Text, View, FlatList, Button} from 'react-native';
-import NewVenueDialog from './src/NewVeneuDialog'
+import {Text, View, FlatList, Button} from 'react-native';
+import NewDevice from './NewDevice'
 
-import styles from './src/stylesheets/appStyles'
+import styles from '../stylesheets/appStyles'
 
 
-class App extends Component {
+export default class DeviceList extends Component {
   constructor(props){
     super(props)
     this.state = {
@@ -34,10 +33,11 @@ class App extends Component {
     return (
 	<View style={{flex: 1}}>
     <View style={styles.toolbar}>
-      <NewVenueDialog 
+      <NewDevice 
         addNewVenue={(data)=>this.addNewVenue(data)}/>
       <Button title={"Edit"}/>
     </View>
+    
     <FlatList
     contentContainerStyle={styles.listView}
     data={this.state.venues}
@@ -48,12 +48,7 @@ class App extends Component {
     )}
 }
 
-const AppNavigator = createStackNavigator({
-  Home: {
-    screen : App
-  }
-})
-export default createAppContainer(AppNavigator)
+
 
 
 
