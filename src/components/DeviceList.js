@@ -24,8 +24,8 @@ export default class DeviceList extends Component {
       isEditing: false,
       venues: [
         {key: '557560ab-a789-4ec8-8fdc-ed9d29080402', type: DeviceTypes.VRWB, name: "Venue 1", address: "127.0.0.1", port: 4080},
-        {key: 'd470be85-783a-43e5-bf8e-a051a002683c', type: DeviceTypes.VRWB, name: "Venue 2", address: "127.0.0.2", port: 4080},
-        {key: '5440f3d9-8a5d-494d-bf79-544266c4e768', type: DeviceTypes.VRM2WB, name: "Venue 3", address: "10.0.0.10" , port: 4999}
+        {key: 'd470be85-783a-43e5-bf8e-a051a002683c', type: DeviceTypes.VRWB, name: "Venue 2", address: "127.0.0.1", port: 4080},
+        {key: '5440f3d9-8a5d-494d-bf79-544266c4e768', type: DeviceTypes.VRM2WB, name: "Venue 3", address: "127.0.0.1" , port: 4999}
       ]
     }
   }
