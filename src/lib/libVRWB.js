@@ -9,7 +9,7 @@ import Device from './libDevice'
 export default class VRWB extends Device {
     constructor(options){
         super(options) 
-
+        this.fetchData = this.fetchData.bind(this)
         this.commands = {
             deviceId: 'id ?\r',        //Device type
             blocks: 'block(*) ?\r',    //Reciever blocks
@@ -20,13 +20,26 @@ export default class VRWB extends Device {
             freqs: 'mhz(*) ?\r'        //Frequenies of the recievers
 
         }
-    } 
-    
-    async fetchData(){
         
-        this._sendCmd('block(*) ?\r').then((data)=>{
-            console.log('recieved some data',data)
-        })
-        return []
+    } 
+    _fetchData(){
+        const commands = this.commands
+        try{
+            this._sendCmd(commands.freqs)
+            .then(data=>{
+                console.log(data)
+                this._sendCmd(commands.blocks)
+                .then(console.log)
+            })
+
+        }
+        catch(error){
+            console.error("Data Fetch error")
+            this.errorHandler(error)
+        }
+    }
+       
+    fetchData(){
+        this._fetchData()
     }
 }

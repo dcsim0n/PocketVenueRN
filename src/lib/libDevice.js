@@ -13,10 +13,11 @@ function sendCmd({address,port},cmd) {
     })
     return new Promise(function(resolve,reject){
         client.on('data',(data)=>{
-            resolve(data.toString(encoding))
             client.destroy()
+            resolve(data.toString(encoding))
         })
         client.on('error',(error)=>{
+            client.destroy()
             reject(error)
         })
     })
@@ -25,30 +26,47 @@ function sendCmd({address,port},cmd) {
 
 export default class Device {
     constructor({type,name,address,port}){
+        if (!type || !name || !address || !port)
+            throw new Error('Missing required option')
         this.address = address
         this.port = port
         this.type = type
         this.name = name
         this._sendCmd = this._sendCmd.bind(this)
+        this.fetchData = this.fetchData.bind(this)
+        this._intervalRef = null
+        this.dataHandler = null
+        this.errorHandler = null
+
     }
     get _connectObj (){
         return {port: this.port, address: this.address}
     }
     _sendCmd(cmd){
-        return sendCmd(this._connectObj,cmd)
+        return sendCmd(this._connectObj,cmd) //Promise for data
     }
-    // fetchData(){
-    //     const data = [
-    //         {description: "RX 1"},
-    //         {description: "RX 2"},
-    //         {description: "RX 3"},
-    //         {description: "RX 4"},
-    //         {description: "RX 5"},
-    //         {description: "RX 6"}
-    //     ]
-    //     return data
-    // }
+    
+    _parseData(data){
+        //maybe this should handle other formats of string?
+       return data.split(/OK\s{|,|}/).filter((x)=>x!=='')
+    }
 
-    
-    
+    start(refreshInterval,callback){
+        this.dataHandler = callback
+        if(!this.fetchData)
+            throw new Error("Error: fetchData is not defined. fetchData should be defined by a child class")
+        this._intervalRef = setInterval(this.fetchData,refreshInterval)
+    }
+
+    stop(){
+        clearInterval(this._intervalRef)
+    }
+
+    // fetchData(){
+    //     const {commands} = this
+    //     this._sendCmd(commands.blocks)
+    //     .then((data)=>{
+    //         this.dataHandler(this._parseData(data))
+    //     })
+    // }
 }

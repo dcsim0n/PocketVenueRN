@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import {View, Modal, Text, TouchableHighlight,Button} from 'react-native'
 import { TextInput } from 'react-native-gesture-handler';
 import styles from '../stylesheets/appStyles'
-
+import devices from '../lib/deviceTypes';
 export default class NewDevice extends Component {
     constructor(props){
         super(props)
@@ -10,7 +10,8 @@ export default class NewDevice extends Component {
             venue:{
                 address: "127.0.0.1",
                 port: "4080",
-                name: "New Venue"
+                name: "New Venue",
+                type: devices.VRWB
             },
             modalVisible: false
         }

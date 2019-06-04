@@ -3,13 +3,12 @@ import uuid from 'uuid/v1'
 import { View, Text, Button, FlatList} from 'react-native'
 import DetailListItem from './DetailListItem'
 import styles from '../stylesheets/appStyles'
-import console = require('console');
 
-export default class DeviceDetails {
+export default class DeviceDetails extends Component {
     constructor(props) {
+
         super(props)
-        this.device = props.device
-        this.interval = null
+        this.device = this.props.navigation.getParam('device',)
         this.state = {
              deviceData: []
         }
@@ -18,16 +17,22 @@ export default class DeviceDetails {
         console.log("updating device data:",data)
     }
     componentDidMount() {
-        //Fetch data
-        this.interval = setInterval()
+        this.device.start(1000,this.handleData)
+    }
+    handleData = (data) =>{
+        console.log("Recieved new data...",data)
+    }
+    componentWillUnmount(){
+        console.log("Stoping connection")
+        this.device.stop()
     }
     render(){
         return(
             <View style={styles.container}>
                 <View style={styles.container}>
-                    <Text>{`${device.name} @ ${device.address}: ${device.type}`}</Text>
+                    <Text>{`${this.device.name} @ ${this.device.address}: ${this.device.type}`}</Text>
                     <FlatList
-                    data={device.fetchData()}
+                    data={this.state.deviceData}
                     keyExtractor={()=>uuid()}
                     renderItem={({item})=>(
                         <DetailListItem item={item} />
