@@ -55,8 +55,4 @@ export default class VRWB extends Device {
                 console.log(error)
             })
     }
-       
-    fetchData(){
-        this._fetchData()
-    }
 }

@@ -62,11 +62,7 @@ export default class Device {
         clearInterval(this._intervalRef)
     }
 
-    // fetchData(){
-    //     const {commands} = this
-    //     this._sendCmd(commands.blocks)
-    //     .then((data)=>{
-    //         this.dataHandler(this._parseData(data))
-    //     })
-    // }
+    fetchData(){
+        this._fetchData() //Must be defined by child
+    }
 }
