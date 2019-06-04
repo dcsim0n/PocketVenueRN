@@ -21,6 +21,7 @@ export default class DeviceDetails extends Component {
     }
     handleData = (data) =>{
         console.log("Recieved new data...",data)
+        this.setState({deviceData:data})
     }
     componentWillUnmount(){
         console.log("Stoping connection")

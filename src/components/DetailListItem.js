@@ -4,7 +4,9 @@ import { View, Text } from 'react-native'
 const DetailListItem = (props) => {
     return (
         <View>
-            <Text>{props.item.description}</Text>
+            <Text>{props.item.block}</Text>
+            <Text>{props.item.frequency}</Text>
+            <Text>{props.item.voltage}</Text>
         </View>
     )
 }
