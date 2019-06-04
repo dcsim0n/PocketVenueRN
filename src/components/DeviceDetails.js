@@ -17,7 +17,7 @@ export default class DeviceDetails extends Component {
         console.log("updating device data:",data)
     }
     componentDidMount() {
-        this.device.start(1000,this.handleData)
+        this.device.start(2000,this.handleData)
     }
     handleData = (data) =>{
         console.log("Recieved new data...",data)

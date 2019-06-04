@@ -24,19 +24,36 @@ export default class VRWB extends Device {
     } 
     _fetchData(){
         const commands = this.commands
-        try{
             this._sendCmd(commands.freqs)
             .then(data=>{
-                console.log(data)
+                const freqs = this._parseData(data)
                 this._sendCmd(commands.blocks)
-                .then(console.log)
+                .then((data)=>{
+                    const blocks = this._parseData(data)
+                    this._sendCmd(commands.battVolt)
+                    .then(data=>{
+                        const volts = this._parseData(data)
+                        this._sendCmd(commands.pilot)
+                        .then(data=>{
+                            const pilots = this._parseData(data)
+                            
+                            let retData = []
+                            
+                            for (let i = 0; i<6; i++){
+                                retData.push({
+                                    block: blocks[i],
+                                    frequency: freqs[i],
+                                    voltage: volts[i],
+                                    pilot: pilots[i]
+                                })
+                            }
+                            this.dataHandler(retData) //Call handler with our data
+                        })
+                    })
+                })
+            }).catch((error)=>{
+                console.log(error)
             })
-
-        }
-        catch(error){
-            console.error("Data Fetch error")
-            this.errorHandler(error)
-        }
     }
        
     fetchData(){
