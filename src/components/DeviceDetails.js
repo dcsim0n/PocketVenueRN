@@ -8,7 +8,7 @@ export default class DeviceDetails extends Component {
     constructor(props) {
 
         super(props)
-        this.device = this.props.navigation.getParam('device',)
+        this.device = this.props.navigation.getParam('device')
         this.state = {
              deviceData: []
         }
@@ -19,6 +19,12 @@ export default class DeviceDetails extends Component {
     }
     handleData = (data) =>{
         console.log("Recieved new data...",data)
+        const expectedKeys = ['index', 'frequency','voltage','pilot']
+        expectedKeys.forEach((key)=> {
+            if(!(key in data)){
+                throw new Error(`Missing '${key}' in data object`)
+            }
+        })
         this.setState({deviceData:data})
     }
     componentWillUnmount(){

@@ -23,6 +23,10 @@ export default class VRWB extends Device {
         
     } 
     _fetchData(){
+        // The nested tcp requests is a
+        // limitation of the Venue WB,
+        // it can't handle concurent connections
+        // requests must be serial in nature
         const commands = this.commands
             this._sendCmd(commands.freqs)
             .then(data=>{
@@ -41,8 +45,9 @@ export default class VRWB extends Device {
                             
                             for (let i = 0; i<6; i++){
                                 retData.push({
+                                    index: i,
                                     block: blocks[i],
-                                    frequency: freqs[i],
+                                    frequency: parseFloat(freqs[i]),
                                     voltage: volts[i],
                                     pilot: pilots[i]
                                 })
