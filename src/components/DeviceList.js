@@ -37,7 +37,7 @@ export default class DeviceList extends Component {
   }
   _onPressItem = (deviceData) =>{
     const device = connectDevice(deviceData)
-    this.props.navigation.push("Details",{device})
+    this.props.navigation.push("Device",{device})
   }
   _renderItem = ({item}) =>(
     <DeviceListItem

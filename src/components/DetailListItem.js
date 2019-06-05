@@ -1,13 +1,16 @@
 import React from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, TouchableOpacity} from 'react-native'
+import styles from '../stylesheets/appStyles';
 
 const DetailListItem = (props) => {
     return (
-        <View>
-            <Text>{props.item.block}</Text>
-            <Text>{props.item.frequency}</Text>
-            <Text>{props.item.voltage}</Text>
-        </View>
+        <TouchableOpacity 
+        onPress={()=>props.onBlockPress(props.item)}
+        style={styles.celledListItem} >
+                <Text>{props.item.block}</Text>
+                <Text>{props.item.frequency}</Text>
+                <Text>{props.item.voltage}</Text>
+        </TouchableOpacity>
     )
 }
 
