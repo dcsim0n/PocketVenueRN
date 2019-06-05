@@ -7,6 +7,7 @@ import {createStackNavigator, createAppContainer} from 'react-navigation'
 import DeviceList from './src/components/DeviceList';
 import DeviceDetails from './src/components/DeviceDetails'
 import DataDetails from './src/components/DataDetails'
+import Scanner from './src/components/Scaner'
 import {name as appName} from './app.json';
 
 const AppNavigator = createStackNavigator({
@@ -18,6 +19,9 @@ const AppNavigator = createStackNavigator({
     },
     Data: {
         screen: DataDetails
+    },
+    Scan: {
+      screen: Scanner
     }
   })
 const App = createAppContainer(AppNavigator)

@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
-    "iphone": "react-native run-ios --simulator=\"iPhone SE\""
+    "iphone": "react-native run-ios --simulator=\"iPhone SE\"",
+    "hack": "./node_modules/.bin/rn-nodeify --install --hack"
   },
   "dependencies": {
     "@tradle/react-native-http": "^2.0.1",

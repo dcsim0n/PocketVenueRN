@@ -19,12 +19,6 @@ export default class DeviceDetails extends Component {
     }
     handleData = (data) =>{
         console.log("Recieved new data...",data)
-        const expectedKeys = ['index', 'frequency','voltage','pilot']
-        expectedKeys.forEach((key)=> {
-            if(!(key in data)){
-                throw new Error(`Missing '${key}' in data object`)
-            }
-        })
         this.setState({deviceData:data})
     }
     componentWillUnmount(){
@@ -50,7 +44,7 @@ export default class DeviceDetails extends Component {
                     )} />
                 </View>
                 <View style={[styles.toolbar, {alignContent:'flex-end'}]}>
-                    <Button title={"Scan"} />
+                    <Button title={"Scan"} onPress={()=>this.props.navigation.push("Scan",{device:this.device})}/>
                     <Button title={"Device Settings"} />
                 </View>
             </View>
