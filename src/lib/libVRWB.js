@@ -57,7 +57,11 @@ export default class VRWB extends Device {
                     })
                 })
             }).catch((error)=>{
-                console.log(error)
+                if(this.errorHandler){
+                    this.errorHandler(error)
+                }else{
+                    throw error
+                }
             })
     }
 }

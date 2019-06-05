@@ -51,8 +51,9 @@ export default class Device {
        return data.split(/OK\s{|,|}/).filter((x)=>x!=='')
     }
 
-    start(refreshInterval,callback){
+    start(refreshInterval,callback,errorHandler=null){
         this.dataHandler = callback
+        this.errorHandler = errorHandler
         if(!this.fetchData)
             throw new Error("Error: fetchData is not defined. fetchData should be defined by a child class")
         this._intervalRef = setInterval(this.fetchData,refreshInterval)

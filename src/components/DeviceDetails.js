@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import uuid from 'uuid/v1'
-import { View, Text, Button, FlatList, StyleSheet} from 'react-native'
+import { View, Text, Button, FlatList, Alert} from 'react-native'
 import DetailListItem from './DetailListItem'
 import styles from '../stylesheets/appStyles'
 
@@ -15,11 +15,19 @@ export default class DeviceDetails extends Component {
     }
 
     componentDidMount() {
-        this.device.start(2000,this.handleData)
+        this.device.start(2000,this.handleData,this.handleError)
     }
     handleData = (data) =>{
         console.log("Recieved new data...",data)
         this.setState({deviceData:data})
+    }
+    handleError = (error)=>{
+        this.device.stop()
+        Alert.alert(
+            "Device Error",
+            `${error.name}: ${error.message}`,
+            [{text:'OK'}]
+        )
     }
     componentWillUnmount(){
         console.log("Stoping connection")
