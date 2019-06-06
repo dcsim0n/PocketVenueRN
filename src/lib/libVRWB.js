@@ -104,19 +104,26 @@ export default class VRWB extends Device {
         const nextDevice = ()=>{
             return devices[currentIndex++]
         }
-        const sendRecursively = ()=>{
+        const sendRecursively = (callback=null)=>{
             if(currentIndex < devices.length){
-                console.log("sending command for",currentIndex)
                 const deviceAddress = nextDevice().index
+                console.group("recursive loop")
+                console.log('deviceAddress',deviceAddress)
+                console.log('nextDevice',nextDevice)
+                console.log('sendRecursively',sendRecursively);
                 const cmdStr = cmd.replace('*',deviceAddress)
                 this._sendCmd(cmdStr)
                 .then((resp)=>{
                     if(this._isOK(resp)){
+                        console.log(resp);
+                        callback && callback(resp)
                         sendRecursively()
                     }else{
                         throw new Error("Device Error: recieved error from device")
                     }
                 })
+            }else{
+                console.log("We finished the recursion")
             }
         }
         sendRecursively()

@@ -88,12 +88,12 @@ export default class Device {
         if(this._intervalRef !== null){
             throw new Error("Scan Error: device is already connected and running, call Device.stop() first")
         }
-        
+
         this._startScan()
 
-        this._intervalRef = setInterval(()=>{
-            this._pollScanData(callback())
-        },refreshInterval)
+        // this._intervalRef = setInterval(()=>{
+        //     this._pollScanData(callback())
+        // },refreshInterval)
     }
 
     stop(){
