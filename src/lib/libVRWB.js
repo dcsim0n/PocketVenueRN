@@ -9,7 +9,6 @@ import Device from './libDevice'
 export default class VRWB extends Device {
     constructor(options){
         super(options) 
-        this.fetchData = this.fetchData.bind(this)
         this.commands = {
             deviceId: 'id ?\r',        //Device type
             blocks: 'block(*) ?\r',    //Reciever blocks
@@ -24,30 +23,19 @@ export default class VRWB extends Device {
         }
         
     }
-    _startScan(devicesToScan){
-        // if(devicesToScan.length > devicesToScan.filter((x)=>!!x.index).length){
-        //     throw new Error("A device index is required to begin scanning")
-        // }
-        for (let i = 0; i < devicesToScan.length; i++){
-            console.log(devicesToScan[i])
-            const index = devicesToScan[i].index + 1 //Venue WB indexes start at 1
-            cmdStr = this.commands.startScan.replace('*',index)
-            //Need some error checking here, but how?
-            this._sendCmd(cmdStr)
-        }
+
+    _pollScanData(){
+        //Iterate over list of devices that are scanning
+        //Send commands to retrieve data from them
+        //Organize data and update _scanData acordingly
+        //Call event handler to let clients know data is updated
     } 
-    _stopScan(devicesToScan){
-        // if(devicesToScan.length > devicesToScan.filter((x)=>x.index)){
-        //     throw new Error("A device index is required to begin scanning")
-        // }
-        for (let i = 0; i < devicesToScan.length; i++){
-            console.log(devicesToScan[i])
-            const index = devicesToScan[i].index + 1 //Venue WB indexes start at 1
-            cmdStr = this.commands.stopScan.replace('*',index)
-            //Need some error checking here, but how?
-            this._sendCmd(cmdStr)
-        }
-    } 
+
+    _getDevicesToScan(){
+        //Iterate over known devices
+        //Calculate which devices are unique and set a 'scan' flag
+        //Return array of references to the devices
+    }
     _fetchData(){
         // The nested tcp requests is a
         // limitation of the Venue WB,

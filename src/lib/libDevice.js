@@ -44,8 +44,7 @@ export default class Device {
         this.stop = this.stop.bind(this)
         this.startScan = this.startScan.bind(this)
         this.stopScan = this.stopScan.bind(this)
-
-
+        this.fetchData = this.fetchData.bind(this)
     }
     get _connectObj (){
         return {port: this.port, address: this.address}
@@ -83,8 +82,18 @@ export default class Device {
         }//Else we are already scanning
     }
 
-    startScan(devicesToScan,callback,errorHandler=null){
+    startScan(refreshInterval,callback,errorHandler=null){
+        
+        //Make sure we aren't connected already!
+        if(this._intervalRef !== null){
+            throw new Error("Scan Error: device is already connected and running, call Device.stop() first")
+        }
+        const devicesToScan = this._getDevicesToScan()
         this._startScan(devicesToScan)
+        setInterval(()=>{
+            this._scanData = this._pollScanData()
+            callback()
+        },refreshInterval)
     }
 
     stop(){
