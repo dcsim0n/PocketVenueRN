@@ -78,7 +78,8 @@ export default class VRWB extends Device {
                                     pilot: pilots[i]
                                 })
                             }
-                            this.dataHandler(retData) //Call handler with our data
+                            this._deviceData = retData
+                            this.dataHandler(data) //Call handler with our data
                         })
                     })
                 })

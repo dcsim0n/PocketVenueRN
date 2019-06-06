@@ -1,3 +1,4 @@
+
 /**
 |--------------------------------------------------
 | Abstract Class for connecting to Lectrosonics Devices
@@ -34,6 +35,8 @@ export default class Device {
         this.name = name
         this._sendCmd = this._sendCmd.bind(this)
         this._intervalRef = null
+        this._deviceData = []
+        this._scanData = []
         this.dataHandler = null
         this.errorHandler = null
         this.fetchData = this.fetchData.bind(this)
@@ -42,9 +45,17 @@ export default class Device {
         this.startScan = this.startScan.bind(this)
         this.stopScan = this.stopScan.bind(this)
 
+
     }
     get _connectObj (){
         return {port: this.port, address: this.address}
+    }
+    get deviceData (){
+        return this._deviceData
+    }
+
+    get scanData(){
+        return this._scanData
     }
     _isOK(response){
         okCheck = RegExp(/OK .*/)
@@ -66,6 +77,9 @@ export default class Device {
             if(this.fetchData === undefined)
                 throw new Error("Error: fetchData is not defined. fetchData should be defined by a child class")
             this._intervalRef = setInterval(this.fetchData,refreshInterval)
+            this.fetchData
+        }else{
+            console.log("Notice: Device.start() called but device is alreaded connected")
         }//Else we are already scanning
     }
 
