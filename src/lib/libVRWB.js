@@ -23,18 +23,36 @@ export default class VRWB extends Device {
         }
         
     }
+    _startScan(){
+        const devicesToStart = this._getDevicesToScan()
+        this._sendRecursively(this.commands.startScan,devicesToStart)
 
+    }
+    _stopScan(){
+        const devicesToStop = this._getDevicesToScan()
+        this._sendRecursively(this.commands.stopScan,devicesToStop)
+
+    }
     _pollScanData(){
         //Iterate over list of devices that are scanning
         //Send commands to retrieve data from them
         //Organize data and update _scanData acordingly
         //Call event handler to let clients know data is updated
-    } 
 
+        const devicesToPoll = this._getDevicesToScan()
+        this._sendRecursively(this.commands.polScan,devicesToPoll)
+        
+    } 
     _getDevicesToScan(){
         //Iterate over known devices
         //Calculate which devices are unique and set a 'scan' flag
         //Return array of references to the devices
+
+        if(this._deviceData.length === 0 ){throw new Error('Scan Error: device must be connected first')}
+        return this._deviceData.filter((item,index)=>{ //Compares each item's block value and filters diplicates
+            return this.deviceData.findIndex((item2)=>item2.block === item.block) === index
+        })
+
     }
     _fetchData(){
         // The nested tcp requests is a
@@ -59,7 +77,7 @@ export default class VRWB extends Device {
                             
                             for (let i = 0; i<6; i++){
                                 retData.push({
-                                    index: i,
+                                    index: i + 1, //Reciever address start at one
                                     block: blocks[i],
                                     frequency: parseFloat(freqs[i]),
                                     voltage: (parseFloat(volts[i])/100),
@@ -78,5 +96,29 @@ export default class VRWB extends Device {
                     throw error
                 }
             })
+    }
+    _sendRecursively (cmd,devices){
+        //This might get weird
+        console.log('current devices:',devices);
+        let currentIndex = 0
+        const nextDevice = ()=>{
+            return devices[currentIndex++]
+        }
+        const sendRecursively = ()=>{
+            if(currentIndex < devices.length){
+                console.log("sending command for",currentIndex)
+                const deviceAddress = nextDevice().index
+                const cmdStr = cmd.replace('*',deviceAddress)
+                this._sendCmd(cmdStr)
+                .then((resp)=>{
+                    if(this._isOK(resp)){
+                        sendRecursively()
+                    }else{
+                        throw new Error("Device Error: recieved error from device")
+                    }
+                })
+            }
+        }
+        sendRecursively()
     }
 }

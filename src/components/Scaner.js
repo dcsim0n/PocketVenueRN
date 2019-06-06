@@ -5,16 +5,20 @@ export default class Scaner extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            scanData: []
+            scanData: [],
+            scanInterval: 2000
         }
         this.device = this.props.navigation.getParam('device')
     }
+    handleUpdate = ()=>{
+        console.log("calback called, todo: update state with data")
+    }
     onStartPress = ()=>{
         this.device.stop()
-        this.device.startScan([{index:0}])
+        this.device.startScan(this.state.scanInterval,this.handleUpdate)
     }
     onStopPress = ()=>{
-        this.device.stopScan([{index:0}])
+        this.device.stopScan()
     }
     render() {
         return (

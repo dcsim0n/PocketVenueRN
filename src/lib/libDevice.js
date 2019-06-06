@@ -88,11 +88,11 @@ export default class Device {
         if(this._intervalRef !== null){
             throw new Error("Scan Error: device is already connected and running, call Device.stop() first")
         }
-        const devicesToScan = this._getDevicesToScan()
-        this._startScan(devicesToScan)
-        setInterval(()=>{
-            this._scanData = this._pollScanData()
-            callback()
+        
+        this._startScan()
+
+        this._intervalRef = setInterval(()=>{
+            this._pollScanData(callback())
         },refreshInterval)
     }
 
@@ -101,8 +101,10 @@ export default class Device {
         this._intervalRef = null
     }
     
-    stopScan(devicesToScan){
-        this._stopScan(devicesToScan)
+    stopScan(){
+        this._stopScan()
+        clearInterval(this._intervalRef)
+        this._intervalRef = null
     }
     fetchData(){
         this._fetchData() //Must be defined by child
