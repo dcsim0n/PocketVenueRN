@@ -75,7 +75,7 @@ export default class Device {
 
     stop(){
         clearInterval(this._intervalRef)
-        this._intervalRef == null
+        this._intervalRef = null
     }
     
     stopScan(devicesToScan){

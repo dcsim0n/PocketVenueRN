@@ -34,12 +34,14 @@ export function withDevice(ComponentToWrap){
             )
         }
         componentDidFocus = ()=>{
+            console.log('focusing')
             this.device.start(
                 this.state.refreshRate,
                 this.handleDeviceData,
                 this.handleError)
         }
         componentWillBlur = ()=>{
+            console.log('blurring..')
             this.device.stop()
         }
         componentWillUnmount(){
@@ -59,6 +61,7 @@ export function withDevice(ComponentToWrap){
     Wrapper.propTypes = {
         navigation: PropTypes.object.isRequired
     }
-
+    
     return Wrapper
 }
+    
