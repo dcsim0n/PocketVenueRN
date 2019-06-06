@@ -33,10 +33,14 @@ export default class Device {
         this.type = type
         this.name = name
         this._sendCmd = this._sendCmd.bind(this)
-        this.fetchData = this.fetchData.bind(this)
         this._intervalRef = null
         this.dataHandler = null
         this.errorHandler = null
+        this.fetchData = this.fetchData.bind(this)
+        this.start = this.start.bind(this)
+        this.stop = this.stop.bind(this)
+        this.startScan = this.startScan.bind(this)
+        this.stopScan = this.stopScan.bind(this)
 
     }
     get _connectObj (){
@@ -56,16 +60,16 @@ export default class Device {
     }
 
     start(refreshInterval,callback,errorHandler=null){
-        if(!this._intervalRef){
+        if(this._intervalRef === null){
             this.dataHandler = callback
             this.errorHandler = errorHandler
-            if(!this.fetchData)
+            if(this.fetchData === undefined)
                 throw new Error("Error: fetchData is not defined. fetchData should be defined by a child class")
             this._intervalRef = setInterval(this.fetchData,refreshInterval)
         }//Else we are already scanning
     }
 
-    startScan(devicesToScan){
+    startScan(devicesToScan,callback,errorHandler=null){
         this._startScan(devicesToScan)
     }
 
