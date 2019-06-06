@@ -17,10 +17,36 @@ export default class VRWB extends Device {
             battType: 'txbatt(*) ?\r', //Battery type as set in the device
             pilot: 'signal(*) ?\r',    //Pilot tone status
             rxmeter: 'rmeter(*) ?\r',  //Signal strength
-            freqs: 'mhz(*) ?\r'        //Frequenies of the recievers
-
+            freqs: 'mhz(*) ?\r',       //Frequenies of the recievers
+            startScan: 'rxscan(*) = 1\r',
+            stopScan: 'rxscan(*) = 0\r',
+            polScan: 'polsd(*) ?\r'
         }
         
+    }
+    _startScan(devicesToScan){
+        // if(devicesToScan.length > devicesToScan.filter((x)=>!!x.index).length){
+        //     throw new Error("A device index is required to begin scanning")
+        // }
+        for (let i = 0; i < devicesToScan.length; i++){
+            console.log(devicesToScan[i])
+            const index = devicesToScan[i].index + 1 //Venue WB indexes start at 1
+            cmdStr = this.commands.startScan.replace('*',index)
+            //Need some error checking here, but how?
+            this._sendCmd(cmdStr)
+        }
+    } 
+    _stopScan(devicesToScan){
+        // if(devicesToScan.length > devicesToScan.filter((x)=>x.index)){
+        //     throw new Error("A device index is required to begin scanning")
+        // }
+        for (let i = 0; i < devicesToScan.length; i++){
+            console.log(devicesToScan[i])
+            const index = devicesToScan[i].index + 1 //Venue WB indexes start at 1
+            cmdStr = this.commands.stopScan.replace('*',index)
+            //Need some error checking here, but how?
+            this._sendCmd(cmdStr)
+        }
     } 
     _fetchData(){
         // The nested tcp requests is a
@@ -48,7 +74,7 @@ export default class VRWB extends Device {
                                     index: i,
                                     block: blocks[i],
                                     frequency: parseFloat(freqs[i]),
-                                    voltage: volts[i],
+                                    voltage: (parseFloat(volts[i])/100),
                                     pilot: pilots[i]
                                 })
                             }

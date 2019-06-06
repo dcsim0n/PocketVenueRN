@@ -1,21 +1,40 @@
 import React, {Component} from 'react'
 import uuid from 'uuid/v1'
 import { View, Text, Button, FlatList, Alert} from 'react-native'
+import {withNavigationFocus} from 'react-navigation';
 import DetailListItem from './DetailListItem'
 import styles from '../stylesheets/appStyles'
 
-export default class DeviceDetails extends Component {
+const refreshRate = 2000
+
+class DeviceDetails extends Component {
     constructor(props) {
 
         super(props)
         this.device = this.props.navigation.getParam('device')
+        this.blurListener = this.props.navigation.addListener('willBlur',this.componentWillBlur)
+        this.focusListener = this.props.navigation.addListener('didFocus',this.componentWillFocus)
         this.state = {
              deviceData: []
         }
+
     }
 
     componentDidMount() {
-        this.device.start(2000,this.handleData,this.handleError)
+        this.device.start(refreshRate,this.handleData,this.handleError)
+    }
+    componentWillUnmount(){
+        console.log("Stoping connection")
+        this.device.stop()
+        this.blurListener.remove()
+    }
+    componentWillBlur = ()=>{
+        console.log("Blurring")
+        this.device.stop()
+    }
+    componentWillFocus =()=>{
+        console.log("Focusing")
+        this.device.start(refreshRate,this.handleData,this.handleError)
     }
     handleData = (data) =>{
         console.log("Recieved new data...",data)
@@ -28,10 +47,6 @@ export default class DeviceDetails extends Component {
             `${error.name}: ${error.message}`,
             [{text:'OK'}]
         )
-    }
-    componentWillUnmount(){
-        console.log("Stoping connection")
-        this.device.stop()
     }
     _onBlockPress = (item)=>{
         this.props.navigation.push("Data",{item})
@@ -60,3 +75,4 @@ export default class DeviceDetails extends Component {
     }
 }
 
+export default withNavigationFocus(DeviceDetails)

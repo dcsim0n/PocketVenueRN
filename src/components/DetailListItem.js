@@ -9,8 +9,8 @@ const DetailListItem = (props) => {
         onPress={()=>props.onBlockPress(props.item)}
         style={styles.celledListItem} >
                 <Text>{props.item.label || "No Label"}</Text>
+                <Text>{props.item.frequency.toFixed(2)}</Text>
                 <Text>{props.item.block}</Text>
-                <Text>{props.item.frequency}</Text>
                 <Text>{props.item.voltage}</Text>
         </TouchableOpacity>
     )
