@@ -10,9 +10,11 @@ const encoding = 'utf8'
 
 function sendCmd({address,port},cmd) {
     const client = net.createConnection(port,address,()=>{
+        console.log('sending to client:',client)
+        console.log('sending..',cmd);
         client.write(cmd)
     })
-    return new Promise(function(resolve,reject){
+    return new Promise((resolve,reject)=>{
         client.on('data',(data)=>{
             client.destroy()
             resolve(data.toString(encoding))

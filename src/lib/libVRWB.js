@@ -25,12 +25,12 @@ export default class VRWB extends Device {
     }
     _startScan(){
         const devicesToStart = this._getDevicesToScan()
-        this._sendRecursively(this.commands.startScan,devicesToStart)
+        this._sendAsync(this.commands.startScan,devicesToStart)
 
     }
     _stopScan(){
         const devicesToStop = this._getDevicesToScan()
-        this._sendRecursively(this.commands.stopScan,devicesToStop)
+        this._sendAsync(this.commands.stopScan,devicesToStop)
 
     }
     _pollScanData(){
@@ -127,5 +127,18 @@ export default class VRWB extends Device {
             }
         }
         sendRecursively()
+    }
+
+    async _sendAsync(cmd,devices){ // cmd should be a string with a '*' character where the device address will go
+        devices.forEach(async (item)=>{
+            const cmdString = cmd.replace('*',item.index)
+            const resp = await this._sendCmd()
+            if(this._isOK(resp)){
+                //doe something else?
+                console.log('success', resp)
+            }else{
+                throw new Error("Device Error: recieved error from device")
+            }
+        })
     }
 }
