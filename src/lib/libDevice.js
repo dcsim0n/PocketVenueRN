@@ -6,47 +6,57 @@
 |--------------------------------------------------
 */
 const net = require('react-native-tcp')
+const Queue = require('queue')
 const encoding = 'utf8'
 
-function sendCmd({address,port},cmd) {
+function _isOK(response){
+    okCheck = RegExp(/OK .*/)
+    return okCheck.test(response)
+}
+function netSend({address,port},cmd) {
     const client = net.createConnection(port,address,()=>{
-        console.log('sending to client:',client)
-        console.log('sending..',cmd);
-        client.write(cmd)
+        client.write(cmd.cmd)
     })
     return new Promise((resolve,reject)=>{
         client.on('data',(data)=>{
             client.destroy()
-            resolve(data.toString(encoding))
+            if(_isOK(data)){
+                resolve({type: cmd.type, payload: data.toString(encoding)})
+            }else{
+                reject({type:cmd.type,payload:"Device Error: recieved error from device"})
+            }
         })
         client.on('error',(error)=>{
             client.destroy()
-            reject(error)
+            reject({type: cmd.type, payload: error})
         })
     })
 
 }
 
 export default class Device {
-    constructor({type,name,address,port}){
+    constructor({type,name,address,port,timeout=500,concurrency=1,autostart=true}){
         if (!type || !name || !address || !port)
             throw new Error('Missing required option')
         this.address = address
         this.port = port
         this.type = type
         this.name = name
-        this._sendCmd = this._sendCmd.bind(this)
         this._intervalRef = null
         this._deviceData = []
         this._scanData = []
         this.dataHandler = null
         this.errorHandler = null
+        this._sendCmd = this._sendCmd.bind(this)
         this.fetchData = this.fetchData.bind(this)
         this.start = this.start.bind(this)
         this.stop = this.stop.bind(this)
         this.startScan = this.startScan.bind(this)
         this.stopScan = this.stopScan.bind(this)
         this.fetchData = this.fetchData.bind(this)
+        this._msgQueue = Queue({concurrency,timeout,autostart})
+        this._msgQueue.on('success',this._jobSuccessHandler)
+        this._msgQueue.on('error',this._jobErrorHandler)
     }
     get _connectObj (){
         return {port: this.port, address: this.address}
@@ -58,12 +68,12 @@ export default class Device {
     get scanData(){
         return this._scanData
     }
-    _isOK(response){
-        okCheck = RegExp(/OK .*/)
-        return okCheck.test(response)
-    }
+    
     _sendCmd(cmd){
-        return sendCmd(this._connectObj,cmd) //Promise for data
+        // return netSend (this._connectObj,cmd) //Promise for data
+        this._msgQueue.push(()=>{
+            return netSend(this._connectObj,cmd) //Promise for data
+        })
     }
     
     _parseData(data){

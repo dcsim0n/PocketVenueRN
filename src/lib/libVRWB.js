@@ -5,7 +5,18 @@
 |--------------------------------------------------
 */
 import Device from './libDevice'
+
 const blocks = require('./blocks.json')
+const eventTypes = {
+    BLOCKS: 'BLOCKS',
+    FREQUENCIES: 'FREQUENCIES',
+    BATTERY_VOLTAGE: 'BATTERY_VOLTAGE',
+    BATTERY_TYPE: 'BATTERY_TYPE',
+    PILOT_TONE: 'PILOT_TONE',
+    RF_LEVEL: 'RF_LEVEL',
+    ID: 'ID',
+
+}
 class VrwbReciever {
     constructor({index,block}){
         this.index = index
@@ -30,54 +41,25 @@ class VrwbReciever {
     }
     //Other methods
 }
-class QueNode{
-    constructor(node){
-        this.nextNode = null
-        this.prevNode = null
-        this.node = node
-    }
-}
 
-class ScanQue{
-    constructor(){
-        this.first = null   
-        this.add = this.add.bind(this)
-    }
-    get last(){
-        let currentNode = this.first
-        while(currentNode.nextNode != null ){
-            currentNode = currentNode.nextNode
-        }
-        return currentNode
-    }
-    add(node){
-        const newNode = new QueNode(node)
-        if(this.first == null){
-            this.first = newNode
-            
-        }else{
-            this.last.nextNode = newNode
-        }
-        console.log("added new node",this.first,this.last)
-    }
-}
 export default class VRWB extends Device {
     constructor(options){
         super(options) 
         this.commands = {
-            deviceId: 'id ?\r',        //Device type
-            blocks: 'block(*) ?\r',    //Reciever blocks
-            battVolt: 'bvolts(*) ?\r', //Battery voltage
-            battType: 'txbatt(*) ?\r', //Battery type as set in the device
-            pilot: 'signal(*) ?\r',    //Pilot tone status
-            rxmeter: 'rmeter(*) ?\r',  //Signal strength
-            freqs: 'mhz(*) ?\r',       //Frequenies of the recievers
+            deviceId: {type: eventTypes.ID, cmd:'id ?\r'},        //Device type
+            blocks:   {type: eventTypes.BLOCKS, cmd:'block(*) ?\r'},    //Reciever blocks
+            battVolt: {type: eventTypes.BATTERY_VOLTAGE, cmd:'bvolts(*) ?\r'}, //Battery voltage
+            battType: {type: eventTypes.BATTERY_TYPE, cmd: 'txbatt(*) ?\r'}, //Battery type as set in the device
+            pilot:    {type:eventTypes.PILOT_TONE, cmd:'signal(*) ?\r'},    //Pilot tone status
+            rxmeter:  {type: eventTypes.RF_LEVEL, cmd:'rmeter(*) ?\r'},  //Signal strength
+            freqs:    {type: eventTypes.FREQUENCIES, cmd: 'mhz(*) ?\r'},       //Frequenies of the recievers
             startScan: 'rxscan(*) = 1\r',
             stopScan: 'rxscan(*) = 0\r',
             polScan: 'polsd(*) ?\r'
         }
-        this.vrScanQue = new ScanQue()
-        
+        this._jobSuccessHandler = this._jobSuccessHandler.bind(this)
+        this._fetchData = this._fetchData.bind(this)
+        this._jobErrorHandler = this._jobErrorHandler.bind(this)
     }
     _initScanQue = ()=>{ //arrow function to bind context
         // this._sendCmd(this.commands.blocks)
@@ -131,65 +113,77 @@ export default class VRWB extends Device {
         // limitation of the Venue WB,
         // it can't handle concurent connections
         // requests must be serial in nature
-        const commands = this.commands
-            this._sendCmd(commands.freqs)
-            .then(data=>{
-                const freqs = this._parseData(data)
-                this._sendCmd(commands.blocks)
-                .then((data)=>{
-                    const blocks = this._parseData(data)
-                    this._sendCmd(commands.battVolt)
-                    .then(data=>{
-                        const volts = this._parseData(data)
-                        this._sendCmd(commands.pilot)
-                        .then(data=>{
-                            const pilots = this._parseData(data)
+        // const commands = this.commands
+        //     this._sendCmd(commands.freqs)
+        //     .then(data=>{
+        //         const freqs = this._parseData(data)
+        //         this._sendCmd(commands.blocks)
+        //         .then((data)=>{
+        //             const blocks = this._parseData(data)
+        //             this._sendCmd(commands.battVolt)
+        //             .then(data=>{
+        //                 const volts = this._parseData(data)
+        //                 this._sendCmd(commands.pilot)
+        //                 .then(data=>{
+        //                     const pilots = this._parseData(data)
                             
-                            let retData = []
+        //                     let retData = []
                             
-                            for (let i = 0; i<6; i++){
-                                retData.push({
-                                    index: i + 1, //Reciever address start at one
-                                    block: blocks[i],
-                                    frequency: parseFloat(freqs[i]),
-                                    voltage: (parseFloat(volts[i])/100),
-                                    pilot: pilots[i]
-                                })
-                            }
-                            this._deviceData = retData
-                            this.dataHandler(data) //Call handler with our data
-                        })
-                    })
-                })
-            }).catch((error)=>{
-                if(this.errorHandler){
-                    this.errorHandler(error)
-                }else{
-                    throw error
-                }
-            })
+        //                     for (let i = 0; i<6; i++){
+        //                         retData.push({
+        //                             index: i + 1, //Reciever address start at one
+        //                             block: blocks[i],
+        //                             frequency: parseFloat(freqs[i]),
+        //                             voltage: (parseFloat(volts[i])/100),
+        //                             pilot: pilots[i]
+        //                         })
+        //                     }
+        //                     this._deviceData = retData
+        //                     this.dataHandler(data) //Call handler with our data
+        //                 })
+        //             })
+        //         })
+        //     }).catch((error)=>{
+        //         if(this.errorHandler){
+        //             this.errorHandler(error)
+        //         }else{
+        //             throw error
+        //         }
+        //     })
+        console.log("enqueing ..", this._msgQueue.length)
+        this._sendCmd(this.commands.blocks)
+        this._sendCmd(this.commands.freqs)
+        this._sendCmd(this.commands.pilot)
+        this._sendCmd(this.commands.battVolt)
+        console.log("enqued",this._msgQueue.length)
     }
-    _sendRecursively =(cmd,node)=>{
-        console.log(node)
-        node.node.startScan()
-        .then((resp)=>{
-            console.log(resp)
-            if(node.nextNode != null){
-                this._sendRecursively("",node.nextNode)
-            }
-        })
+    _jobSuccessHandler(result,job){
+        console.log('success job:', job)
+        switch (result.type) {
+            case "BLOCKS":
+                const blocks = this._parseData(result.payload)
+                console.log(`Todo: updated block datat ${blocks}`)
+                break;
+            case eventTypes.FREQUENCIES:
+                const freqs = this._parseData(result.payload)
+                console.log(`Todo: update freq data: ${freqs}`)
+                break;
+            case eventTypes.BATTERY_VOLTAGE:
+                const volts = this._parseData(result.payload)
+                console.log(`Todo: update volts data ${volts}`)
+                break;
+            case eventTypes.PILOT_TONE:
+                const pilots = this._parseData(result.payload)
+                console.log(`Todo: update pilot tones ${pilots}`)
+                break;
+            default:
+                console.log(`Unknown message type: ${result}`)
+                break;
+        }
     }
-
-    async _sendAsync(cmd,devices){ // cmd should be a string with a '*' character where the device address will go
-        devices.forEach(async (item)=>{
-            const cmdString = cmd.replace('*',item.index)
-            const resp = await this._sendCmd()
-            if(this._isOK(resp)){
-                //doe something else?
-                console.log('success', resp)
-            }else{
-                throw new Error("Device Error: recieved error from device")
-            }
-        })
+    _jobErrorHandler(error){
+        this._msgQueue.end()
+        this.stop()
+        throw new Error(error)
     }
 }
