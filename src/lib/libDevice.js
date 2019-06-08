@@ -82,16 +82,17 @@ export default class Device {
     }
 
     start(refreshInterval,callback,errorHandler=null){
-        if(this._intervalRef === null){
-            this.dataHandler = callback
-            this.errorHandler = errorHandler
-            if(this.fetchData === undefined)
-                throw new Error("Error: fetchData is not defined. fetchData should be defined by a child class")
-            this._intervalRef = setInterval(this.fetchData,refreshInterval)
-            this.fetchData
-        }else{
-            console.log("Notice: Device.start() called but device is alreaded connected")
-        }//Else we are already scanning
+        // if(this._intervalRef === null){
+        //     this.dataHandler = callback
+        //     this.errorHandler = errorHandler
+        //     if(this.fetchData === undefined)
+        //         throw new Error("Error: fetchData is not defined. fetchData should be defined by a child class")
+        //     this._intervalRef = setInterval(this.fetchData,refreshInterval)
+            this.fetchData()
+            this._msgQueue.start()
+        // }else{
+        //     console.log("Notice: Device.start() called but device is alreaded connected")
+        // }//Else we are already scanning
     }
 
     startScan(refreshInterval,callback,errorHandler=null){
