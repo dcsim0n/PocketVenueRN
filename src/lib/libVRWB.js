@@ -5,7 +5,56 @@
 |--------------------------------------------------
 */
 import Device from './libDevice'
+const blocks = require('./blocks.json')
+class VrwbReciever {
+    constructor({index,block}){
+        this.index = index
+        this.block = block
+        this.scanData = []
+    }
+    get blockBoundary(){
+        return blocks[this.block]
+    }
+    startScan(){
+        console.log("todo: start scanning")
+    }
+    pollScan(){
+        console.log("todo: poll data")
+    }
+    stopScan(){
+        console.log("todo: stop scanning")
+    }
+    //Other methods
+}
+class QueNode{
+    constructor(options){
+        this.nextNode = null
+        this.prevNode = null
+        this.node = new VrwbRx(options)
+    }
+}
 
+class ScanQue{
+    constructor(){
+        this.first = null   
+    }
+    get last(){
+        let currentNode = this.first
+        while(currentNode.nextNode != null ){
+            currentNode = currentNode.nextNode
+        }
+        return currentNode
+    }
+    add(node){
+        const newNode = new QueNode(node)
+        if(this.first === null){
+            this.first = newNode
+            
+        }else{
+            this.last.nextNode = newNode
+        }
+    }
+}
 export default class VRWB extends Device {
     constructor(options){
         super(options) 
@@ -21,9 +70,25 @@ export default class VRWB extends Device {
             stopScan: 'rxscan(*) = 0\r',
             polScan: 'polsd(*) ?\r'
         }
+        this.vrScanQue = new ScanQue()
         
     }
+    _initScanQue = ()=>{ //arrow function to bind context
+        this._sendCmd(this.commands.blocks)
+        .then(resp=>{
+            if(this._isOK(resp)){
+                const blocks = this._parseData(resp)
+                for (let i = 0; i < blocks.length; i++){
+                    const newRxNode = new VrwbReciever ({index: i + 1 , block: blocks[i]})
+                    this.vrScanQue.add(newRxNode)
+                }
+            }else{
+                throw new Error("Device Error: recieved bad response from device")
+            }
+        })
+    }
     _startScan(){
+
         const devicesToStart = this._getDevicesToScan()
         this._sendAsync(this.commands.startScan,devicesToStart)
 
