@@ -16,7 +16,11 @@ class VrwbReciever {
         return blocks[this.block]
     }
     startScan(){
-        console.log("todo: start scanning")
+        return new Promise((resolve,reject)=>{
+            setTimeout(()=>{
+                resolve("todo: start scan proccess")
+            },1000)
+        })
     }
     pollScan(){
         console.log("todo: poll data")
@@ -27,16 +31,17 @@ class VrwbReciever {
     //Other methods
 }
 class QueNode{
-    constructor(options){
+    constructor(node){
         this.nextNode = null
         this.prevNode = null
-        this.node = new VrwbRx(options)
+        this.node = node
     }
 }
 
 class ScanQue{
     constructor(){
         this.first = null   
+        this.add = this.add.bind(this)
     }
     get last(){
         let currentNode = this.first
@@ -47,12 +52,13 @@ class ScanQue{
     }
     add(node){
         const newNode = new QueNode(node)
-        if(this.first === null){
+        if(this.first == null){
             this.first = newNode
             
         }else{
             this.last.nextNode = newNode
         }
+        console.log("added new node",this.first,this.last)
     }
 }
 export default class VRWB extends Device {
@@ -74,23 +80,24 @@ export default class VRWB extends Device {
         
     }
     _initScanQue = ()=>{ //arrow function to bind context
-        this._sendCmd(this.commands.blocks)
-        .then(resp=>{
-            if(this._isOK(resp)){
-                const blocks = this._parseData(resp)
-                for (let i = 0; i < blocks.length; i++){
-                    const newRxNode = new VrwbReciever ({index: i + 1 , block: blocks[i]})
-                    this.vrScanQue.add(newRxNode)
-                }
-            }else{
-                throw new Error("Device Error: recieved bad response from device")
-            }
-        })
+        // this._sendCmd(this.commands.blocks)
+        // .then(resp=>{
+        //     if(this._isOK(resp)){
+        const blocks = this._getDevicesToScan()
+        for (let i = 0; i < blocks.length; i++){
+            const newRxNode = new VrwbReciever ({index: blocks[i].index , block: blocks[i]})
+            console.log("adding new vrnode",newRxNode)
+            this.vrScanQue.add(newRxNode)
+        }
+        //     }else{
+        //         throw new Error("Device Error: recieved bad response from device")
+        //     }
+        // })
     }
     _startScan(){
-
-        const devicesToStart = this._getDevicesToScan()
-        this._sendAsync(this.commands.startScan,devicesToStart)
+        this._initScanQue()
+        console.log(this.vrScanQue)
+        this._sendRecursively(this.commands.startScan,this.vrScanQue.first)
 
     }
     _stopScan(){
@@ -162,36 +169,15 @@ export default class VRWB extends Device {
                 }
             })
     }
-    _sendRecursively (cmd,devices){
-        //This might get weird
-        console.log('current devices:',devices);
-        let currentIndex = 0
-        const nextDevice = ()=>{
-            return devices[currentIndex++]
-        }
-        const sendRecursively = (callback=null)=>{
-            if(currentIndex < devices.length){
-                const deviceAddress = nextDevice().index
-                console.group("recursive loop")
-                console.log('deviceAddress',deviceAddress)
-                console.log('nextDevice',nextDevice)
-                console.log('sendRecursively',sendRecursively);
-                const cmdStr = cmd.replace('*',deviceAddress)
-                this._sendCmd(cmdStr)
-                .then((resp)=>{
-                    if(this._isOK(resp)){
-                        console.log(resp);
-                        callback && callback(resp)
-                        sendRecursively()
-                    }else{
-                        throw new Error("Device Error: recieved error from device")
-                    }
-                })
-            }else{
-                console.log("We finished the recursion")
+    _sendRecursively =(cmd,node)=>{
+        console.log(node)
+        node.node.startScan()
+        .then((resp)=>{
+            console.log(resp)
+            if(node.nextNode != null){
+                this._sendRecursively("",node.nextNode)
             }
-        }
-        sendRecursively()
+        })
     }
 
     async _sendAsync(cmd,devices){ // cmd should be a string with a '*' character where the device address will go
