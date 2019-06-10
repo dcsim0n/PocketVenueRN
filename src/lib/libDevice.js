@@ -9,26 +9,29 @@ const net = require('react-native-tcp')
 const Queue = require('queue')
 const encoding = 'utf8'
 
-function _isOK(response){
+function isOK(response){
     okCheck = RegExp(/OK .*/)
     return okCheck.test(response)
 }
+ 
 function netSend({address,port},cmd) {
     const client = net.createConnection(port,address,()=>{
         client.write(cmd.cmd)
     })
     return new Promise((resolve,reject)=>{
         client.on('data',(data)=>{
+            let encodedData = data.toString(encoding)
             client.destroy()
-            if(_isOK(data)){
-                resolve({type: cmd.type, payload: data.toString(encoding)})
+            console.log('got some data',)
+            if(isOK(encodedData)){
+                resolve(data.toString(encoding))
             }else{
-                reject({type:cmd.type,payload:"Device Error: recieved error from device"})
+                reject(new Error("Recieved error from Device"))
             }
         })
         client.on('error',(error)=>{
             client.destroy()
-            reject({type: cmd.type, payload: error})
+            reject(error)
         })
     })
 
@@ -58,6 +61,7 @@ export default class Device {
         this._msgQueue.on('success',this._jobSuccessHandler)
         this._msgQueue.on('error',this._jobErrorHandler)
     }
+    
     get _connectObj (){
         return {port: this.port, address: this.address}
     }
@@ -70,9 +74,13 @@ export default class Device {
     }
     
     _sendCmd(cmd){
-        // return netSend (this._connectObj,cmd) //Promise for data
-        this._msgQueue.push(()=>{
-            return netSend(this._connectObj,cmd) //Promise for data
+        this._msgQueue.push((callback)=>{
+            netSend(this._connectObj,cmd) //Promise for data
+            .then((data)=>{
+                callback()
+            },(error)=>{
+                callback(error)
+            })
         })
     }
     

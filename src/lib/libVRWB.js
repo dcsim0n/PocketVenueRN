@@ -109,47 +109,6 @@ export default class VRWB extends Device {
 
     }
     _fetchData(){
-        // The nested tcp requests is a
-        // limitation of the Venue WB,
-        // it can't handle concurent connections
-        // requests must be serial in nature
-        // const commands = this.commands
-        //     this._sendCmd(commands.freqs)
-        //     .then(data=>{
-        //         const freqs = this._parseData(data)
-        //         this._sendCmd(commands.blocks)
-        //         .then((data)=>{
-        //             const blocks = this._parseData(data)
-        //             this._sendCmd(commands.battVolt)
-        //             .then(data=>{
-        //                 const volts = this._parseData(data)
-        //                 this._sendCmd(commands.pilot)
-        //                 .then(data=>{
-        //                     const pilots = this._parseData(data)
-                            
-        //                     let retData = []
-                            
-        //                     for (let i = 0; i<6; i++){
-        //                         retData.push({
-        //                             index: i + 1, //Reciever address start at one
-        //                             block: blocks[i],
-        //                             frequency: parseFloat(freqs[i]),
-        //                             voltage: (parseFloat(volts[i])/100),
-        //                             pilot: pilots[i]
-        //                         })
-        //                     }
-        //                     this._deviceData = retData
-        //                     this.dataHandler(data) //Call handler with our data
-        //                 })
-        //             })
-        //         })
-        //     }).catch((error)=>{
-        //         if(this.errorHandler){
-        //             this.errorHandler(error)
-        //         }else{
-        //             throw error
-        //         }
-        //     })
         console.log("enqueing ..", this._msgQueue.length)
         this._sendCmd(this.commands.blocks)
         this._sendCmd(this.commands.freqs)
@@ -158,32 +117,33 @@ export default class VRWB extends Device {
         console.log("enqued",this._msgQueue.length)
     }
     _jobSuccessHandler(result,job){
-        console.log('success job:', job)
-        switch (result.type) {
-            case "BLOCKS":
-                const blocks = this._parseData(result.payload)
-                console.log(`Todo: updated block datat ${blocks}`)
-                break;
-            case eventTypes.FREQUENCIES:
-                const freqs = this._parseData(result.payload)
-                console.log(`Todo: update freq data: ${freqs}`)
-                break;
-            case eventTypes.BATTERY_VOLTAGE:
-                const volts = this._parseData(result.payload)
-                console.log(`Todo: update volts data ${volts}`)
-                break;
-            case eventTypes.PILOT_TONE:
-                const pilots = this._parseData(result.payload)
-                console.log(`Todo: update pilot tones ${pilots}`)
-                break;
-            default:
-                console.log(`Unknown message type: ${result}`)
-                break;
-        }
+        console.log('results:',result)
+        // switch (result.type) {
+        //     case "BLOCKS":
+        //         const blocks = this._parseData(result.payload)
+        //         console.log(`Todo: updated block datat ${blocks}`)
+        //         break;
+        //     case eventTypes.FREQUENCIES:
+        //         const freqs = this._parseData(result.payload)
+        //         console.log(`Todo: update freq data: ${freqs}`)
+        //         break;
+        //     case eventTypes.BATTERY_VOLTAGE:
+        //         const volts = this._parseData(result.payload)
+        //         console.log(`Todo: update volts data ${volts}`)
+        //         break;
+        //     case eventTypes.PILOT_TONE:
+        //         const pilots = this._parseData(result.payload)
+        //         console.log(`Todo: update pilot tones ${pilots}`)
+        //         break;
+        //     default:
+        //         console.log(`Unknown message type: ${result}`)
+        //         break;
+        // }
     }
     _jobErrorHandler(error){
-        this._msgQueue.end()
+        //this._msgQueue.end()
         this.stop()
+        console.log(error);
         throw new Error(error)
     }
 }
