@@ -15,31 +15,10 @@ const eventTypes = {
     PILOT_TONE: 'PILOT_TONE',
     RF_LEVEL: 'RF_LEVEL',
     ID: 'ID',
+    SCAN_START: "SCAN_START" ,
+    SCAN_STOP: "SCAN_STOP" ,
+    SCAN_POLL: "SCAN_POLL"
 
-}
-class VrwbReciever {
-    constructor({index,block}){
-        this.index = index
-        this.block = block
-        this.scanData = []
-    }
-    get blockBoundary(){
-        return blocks[this.block]
-    }
-    startScan(){
-        return new Promise((resolve,reject)=>{
-            setTimeout(()=>{
-                resolve("todo: start scan proccess")
-            },1000)
-        })
-    }
-    pollScan(){
-        console.log("todo: poll data")
-    }
-    stopScan(){
-        console.log("todo: stop scanning")
-    }
-    //Other methods
 }
 
 export default class VRWB extends Device {
@@ -50,12 +29,12 @@ export default class VRWB extends Device {
             blocks:   {type: eventTypes.BLOCKS, cmd:'block(*) ?\r'},    //Reciever blocks
             battVolt: {type: eventTypes.BATTERY_VOLTAGE, cmd:'bvolts(*) ?\r'}, //Battery voltage
             battType: {type: eventTypes.BATTERY_TYPE, cmd: 'txbatt(*) ?\r'}, //Battery type as set in the device
-            pilot:    {type:eventTypes.PILOT_TONE, cmd:'signal(*) ?\r'},    //Pilot tone status
+            pilot:    {type: eventTypes.PILOT_TONE, cmd:'signal(*) ?\r'},    //Pilot tone status
             rxmeter:  {type: eventTypes.RF_LEVEL, cmd:'rmeter(*) ?\r'},  //Signal strength
             freqs:    {type: eventTypes.FREQUENCIES, cmd: 'mhz(*) ?\r'},       //Frequenies of the recievers
-            startScan: 'rxscan(*) = 1\r',
-            stopScan: 'rxscan(*) = 0\r',
-            polScan: 'polsd(*) ?\r'
+            startScan:{type: eventTypes.SCAN_START, cmd: 'rxscan(*) = 1\r'} ,
+            stopScan: {type: eventTypes.SCAN_STOP, cmd: 'rxscan(*) = 0\r'},
+            polScan:  {type: eventTypes.SCAN_POLL, cmd: 'polsd(*) ?\r'}
         }
         this._fetchData = this._fetchData.bind(this)
     }
@@ -122,5 +101,16 @@ export default class VRWB extends Device {
         this.stop()
         console.log(error);
         throw new Error(error)
+    }
+    _getDeviceData(){
+        return this._deviceData.blocks.map((block,i)=>{
+            return {
+                index: i + 1,
+                block: block,
+                frequency: parseFloat(this._deviceData.frequencies[i]),
+                voltage: parseFloat(this._deviceData.voltages[i]),
+                pilot: this._deviceData.pilotTones[i]
+            }
+        })
     }
 }

@@ -14,16 +14,16 @@ function isOK(response){
     return okCheck.test(response)
 }
  
-function netSend({address,port},cmd) {
+function netSend({address,port},cmd) { //Wrapper for net tcp opperations
     const client = net.createConnection(port,address,()=>{
         client.write(cmd)
     })
     return new Promise((resolve,reject)=>{
         client.on('data',(data)=>{
-            let encodedData = data.toString(encoding)
             client.destroy()
-            if(isOK(encodedData)){
-                resolve(data.toString(encoding))
+            const decodedData = data.toString(encoding)
+            if(isOK(decodedData)){
+                resolve(decodedData)
             }else{
                 reject(new Error("Recieved error from Device"))
             }
@@ -47,6 +47,8 @@ export default class Device {
         this._intervalRef = null
         this._deviceData = {}
         this._scanData = []
+
+        // Public interface methods
         this.dataHandler = null
         this.errorHandler = null
         this.sendCmd = this.sendCmd.bind(this)
@@ -56,33 +58,46 @@ export default class Device {
         this.startScan = this.startScan.bind(this)
         this.stopScan = this.stopScan.bind(this)
         this.fetchData = this.fetchData.bind(this)
+        
+        // Private message queue
         this._msgQueue = Queue({concurrency,timeout,autostart})
         this._msgQueue.on('success',(r,j)=>this._jobSuccessHandler(r,j))
         this._msgQueue.on('error',(e)=>this._jobErrorHandler(e))
     }
     
-    get _connectObj (){
+    //Status information interface
+    start(refreshInterval,callback,errorHandler=null){
+        if(this._intervalRef === null){ //Check if the interval is already running
+            this.dataHandler = callback
+            this.errorHandler = errorHandler
+            if(this.fetchData === undefined)
+                throw new Error("Error: fetchData is not defined. fetchData should be defined by a child class")
+            this._intervalRef = setInterval(this.fetchData,refreshInterval)
+            this.fetchData() 
+        }else{
+            console.log("Notice: Device.start() called but device is alreaded connected")
+        }//Else we are already scanning
+    }
+    
+    stop(){
+        clearInterval(this._intervalRef)
+        this._intervalRef = null
+    }
+
+    get connectObj (){
         return {port: this.port, address: this.address}
     }
     get deviceData (){
-        return this._deviceData.blocks.map((block,i)=>{
-            return {
-                index: i + 1,
-                block: block,
-                frequency: parseFloat(this._deviceData.frequencies[i]),
-                voltage: parseFloat(this._deviceData.voltages[i]),
-                pilot: this._deviceData.pilotTones[i]
-            }
-        })
+        return this._getDeviceData() //Delegate to device implementation
     }
 
     get scanData(){
-        return this._scanData
+        return this._getScanData() //Delegat to per device implementation
     }
     
     sendCmd(cmd){
         this._msgQueue.push((callback)=>{
-            netSend(this._connectObj,cmd.cmd) //Promise for data
+            netSend(this.connectObj,cmd.cmd) //Promise for data
             .then((data)=>{
                 callback(null, {type: cmd.type, payload: data})
             },(error)=>{
@@ -96,39 +111,12 @@ export default class Device {
        return data.split(/OK\s{|,|}/).filter((x)=>(x=='' || x=='\r\n') ? false : true)
     }
 
-    start(refreshInterval,callback,errorHandler=null){
-        if(this._intervalRef === null){
-            this.dataHandler = callback
-            this.errorHandler = errorHandler
-            if(this.fetchData === undefined)
-                throw new Error("Error: fetchData is not defined. fetchData should be defined by a child class")
-            this._intervalRef = setInterval(this.fetchData,refreshInterval)
-            this.fetchData()
-            this._msgQueue.start()
-        }else{
-            console.log("Notice: Device.start() called but device is alreaded connected")
-        }//Else we are already scanning
-    }
 
+    // Scanning interface
     startScan(refreshInterval,callback,errorHandler=null){
-        
-        //Make sure we aren't connected already!
-        if(this._intervalRef !== null){
-            throw new Error("Scan Error: device is already connected and running, call Device.stop() first")
-        }
-
-        this._startScan()
-
-        // this._intervalRef = setInterval(()=>{
-        //     this._pollScanData(callback())
-        // },refreshInterval)
+        //set up a recuring interval
     }
 
-    stop(){
-        clearInterval(this._intervalRef)
-        this._intervalRef = null
-    }
-    
     stopScan(){
         this._stopScan()
         clearInterval(this._intervalRef)
