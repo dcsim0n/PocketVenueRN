@@ -16,13 +16,12 @@ function isOK(response){
  
 function netSend({address,port},cmd) {
     const client = net.createConnection(port,address,()=>{
-        client.write(cmd.cmd)
+        client.write(cmd)
     })
     return new Promise((resolve,reject)=>{
         client.on('data',(data)=>{
             let encodedData = data.toString(encoding)
             client.destroy()
-            console.log('got some data',)
             if(isOK(encodedData)){
                 resolve(data.toString(encoding))
             }else{
@@ -57,6 +56,7 @@ export default class Device {
         this.startScan = this.startScan.bind(this)
         this.stopScan = this.stopScan.bind(this)
         this.fetchData = this.fetchData.bind(this)
+        this._parseData = this._parseData.bind(this)
         this._msgQueue = Queue({concurrency,timeout,autostart})
         this._msgQueue.on('success',this._jobSuccessHandler)
         this._msgQueue.on('error',this._jobErrorHandler)
@@ -75,9 +75,9 @@ export default class Device {
     
     _sendCmd(cmd){
         this._msgQueue.push((callback)=>{
-            netSend(this._connectObj,cmd) //Promise for data
+            netSend(this._connectObj,cmd.cmd) //Promise for data
             .then((data)=>{
-                callback()
+                callback(null, {type: cmd.type, payload: data})
             },(error)=>{
                 callback(error)
             })
@@ -90,17 +90,17 @@ export default class Device {
     }
 
     start(refreshInterval,callback,errorHandler=null){
-        // if(this._intervalRef === null){
-        //     this.dataHandler = callback
-        //     this.errorHandler = errorHandler
-        //     if(this.fetchData === undefined)
-        //         throw new Error("Error: fetchData is not defined. fetchData should be defined by a child class")
-        //     this._intervalRef = setInterval(this.fetchData,refreshInterval)
+        if(this._intervalRef === null){
+            this.dataHandler = callback
+            this.errorHandler = errorHandler
+            if(this.fetchData === undefined)
+                throw new Error("Error: fetchData is not defined. fetchData should be defined by a child class")
+            this._intervalRef = setInterval(this.fetchData,refreshInterval)
             this.fetchData()
             this._msgQueue.start()
-        // }else{
-        //     console.log("Notice: Device.start() called but device is alreaded connected")
-        // }//Else we are already scanning
+        }else{
+            console.log("Notice: Device.start() called but device is alreaded connected")
+        }//Else we are already scanning
     }
 
     startScan(refreshInterval,callback,errorHandler=null){

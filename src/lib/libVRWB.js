@@ -57,27 +57,11 @@ export default class VRWB extends Device {
             stopScan: 'rxscan(*) = 0\r',
             polScan: 'polsd(*) ?\r'
         }
-        this._jobSuccessHandler = this._jobSuccessHandler.bind(this)
         this._fetchData = this._fetchData.bind(this)
         this._jobErrorHandler = this._jobErrorHandler.bind(this)
     }
-    _initScanQue = ()=>{ //arrow function to bind context
-        // this._sendCmd(this.commands.blocks)
-        // .then(resp=>{
-        //     if(this._isOK(resp)){
-        const blocks = this._getDevicesToScan()
-        for (let i = 0; i < blocks.length; i++){
-            const newRxNode = new VrwbReciever ({index: blocks[i].index , block: blocks[i]})
-            console.log("adding new vrnode",newRxNode)
-            this.vrScanQue.add(newRxNode)
-        }
-        //     }else{
-        //         throw new Error("Device Error: recieved bad response from device")
-        //     }
-        // })
-    }
+    
     _startScan(){
-        this._initScanQue()
         console.log(this.vrScanQue)
         this._sendRecursively(this.commands.startScan,this.vrScanQue.first)
 
@@ -118,27 +102,27 @@ export default class VRWB extends Device {
     }
     _jobSuccessHandler(result,job){
         console.log('results:',result)
-        // switch (result.type) {
-        //     case "BLOCKS":
-        //         const blocks = this._parseData(result.payload)
-        //         console.log(`Todo: updated block datat ${blocks}`)
-        //         break;
-        //     case eventTypes.FREQUENCIES:
-        //         const freqs = this._parseData(result.payload)
-        //         console.log(`Todo: update freq data: ${freqs}`)
-        //         break;
-        //     case eventTypes.BATTERY_VOLTAGE:
-        //         const volts = this._parseData(result.payload)
-        //         console.log(`Todo: update volts data ${volts}`)
-        //         break;
-        //     case eventTypes.PILOT_TONE:
-        //         const pilots = this._parseData(result.payload)
-        //         console.log(`Todo: update pilot tones ${pilots}`)
-        //         break;
-        //     default:
-        //         console.log(`Unknown message type: ${result}`)
-        //         break;
-        // }
+        switch (result.type) {
+            case "BLOCKS":
+                const blocks = this._parseData(result.payload)
+                console.log(`Todo: updated block datat ${blocks}`)
+                break;
+            case eventTypes.FREQUENCIES:
+                const freqs = this._parseData(result.payload)
+                console.log(`Todo: update freq data: ${freqs}`)
+                break;
+            case eventTypes.BATTERY_VOLTAGE:
+                const volts = this._parseData(result.payload)
+                console.log(`Todo: update volts data ${volts}`)
+                break;
+            case eventTypes.PILOT_TONE:
+                const pilots = this._parseData(result.payload)
+                console.log(`Todo: update pilot tones ${pilots}`)
+                break;
+            default:
+                console.log(`Unknown message type: ${result}`)
+                break;
+        }
     }
     _jobErrorHandler(error){
         //this._msgQueue.end()
