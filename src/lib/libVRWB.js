@@ -7,7 +7,7 @@
 import Device from './libDevice'
 
 const blocks = require('./blocks.json')
-const eventTypes = {
+const events = {
     BLOCKS: 'BLOCKS',
     FREQUENCIES: 'FREQUENCIES',
     BATTERY_VOLTAGE: 'BATTERY_VOLTAGE',
@@ -25,16 +25,16 @@ export default class VRWB extends Device {
     constructor(options){
         super(options) 
         this.commands = {
-            deviceId: {type: eventTypes.ID, cmd:'id ?\r'},        //Device type
-            blocks:   {type: eventTypes.BLOCKS, cmd:'block(*) ?\r'},    //Reciever blocks
-            battVolt: {type: eventTypes.BATTERY_VOLTAGE, cmd:'bvolts(*) ?\r'}, //Battery voltage
-            battType: {type: eventTypes.BATTERY_TYPE, cmd: 'txbatt(*) ?\r'}, //Battery type as set in the device
-            pilot:    {type: eventTypes.PILOT_TONE, cmd:'signal(*) ?\r'},    //Pilot tone status
-            rxmeter:  {type: eventTypes.RF_LEVEL, cmd:'rmeter(*) ?\r'},  //Signal strength
-            freqs:    {type: eventTypes.FREQUENCIES, cmd: 'mhz(*) ?\r'},       //Frequenies of the recievers
-            startScan:{type: eventTypes.SCAN_START, cmd: 'rxscan(*) = 1\r'} ,
-            stopScan: {type: eventTypes.SCAN_STOP, cmd: 'rxscan(*) = 0\r'},
-            polScan:  {type: eventTypes.SCAN_POLL, cmd: 'pollsd(*) ?\r'}
+            deviceId: {type: events.ID, cmd:'id ?\r'},        //Device type
+            blocks:   {type: events.BLOCKS, cmd:'block(*) ?\r'},    //Reciever blocks
+            battVolt: {type: events.BATTERY_VOLTAGE, cmd:'bvolts(*) ?\r'}, //Battery voltage
+            battType: {type: events.BATTERY_TYPE, cmd: 'txbatt(*) ?\r'}, //Battery type as set in the device
+            pilot:    {type: events.PILOT_TONE, cmd:'signal(*) ?\r'},    //Pilot tone status
+            rxmeter:  {type: events.RF_LEVEL, cmd:'rmeter(*) ?\r'},  //Signal strength
+            freqs:    {type: events.FREQUENCIES, cmd: 'mhz(*) ?\r'},       //Frequenies of the recievers
+            startScan:{type: events.SCAN_START, cmd: 'rxscan(*) = 1\r'} ,
+            stopScan: {type: events.SCAN_STOP, cmd: 'rxscan(*) = 0\r'},
+            polScan:  {type: events.SCAN_POLL, cmd: 'pollsd(*) ?\r'}
         }
         this._fetchData = this._fetchData.bind(this)
         this._fetchScanData = this._fetchScanData.bind(this)
@@ -92,23 +92,23 @@ export default class VRWB extends Device {
     }
     _jobSuccessHandler(result,job){
         switch (result.type) {
-            case eventTypes.BLOCKS:
+            case events.BLOCKS:
                 this._deviceData = Object.assign(this._deviceData,{blocks: this._parseData(result.payload)})
                 break;
-            case eventTypes.FREQUENCIES:
+            case events.FREQUENCIES:
                 this._deviceData = Object.assign(this._deviceData,{frequencies: this._parseData(result.payload)})
                 break;
-            case eventTypes.BATTERY_VOLTAGE:
+            case events.BATTERY_VOLTAGE:
                 this._deviceData = Object.assign(this._deviceData,{voltages: this._parseData(result.payload)})
                 break;
-            case eventTypes.PILOT_TONE:
+            case events.PILOT_TONE:
                 this._deviceData = Object.assign(this._deviceData,{pilotTones: this._parseData(result.payload)})
                 this.dataHandler()
                 break;
-            case eventTypes.SCAN_START:
+            case events.SCAN_START:
                 console.log('Started scan', result)
                 break;
-            case eventTypes.SCAN_POLL:
+            case events.SCAN_POLL:
                 console.log(`Got data for reciever: ${result.index}`,result.payload)
                 break;
             default:
