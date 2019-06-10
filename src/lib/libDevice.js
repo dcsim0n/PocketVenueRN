@@ -58,8 +58,8 @@ export default class Device {
         this.fetchData = this.fetchData.bind(this)
         this._parseData = this._parseData.bind(this)
         this._msgQueue = Queue({concurrency,timeout,autostart})
-        this._msgQueue.on('success',this._jobSuccessHandler)
-        this._msgQueue.on('error',this._jobErrorHandler)
+        this._msgQueue.on('success',(r,j)=>this._jobSuccessHandler(r,j))
+        this._msgQueue.on('error',(e)=>this._jobErrorHandler(e))
     }
     
     get _connectObj (){

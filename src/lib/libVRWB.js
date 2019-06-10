@@ -58,7 +58,6 @@ export default class VRWB extends Device {
             polScan: 'polsd(*) ?\r'
         }
         this._fetchData = this._fetchData.bind(this)
-        this._jobErrorHandler = this._jobErrorHandler.bind(this)
     }
     
     _startScan(){
@@ -93,12 +92,10 @@ export default class VRWB extends Device {
 
     }
     _fetchData(){
-        console.log("enqueing ..", this._msgQueue.length)
         this._sendCmd(this.commands.blocks)
         this._sendCmd(this.commands.freqs)
         this._sendCmd(this.commands.pilot)
         this._sendCmd(this.commands.battVolt)
-        console.log("enqued",this._msgQueue.length)
     }
     _jobSuccessHandler(result,job){
         console.log('results:',result)
@@ -125,7 +122,7 @@ export default class VRWB extends Device {
         }
     }
     _jobErrorHandler(error){
-        //this._msgQueue.end()
+        this._msgQueue.end()
         this.stop()
         console.log(error);
         throw new Error(error)
