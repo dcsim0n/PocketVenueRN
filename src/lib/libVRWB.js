@@ -6,6 +6,8 @@
 */
 import Device from './libDevice'
 
+const debug = false //Switch to true to enable more console.logs
+
 const blocks = require('./blocks.json')
 const events = {
     BLOCKS: 'BLOCKS',
@@ -117,7 +119,7 @@ export default class VRWB extends Device {
         data.forEach((value,i)=>{
             this._scanData[response.index].scan[offset + i] = value
         })
-        console.log('this._scanData', this._scanData)
+        debug && console.log('this._scanData', this._scanData)
         this.scanDataHandler(this.scanData)
     }
     _jobSuccessHandler(result,job){
@@ -136,21 +138,21 @@ export default class VRWB extends Device {
                 this.dataHandler()
                 break;
             case events.SCAN_START:
-                console.log('Started scan', result)
+                debug && console.log('Started scan', result)
                 break;
             case events.SCAN_POLL:
                 this._updateScanData(result)
                 break;
             default:
-                console.log(`Unknown message type: ${result}`)
+                debug && console.log(`Unknown message type: ${result}`)
                 break;
         }
-        console.log(this._msgQueue)
+        debug && console.log(this._msgQueue)
     }
     _jobErrorHandler(error){
         this._msgQueue.end()
         this.stop()
-        console.log(error);
+        debug && console.log(error);
         this.errorHandler && this.errorHandler(error)
     }
     _getDeviceData(){

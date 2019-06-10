@@ -5,6 +5,8 @@
 | 2019 Dana Simmons
 |--------------------------------------------------
 */
+const debug = false //Switch to true to turn on more console.logs
+
 const net = require('react-native-tcp')
 const Queue = require('queue')
 const encoding = 'utf8'
@@ -79,7 +81,7 @@ export default class Device {
             this._intervalRef = setInterval(this.fetchData,refreshInterval)
             this.fetchData() 
         }else{
-            console.log("Notice: Device.start() called but device is alreaded connected")
+            debug && console.log("Notice: Device.start() called but device is alreaded connected")
         }
     }
     
@@ -153,12 +155,14 @@ export default class Device {
         }
         const scanBlob = data.slice(scanIndex).trim()
 
-        console.group("Parsed Packet")
-        console.log('data', data)
-        console.log('status', status)
-        console.log("offsetBlob", offsetBlob)
-        console.log('scanBlob', scanBlob)
-        console.groupEnd()
+        if(debug){
+            console.groupCollapsed("Parsed Packet")
+            console.log('data', data)
+            console.log('status', status)
+            console.log("offsetBlob", offsetBlob)
+            console.log('scanBlob', scanBlob)
+            console.groupEnd()
+        }
 
         
         if((scanBlob.length % 2) !== 0){
