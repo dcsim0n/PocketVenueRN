@@ -62,7 +62,6 @@ export default class VRWB extends Device {
     
     _startScan(){
         console.log(this.vrScanQue)
-        this._sendRecursively(this.commands.startScan,this.vrScanQue.first)
 
     }
     _stopScan(){
@@ -92,34 +91,31 @@ export default class VRWB extends Device {
 
     }
     _fetchData(){
-        this._sendCmd(this.commands.blocks)
-        this._sendCmd(this.commands.freqs)
-        this._sendCmd(this.commands.pilot)
-        this._sendCmd(this.commands.battVolt)
+        this.sendCmd(this.commands.blocks)
+        this.sendCmd(this.commands.freqs)
+        this.sendCmd(this.commands.battVolt)
+        this.sendCmd(this.commands.pilot)
     }
     _jobSuccessHandler(result,job){
-        console.log('results:',result)
         switch (result.type) {
-            case "BLOCKS":
-                const blocks = this._parseData(result.payload)
-                console.log(`Todo: updated block datat ${blocks}`)
+            case eventTypes.BLOCKS:
+                this._deviceData = Object.assign(this._deviceData,{blocks: this._parseData(result.payload)})
                 break;
             case eventTypes.FREQUENCIES:
-                const freqs = this._parseData(result.payload)
-                console.log(`Todo: update freq data: ${freqs}`)
+                this._deviceData = Object.assign(this._deviceData,{frequencies: this._parseData(result.payload)})
                 break;
             case eventTypes.BATTERY_VOLTAGE:
-                const volts = this._parseData(result.payload)
-                console.log(`Todo: update volts data ${volts}`)
+                this._deviceData = Object.assign(this._deviceData,{voltages: this._parseData(result.payload)})
                 break;
             case eventTypes.PILOT_TONE:
-                const pilots = this._parseData(result.payload)
-                console.log(`Todo: update pilot tones ${pilots}`)
+                this._deviceData = Object.assign(this._deviceData,{pilotTones: this._parseData(result.payload)})
+                this.dataHandler()
                 break;
             default:
                 console.log(`Unknown message type: ${result}`)
                 break;
         }
+        console.log(this._deviceData)
     }
     _jobErrorHandler(error){
         this._msgQueue.end()

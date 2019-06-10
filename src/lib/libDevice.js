@@ -45,18 +45,17 @@ export default class Device {
         this.type = type
         this.name = name
         this._intervalRef = null
-        this._deviceData = []
+        this._deviceData = {}
         this._scanData = []
         this.dataHandler = null
         this.errorHandler = null
-        this._sendCmd = this._sendCmd.bind(this)
+        this.sendCmd = this.sendCmd.bind(this)
         this.fetchData = this.fetchData.bind(this)
         this.start = this.start.bind(this)
         this.stop = this.stop.bind(this)
         this.startScan = this.startScan.bind(this)
         this.stopScan = this.stopScan.bind(this)
         this.fetchData = this.fetchData.bind(this)
-        this._parseData = this._parseData.bind(this)
         this._msgQueue = Queue({concurrency,timeout,autostart})
         this._msgQueue.on('success',(r,j)=>this._jobSuccessHandler(r,j))
         this._msgQueue.on('error',(e)=>this._jobErrorHandler(e))
@@ -66,14 +65,22 @@ export default class Device {
         return {port: this.port, address: this.address}
     }
     get deviceData (){
-        return this._deviceData
+        return this._deviceData.blocks.map((block,i)=>{
+            return {
+                index: i + 1,
+                block: block,
+                frequency: parseFloat(this._deviceData.frequencies[i]),
+                voltage: parseFloat(this._deviceData.voltages[i]),
+                pilot: this._deviceData.pilotTones[i]
+            }
+        })
     }
 
     get scanData(){
         return this._scanData
     }
     
-    _sendCmd(cmd){
+    sendCmd(cmd){
         this._msgQueue.push((callback)=>{
             netSend(this._connectObj,cmd.cmd) //Promise for data
             .then((data)=>{
@@ -86,7 +93,7 @@ export default class Device {
     
     _parseData(data){
         //maybe this should handle other formats of string?
-       return data.split(/OK\s{|,|}/).filter((x)=>x!=='')
+       return data.split(/OK\s{|,|}/).filter((x)=>(x=='' || x=='\r\n') ? false : true)
     }
 
     start(refreshInterval,callback,errorHandler=null){
