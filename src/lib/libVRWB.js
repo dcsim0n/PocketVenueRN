@@ -40,7 +40,13 @@ export default class VRWB extends Device {
     }
     
     _startScan(){
-        console.log(this.vrScanQue)
+        //Initate scan process for uniqe Recievers
+        const devices = this._getDevicesToScan()
+        devices.forEach((device)=>{
+            const cmdStr = this.commands.startScan.cmd.replace('*',device.index)
+            const newCmd = {type: this.commands.startScan.type, cmd: cmdStr}
+            this.sendCmd(newCmd)
+        })
 
     }
     _stopScan(){
@@ -62,10 +68,10 @@ export default class VRWB extends Device {
         //Iterate over known devices
         //Calculate which devices are unique and set a 'scan' flag
         //Return array of references to the devices
-
-        if(this._deviceData.length === 0 ){throw new Error('Scan Error: device must be connected first')}
-        return this._deviceData.filter((item,index)=>{ //Compares each item's block value and filters diplicates
-            return this.deviceData.findIndex((item2)=>item2.block === item.block) === index
+        const devices = this._getDeviceData()
+        if(devices.length === 0 ){throw new Error('Scan Error: device must be connected first')}
+        return devices.filter((item,index)=>{ //Compares each item's block value and filters diplicates
+            return devices.findIndex((item2)=>item2.block === item.block) === index
         })
 
     }
@@ -90,17 +96,20 @@ export default class VRWB extends Device {
                 this._deviceData = Object.assign(this._deviceData,{pilotTones: this._parseData(result.payload)})
                 this.dataHandler()
                 break;
+            case eventTypes.SCAN_START:
+                console.log('Started scan', result)
+                break;
             default:
                 console.log(`Unknown message type: ${result}`)
                 break;
         }
-        console.log(this._deviceData)
+        console.log(this._msgQueue)
     }
     _jobErrorHandler(error){
         this._msgQueue.end()
         this.stop()
         console.log(error);
-        throw new Error(error)
+        this.errorHandler && this.errorHandler(error)
     }
     _getDeviceData(){
         return this._deviceData.blocks.map((block,i)=>{

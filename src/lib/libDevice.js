@@ -51,6 +51,8 @@ export default class Device {
         // Public interface methods
         this.dataHandler = null
         this.errorHandler = null
+        this.scanDataHandler = null
+        this.scanErrorHandler = null
         this.sendCmd = this.sendCmd.bind(this)
         this.fetchData = this.fetchData.bind(this)
         this.start = this.start.bind(this)
@@ -58,7 +60,6 @@ export default class Device {
         this.startScan = this.startScan.bind(this)
         this.stopScan = this.stopScan.bind(this)
         this.fetchData = this.fetchData.bind(this)
-        
         // Private message queue
         this._msgQueue = Queue({concurrency,timeout,autostart})
         this._msgQueue.on('success',(r,j)=>this._jobSuccessHandler(r,j))
@@ -115,6 +116,8 @@ export default class Device {
     // Scanning interface
     startScan(refreshInterval,callback,errorHandler=null){
         //set up a recuring interval
+        this._startScan()
+        //this._intervalRef = setInterval(this._fetchScanData,refreshInterval)
     }
 
     stopScan(){
