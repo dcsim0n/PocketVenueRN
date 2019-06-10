@@ -40,6 +40,8 @@ export default class Device {
     constructor({type,name,address,port,timeout=500,concurrency=1,autostart=true}){
         if (!type || !name || !address || !port)
             throw new Error('Missing required option')
+
+        //Internal state
         this.address = address
         this.port = port
         this.type = type
@@ -60,6 +62,7 @@ export default class Device {
         this.startScan = this.startScan.bind(this)
         this.stopScan = this.stopScan.bind(this)
         this.fetchData = this.fetchData.bind(this)
+
         // Private message queue
         this._msgQueue = Queue({concurrency,timeout,autostart})
         this._msgQueue.on('success',(r,j)=>this._jobSuccessHandler(r,j))
@@ -77,7 +80,7 @@ export default class Device {
             this.fetchData() 
         }else{
             console.log("Notice: Device.start() called but device is alreaded connected")
-        }//Else we are already scanning
+        }
     }
     
     stop(){
@@ -106,12 +109,6 @@ export default class Device {
             })
         })
     }
-    
-    _parseData(data){
-        //maybe this should handle other formats of string?
-       return data.split(/OK\s{|,|}/).filter((x)=>(x=='' || x=='\r\n') ? false : true)
-    }
-
 
     // Scanning interface
     startScan(refreshInterval,callback,errorHandler=null){
@@ -131,5 +128,50 @@ export default class Device {
     }
     fetchData(){
         this._fetchData() //Must be defined by child
+    }
+
+    _parseData(data){
+        //maybe this should handle other formats of string?
+       return data.split(/OK\s{|,|}/).filter((x)=>(x=='' || x=='\r\n') ? false : true)
+    }
+
+    _parseScanPacket(data){
+        /**
+        |--------------------------------------------------
+        | Packet: [ 4 char status code ] [ 264 char status blob ] [ 4 char offset ] [ array of 2 char scan data + '\n' ]
+        |--------------------------------------------------
+        */
+        const statusIndex = 0
+        const blobIndex = 4
+        const offsetIndex = 268
+        const scanIndex = 272
+        const status = data.slice(statusIndex,blobIndex)
+        const blob = data.slice(blobIndex,offsetIndex)
+        const offsetBlob = {
+            msb: data.slice(offsetIndex, offsetIndex + 2),
+            lsb: data.slice(offsetIndex + 2,offsetIndex + 4)
+        }
+        const scanBlob = data.slice(scanIndex).trim()
+
+        console.group("Parsed Packet")
+        console.log('data', data)
+        console.log('status', status)
+        console.log("offsetBlob", offsetBlob)
+        console.log('scanBlob', scanBlob)
+        console.groupEnd()
+
+        
+        if((scanBlob.length % 2) !== 0){
+            throw new Error("Device Error: recieved an odd number of scan bytest")
+        }
+        
+        const offset = parseInt(offsetBlob.msb, 16) + parseInt(offsetBlob.lsb, 16)
+        const scanInts = []
+        for (let i = 0; i < scanBlob.length; i = i + 2 ){
+            const hexByte = scanBlob.slice(i,i+2)
+            scanInts.push(parseInt(hexByte,16))
+        }
+
+        return {offset,data:scanInts}
     }
 }

@@ -90,6 +90,13 @@ export default class VRWB extends Device {
         this.sendCmd(this.commands.battVolt)
         this.sendCmd(this.commands.pilot)
     }
+    _updateScanData(event){
+        if(!event.index){
+            throw new Error("updateScanData requires a reciever index to associate data with")
+        }
+
+        this._parseScanPacket(event.payload)
+    }
     _jobSuccessHandler(result,job){
         switch (result.type) {
             case events.BLOCKS:
@@ -109,7 +116,7 @@ export default class VRWB extends Device {
                 console.log('Started scan', result)
                 break;
             case events.SCAN_POLL:
-                console.log(`Got data for reciever: ${result.index}`,result.payload)
+                this._updateScanData(result)
                 break;
             default:
                 console.log(`Unknown message type: ${result}`)
@@ -129,7 +136,7 @@ export default class VRWB extends Device {
                 index: i + 1,
                 block: block,
                 frequency: parseFloat(this._deviceData.frequencies[i]),
-                voltage: parseFloat(this._deviceData.voltages[i]),
+                voltage: parseFloat(this._deviceData.voltages[i])/100,
                 pilot: this._deviceData.pilotTones[i]
             }
         })
