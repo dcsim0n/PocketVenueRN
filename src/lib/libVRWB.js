@@ -34,9 +34,10 @@ export default class VRWB extends Device {
             freqs:    {type: eventTypes.FREQUENCIES, cmd: 'mhz(*) ?\r'},       //Frequenies of the recievers
             startScan:{type: eventTypes.SCAN_START, cmd: 'rxscan(*) = 1\r'} ,
             stopScan: {type: eventTypes.SCAN_STOP, cmd: 'rxscan(*) = 0\r'},
-            polScan:  {type: eventTypes.SCAN_POLL, cmd: 'polsd(*) ?\r'}
+            polScan:  {type: eventTypes.SCAN_POLL, cmd: 'pollsd(*) ?\r'}
         }
         this._fetchData = this._fetchData.bind(this)
+        this._fetchScanData = this._fetchScanData.bind(this)
     }
     
     _startScan(){
@@ -51,17 +52,25 @@ export default class VRWB extends Device {
     }
     _stopScan(){
         const devicesToStop = this._getDevicesToScan()
-        this._sendAsync(this.commands.stopScan,devicesToStop)
+        devicesToStop.forEach((device)=>{
+            const cmdStr = this.commands.stopScan.cmd.replace('*',device.index)
+            const newCmd = {type: this.commands.stopScan.type, cmd: cmdStr}
+        })
+        this.stop() // Clear interval
 
     }
-    _pollScanData(){
+    _fetchScanData(){
         //Iterate over list of devices that are scanning
         //Send commands to retrieve data from them
         //Organize data and update _scanData acordingly
         //Call event handler to let clients know data is updated
 
         const devicesToPoll = this._getDevicesToScan()
-        this._sendRecursively(this.commands.polScan,devicesToPoll)
+        devicesToPoll.forEach((device)=>{
+            const cmdStr = this.commands.polScan.cmd.replace('*',device.index)
+            const newCmd = {type: this.commands.polScan.type, cmd: cmdStr, index:device.index}
+            this.sendCmd(newCmd)
+        })
         
     } 
     _getDevicesToScan(){
@@ -98,6 +107,9 @@ export default class VRWB extends Device {
                 break;
             case eventTypes.SCAN_START:
                 console.log('Started scan', result)
+                break;
+            case eventTypes.SCAN_POLL:
+                console.log(`Got data for reciever: ${result.index}`,result.payload)
                 break;
             default:
                 console.log(`Unknown message type: ${result}`)

@@ -100,7 +100,7 @@ export default class Device {
         this._msgQueue.push((callback)=>{
             netSend(this.connectObj,cmd.cmd) //Promise for data
             .then((data)=>{
-                callback(null, {type: cmd.type, payload: data})
+                callback(null, {...cmd, payload: data})
             },(error)=>{
                 callback(error)
             })
@@ -117,7 +117,11 @@ export default class Device {
     startScan(refreshInterval,callback,errorHandler=null){
         //set up a recuring interval
         this._startScan()
-        //this._intervalRef = setInterval(this._fetchScanData,refreshInterval)
+        //TODO: the data handler could accept an error and eliminate the errorHandler
+        this.scanDataHandler = callback
+        this.scanErrorHandler = errorHandler
+        this._intervalRef = setInterval(this._fetchScanData,refreshInterval)
+        
     }
 
     stopScan(){

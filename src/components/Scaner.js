@@ -6,7 +6,7 @@ export default class Scaner extends Component {
         super(props)
         this.state = {
             scanData: [],
-            scanInterval: 2000
+            scanInterval: 5000
         }
         this.device = this.props.navigation.getParam('device')
     }
