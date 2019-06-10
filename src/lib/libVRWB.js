@@ -47,6 +47,21 @@ export default class VRWB extends Device {
             const cmdStr = this.commands.startScan.cmd.replace('*',device.index)
             const newCmd = {type: this.commands.startScan.type, cmd: cmdStr}
             this.sendCmd(newCmd)
+
+            //Initialize data structure
+            const scanLength = blocks[device.block].scanLength
+            const start = blocks[device.block].start
+            const end = blocks[device.block].end
+            
+            this._scanData = Object.assign(this._scanData, { //TODO: this structure can be combined with _deviceData
+                [device.index] : {
+                    block: device.block, 
+                    scan: Array(scanLength),
+                    start,
+                    end
+                }
+            })
+
         })
 
     }
@@ -90,12 +105,20 @@ export default class VRWB extends Device {
         this.sendCmd(this.commands.battVolt)
         this.sendCmd(this.commands.pilot)
     }
-    _updateScanData(event){
-        if(!event.index){
+    _updateScanData(response){
+        if(!response.index){
             throw new Error("updateScanData requires a reciever index to associate data with")
         }
-
-        this._parseScanPacket(event.payload)
+        const {offset, data} = this._parseScanPacket(response.payload)
+        const scanLength = this._scanData[response.index].scanLength
+        if(offset > scanLength){ //Adjust offset for array length
+            offset = offset - scanLength
+        }
+        data.forEach((value,i)=>{
+            this._scanData[response.index].scan[offset + i] = value
+        })
+        console.log('this._scanData', this._scanData)
+        this.scanDataHandler(this.scanData)
     }
     _jobSuccessHandler(result,job){
         switch (result.type) {
@@ -140,5 +163,8 @@ export default class VRWB extends Device {
                 pilot: this._deviceData.pilotTones[i]
             }
         })
+    }
+    _getScanData(){
+        return Object.values(this._scanData)
     }
 }

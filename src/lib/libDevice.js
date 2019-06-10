@@ -48,7 +48,7 @@ export default class Device {
         this.name = name
         this._intervalRef = null
         this._deviceData = {}
-        this._scanData = []
+        this._scanData = {}
 
         // Public interface methods
         this.dataHandler = null
@@ -96,7 +96,7 @@ export default class Device {
     }
 
     get scanData(){
-        return this._getScanData() //Delegat to per device implementation
+        return this._getScanData() //Delegate to per device implementation
     }
     
     sendCmd(cmd){
