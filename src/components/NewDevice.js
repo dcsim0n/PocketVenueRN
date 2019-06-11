@@ -48,13 +48,13 @@ export default class NewDevice extends Component {
                     <Text>Venue Address</Text>
                     <TextInput 
                         style={styles.textInput}
-                        onChangeText={(text)=>this.setVeneuState({name:text})} 
+                        onChangeText={(text)=>this.setVeneuState({address:text})} 
                         value={address}/>
                         
                     <Text>Venue Port</Text>
                     <TextInput 
                         style={styles.textInput}
-                        onChangeText={(text)=>this.setVeneuState({name:text})} 
+                        onChangeText={(text)=>this.setVeneuState({port:text})} 
                         value={port}/>
 
                     <Button
