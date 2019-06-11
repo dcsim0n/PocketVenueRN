@@ -6,12 +6,13 @@ export default class Scaner extends Component {
         super(props)
         this.state = {
             scanData: [],
-            scanInterval: 5000
+            scanInterval: 1000
         }
         this.device = this.props.navigation.getParam('device')
     }
-    handleUpdate = ()=>{
+    handleUpdate = (data)=>{
         console.log("calback called, todo: update state with data")
+        this.setState({scanData:data})
     }
     onStartPress = ()=>{
         this.device.stop()
@@ -23,7 +24,7 @@ export default class Scaner extends Component {
     render() {
         return (
             <View>
-                <Text> Chart goes here </Text>
+                {this.state.scanData.map(scan=><><Text>{scan.block}</Text><Text>Start:{scan.start}End:{scan.end}</Text><Text>{scan.scan.join(',')}</Text></>)}
                 <View style={styles.toolbar} >
                     <Button title={"Start Scan"} onPress={this.onStartPress} />
                     <Button title={"Stop Scan"} onPress={this.onStopPress} />
