@@ -6,8 +6,8 @@ export default class Scaner extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            scanData: [{scan:[]}],
-            scanInterval: 5000
+            scanData: [{scan:[1,1,3,5]}],
+            scanInterval: 500
         }
         this.device = this.props.navigation.getParam('device')
     }
@@ -24,21 +24,15 @@ export default class Scaner extends Component {
         this.device.stopScan()
     }
     dataHelper = ()=>{
-        return this.state.scanData[0].scan.map((value,i)=> {
-            if(value === undefined ) {
-                return {'x': i, 'y': 0 }
-            }else{
-                return {'x': i, 'y': value}
-            }
-        })
+        return this.state.scanData[0].scan
     }
     render() {
+        console.log("Rendering with data",this.dataHelper())
         return (
             <View>
                 <LineChart
                     style={{ height:200 }}
                     data={ this.dataHelper() }
-                    
                     svg={{ stroke: 'rgb(134,65,244)' }}
                     contentInset={{ top:20, bottom: 20}}>
                         <Grid />

@@ -58,7 +58,7 @@ export default class VRWB extends Device {
             this._scanData = Object.assign(this._scanData, { //TODO: this structure can be combined with _deviceData
                 [device.index] : {
                     block: device.block, 
-                    scan: Array(scanLength),
+                    scan: Array(scanLength).fill(0),
                     start,
                     end
                 }
