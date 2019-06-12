@@ -6,7 +6,7 @@ export default class Scaner extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            scanData: [{scan:[1,1,3,5]}],
+            scanData: [{scan:[0]}],
             scanInterval: 500
         }
         this.device = this.props.navigation.getParam('device')
