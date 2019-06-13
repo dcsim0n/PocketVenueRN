@@ -11,7 +11,7 @@ const DetailListItem = (props) => {
                 <Text>{props.item.label || "No Label"}</Text>
                 <Text>{props.item.frequency.toFixed(2)}</Text>
                 <Text>{props.item.block}</Text>
-                <Text>{props.item.voltage}</Text>
+                <Text>{props.item.voltage.toFixed(2)}</Text>
         </TouchableOpacity>
     )
 }
