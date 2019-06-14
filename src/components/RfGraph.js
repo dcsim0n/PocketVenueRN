@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import {View, Text} from 'react-native';
-import {AreaChart, LineChart, Grid, XAxis} from 'react-native-svg-charts';
+import {AreaChart, Grid, XAxis} from 'react-native-svg-charts';
+import GraphToolTip from './GraphToolTip'
 import PropTypes from 'prop-types'
 import * as scale from 'd3-scale'
+
 const stepSize = .1
 export default class RfGraph extends Component {
     
@@ -21,15 +23,8 @@ export default class RfGraph extends Component {
                         stroke: 'rgba(255, 114, 0, 1)' }}
                     contentInset={{ top:20, bottom: 20}}>
                         <Grid />
+                        <GraphToolTip />
                 </AreaChart>
-                <XAxis 
-                    data = {scan.scan}
-                    style={{}}
-                    contentInset = {{left: 20, right: 20}}
-                    scale={scale.scaleLinear}
-                    numberOfTicks={12}
-                    formatLabel={ (value, index) => (scan.start + (index * stepSize)).toFixed(2)}
-                    />
             </View>
         )
     }
