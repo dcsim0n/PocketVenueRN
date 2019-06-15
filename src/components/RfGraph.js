@@ -13,6 +13,7 @@ export default class RfGraph extends Component {
         super(props)
 
         this.state = {
+            panDelta: 0,
             graphMax : props.scan.end,
             graphMin : props.scan.start
         }
@@ -30,9 +31,7 @@ export default class RfGraph extends Component {
         this.setState({graphMax: newGraphMax, graphMin: newGraphMin})
     }
     pan(value) {
-        const newGraphMax = this.state.graphMax + value
-        const newGraphMin = this.state.graphMin + value
-        this.setState({graphMax: newGraphMax, graphMin: newGraphMin})
+        this.setState({panDelta: value})
     }
     
     render() {
@@ -49,8 +48,8 @@ export default class RfGraph extends Component {
                         fill: 'rgba(255, 114, 0, 0.5)',
                         stroke: 'rgba(255, 114, 0, 1)' }}
                     contentInset={{ top:20, bottom: 20}}
-                    xMax={this.state.graphMax}
-                    xMin={this.state.graphMin}>
+                    xMax={this.state.graphMax + this.state.panDelta}
+                    xMin={this.state.graphMin + this.state.panDelta}>
                         <Grid />
                         <GraphToolTip />
                 </AreaChart>
@@ -59,8 +58,8 @@ export default class RfGraph extends Component {
                     <Button onPress={()=>this.zoomOut()} title={"-"} />
                     <Slider
                         width={200}
-                        minimumValue={-5}
-                        maximumValue={5}
+                        minimumValue={-10}
+                        maximumValue={10}
                         value={ 0 }
                         onValueChange={(e)=>{this.pan(e)}}
                         />
