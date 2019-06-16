@@ -3,6 +3,7 @@ import {View, Text, Button} from 'react-native';
 import {AreaChart, Grid, XAxis} from 'react-native-svg-charts';
 import Slider from '@react-native-community/slider'
 import GraphToolTip from './GraphToolTip'
+import TxGraphLayer from './TxGraphLayer';
 import PropTypes from 'prop-types'
 import * as scale from 'd3-scale'
 
@@ -51,7 +52,7 @@ export default class RfGraph extends Component {
                     xMax={this.state.graphMax + this.state.panDelta}
                     xMin={this.state.graphMin + this.state.panDelta}>
                         <Grid />
-                        <GraphToolTip />
+                        <TxGraphLayer tx={this.props.tx} />
                 </AreaChart>
                 <View style={{flexDirection:'row'}}>
                     <Button onPress={()=>this.zoomIn()} title={"+"} /> 
@@ -76,5 +77,6 @@ RfGraph.propTypes = {
         start: PropTypes.number.isRequired,
         end: PropTypes.number.isRequired,
         block: PropTypes.string
-    })
+    }),
+    tx: PropTypes.array
 }

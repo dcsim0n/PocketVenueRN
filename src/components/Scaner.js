@@ -26,11 +26,14 @@ export default class Scaner extends Component {
     onStopPress = ()=>{
         this.device.stopScan()
     }
+    filterTxByBlock(block){
+        return this.device.deviceData.filter(( device ) => device.block === block)
+    }
     render() {
         return (
             <View style={styles.container}>
                 <ScrollView >
-                    { this.state.scanData.map( (scan) => <RfGraph scan={scan} key={uuid()} /> ) }
+                    { this.state.scanData.map( (scan) => <RfGraph scan={scan} tx={this.filterTxByBlock(scan.block)} key={uuid()} /> ) }
                     <View style={styles.toolbar} >
                         <Button title={"Start Scan"} onPress={this.onStartPress} />
                         <Button title={"Stop Scan"} onPress={this.onStopPress} />
