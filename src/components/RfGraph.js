@@ -52,6 +52,7 @@ export default class RfGraph extends Component {
                     xMax={this.state.graphMax + this.state.panDelta}
                     xMin={this.state.graphMin + this.state.panDelta}>
                         <Grid />
+                        {/* <GraphToolTip /> */}
                         <TxGraphLayer tx={this.props.tx} />
                 </AreaChart>
                 <View style={{flexDirection:'row'}}>

@@ -1,6 +1,5 @@
 import React from 'react'
-import { View, Text } from 'react-native'
-import {G, Rect, Circle, Line} from 'react-native-svg';
+import {G, Rect, Circle, Line, Text} from 'react-native-svg';
 
 const xCord = 128
 const gHeight = 150 
