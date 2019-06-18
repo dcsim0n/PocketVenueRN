@@ -8,14 +8,6 @@ import DetailListItem from './DetailListItem'
 import styles from '../stylesheets/appStyles'
 
 class DeviceDetails extends Component {
-    constructor(props) {
-
-        super(props)
-        this.state = {
-            
-        }
-
-    }
 
     _onBlockPress = (item)=>{
         this.props.navigation.push("Data",{item})
