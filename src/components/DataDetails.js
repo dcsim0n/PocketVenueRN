@@ -5,16 +5,11 @@ import styles from '../stylesheets/appStyles'
 
 const blocks = require('../lib/blocks.json')
 
-const BatteryTypes = { //TODO: this is different for each device, implement as class property
-    0: "AA Alkaline",
-    1: "AA Lithium",
-    2: "9V Alkaline",
-    3: "9V Lithium"
-}
+
 
 const DataDetails = (props) => {
     const {label,frequency,voltage, block, batteryType, outLevel, index} = props.navigation.getParam('item')
-    
+    const {BatteryTypes} = props.navigation.getParam('device')
     const freqs = []
     for(let freq = blocks[block].start; freq <= blocks[block].end; freq += .1){
           freqs.push(parseFloat(freq.toFixed(2))) //Avoid javascript floating point addition errors      

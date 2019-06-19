@@ -12,6 +12,12 @@ export default class VRM2WB extends Device {
         super(options)
         
     }
+    _batteryTypes = {
+        0: "AA Alkaline",
+        1: "AA Lithium",
+        2: "9V Alkaline",
+        3: "9V Lithium"
+    }
     _fetchData(){
         const commands = this.commands
             this._sendCmd(commands.freqs)

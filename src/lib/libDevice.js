@@ -100,7 +100,9 @@ export default class Device {
     get scanData(){
         return this._getScanData() //Delegate to per device implementation
     }
-    
+    get BatteryTypes(){
+        return this._batteryTypes
+    }
     sendCmd(cmd){
         this._msgQueue.push((callback)=>{
             netSend(this.connectObj,cmd.cmd) //Promise for data

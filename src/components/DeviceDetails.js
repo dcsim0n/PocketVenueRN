@@ -10,7 +10,8 @@ import styles from '../stylesheets/appStyles'
 class DeviceDetails extends Component {
 
     _onBlockPress = (item)=>{
-        this.props.navigation.push("Data",{item})
+        const {device} = this.props
+        this.props.navigation.push("Data",{item,device})
     }
     render(){
         return(
