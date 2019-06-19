@@ -1,16 +1,15 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
+|--------------------------------------------------
+| Pocket Venue: Main Device List
+| 2019 Dana Simmons
+|--------------------------------------------------
+*/
 
 import React, {Component} from 'react';
 import uuid from 'uuid/v1';
-import DeviceTypes from '../lib/deviceTypes'
 import {connectDevice} from '../lib/connectDevice'
-import {Text, View, FlatList, Button} from 'react-native';
+import {Text, View, FlatList, Button, Alert} from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage'
 import NewDevice from './NewDevice'
 import DeviceListItem from './DeviceListItem'
 
@@ -18,22 +17,20 @@ import styles from '../stylesheets/appStyles'
 
 
 export default class DeviceList extends Component {
-  constructor(props){
-    super(props)
-    this.state = {
+
+  state = {
       isEditing: false,
-      venues: [
-        {key: '557560ab-a789-4ec8-8fdc-ed9d29080402', type: DeviceTypes.VRWB, name: "Venue 1", address: "127.0.0.1", port: 4080},
-        {key: 'd470be85-783a-43e5-bf8e-a051a002683c', type: DeviceTypes.VRWB, name: "Venue 2", address: "127.0.0.1", port: 4080},
-        {key: '5440f3d9-8a5d-494d-bf79-544266c4e768', type: DeviceTypes.VRWB, name: "Macbook", address: "192.168.1.70" , port: 4080}
-      ]
+      venues: []
     }
-  }
   
-  addNewVenue(venue){
-    const {venues} = this.state
+  
+  addNewVenue = (venue) => {
+    console.log(this.state);
+    const venues  = this.state.venues || [] //Handle empty state with empty array
+
     venue.key = uuid()
-    this.setState({venues:[...venues, venue]})
+
+    this.setState({venues:[venue, ...venues]},this._storeData)
   }
   _onPressItem = (deviceData) =>{
     const device = connectDevice(deviceData)
@@ -44,24 +41,50 @@ export default class DeviceList extends Component {
         device={item}
         onPressItem={this._onPressItem}/>
   )
-  
+  _storeData = async () => {
+    try {
+      await AsyncStorage.setItem("@PocketVenue:devices", JSON.stringify(this.state.venues))
+    } catch ( error ) {
+      Alert.alert(
+        "Data Store Error",
+        `${error.name}: ${error.message}`,
+        [{ text: "OK" }]
+      )
+    }
+  }
+  _readData = async () => {
+    try{
+      const venues = await AsyncStorage.getItem("@PocketVenue:devices")
+      this.setState({venues: JSON.parse( venues ) })
+    } catch ( error ) {
+      Alert.alert(
+        "Data Store Error",
+        `${error.name}: ${error.message}`,
+        [{ text: "OK" }]
+      )
+    }
+  }
   render() {
     return (
-	<View style={{flex: 1}}>
-    <View style={styles.toolbar}>
-      <NewDevice 
-        addNewVenue={(data)=>this.addNewVenue(data)}/>
-      <Button title={"Edit"}/>
-    </View>
+      <View style={{flex: 1}}>
+        <View style={styles.toolbar}>
+          <NewDevice 
+            addNewVenue={(data)=>this.addNewVenue(data)}/>
+          <Button title={"Edit"}/>
+        </View>
 
-    <FlatList
-    contentContainerStyle={styles.listView}
-    data={this.state.venues}
-    renderItem={this._renderItem} />
-    
-	</View>
+        <FlatList
+        contentContainerStyle={styles.listView}
+        data={this.state.venues}
+        renderItem={this._renderItem} />
+        
+      </View>
+    )
+  }
 
-    )}
+  componentDidMount(){
+    this._readData()
+  }
 }
 
 

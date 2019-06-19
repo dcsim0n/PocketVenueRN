@@ -1,13 +1,12 @@
 # To Do List for Pocket Venue release schedule
 
 # 2.0 
-1. Implement persitant storage for DeviceList
-2. Implement Venue 2 device support via libVRM2WB.js
-3. Implement Duet support via libM2T.js
-4. Polish component styles for DeviceList, DeviceDetails
-5. Implement device settings via DataDetails.js
-6. Test test test, Venue WB, Venue 2, Duet
-7. FreqFinder .ffx Import/Export
+1. Implement Venue 2 device support via libVRM2WB.js
+2. Implement Duet support via libM2T.js
+3. Polish component styles for DeviceList, DeviceDetails
+4. Implement device settings via DataDetails.js
+5. Test test test, Venue WB, Venue 2, Duet
+6. FreqFinder .ffx Import/Export
 
 #2.1
 1. Implement D2 device support

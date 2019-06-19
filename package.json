@@ -9,6 +9,7 @@
     "hack": "./node_modules/.bin/rn-nodeify --install stream,process,util --hack"
   },
   "dependencies": {
+    "@react-native-community/async-storage": "^1.5.0",
     "@react-native-community/slider": "^1.1.3",
     "@tradle/react-native-http": "^2.0.1",
     "assert": "^1.5.0",
