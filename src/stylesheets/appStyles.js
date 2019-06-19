@@ -3,6 +3,9 @@ const lightGrey = '#EEE'
 const grey = "#CCC"
 const defaultTextSize = 22
 export default styles = StyleSheet.create({
+    baseText: {
+      fontSize: defaultTextSize
+    },
     toolbar: {
       fontSize: defaultTextSize,
       flexDirection: 'row',
