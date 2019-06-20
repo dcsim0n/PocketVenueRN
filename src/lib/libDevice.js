@@ -76,7 +76,7 @@ export default class Device {
         if(this._intervalRef === null){ //Check if the interval is already running
             this.dataHandler = callback
             this.errorHandler = errorHandler
-            if(this.fetchData === undefined)
+            if(this._fetchData === undefined)
                 throw new Error("Error: fetchData is not defined. fetchData should be defined by a child class")
             this._intervalRef = setInterval(this.fetchData,refreshInterval)
             this.fetchData() 
