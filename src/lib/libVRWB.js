@@ -109,6 +109,7 @@ export default class VRWB extends Device {
 
     }
     _fetchData(){
+        this.sendCmd(this.commands.battType)
         this.sendCmd(this.commands.blocks)
         this.sendCmd(this.commands.freqs)
         this.sendCmd(this.commands.battVolt)
@@ -140,6 +141,9 @@ export default class VRWB extends Device {
             case events.BATTERY_VOLTAGE:
                 this._deviceData = Object.assign(this._deviceData,{voltages: this._parseData(result.payload)})
                 break;
+            case events.BATTERY_TYPE:
+                this._deviceData = Object.assign(this._deviceData,{batteryTypes: this._parseData(result.payload)})
+                break;
             case events.PILOT_TONE:
                 this._deviceData = Object.assign(this._deviceData,{pilotTones: this._parseData(result.payload)})
                 this.dataHandler()
@@ -169,7 +173,8 @@ export default class VRWB extends Device {
                 block: block,
                 frequency: parseFloat(this._deviceData.frequencies[i]),
                 voltage: parseFloat(this._deviceData.voltages[i])/100,
-                pilot: this._deviceData.pilotTones[i]
+                pilot: this._deviceData.pilotTones[i],
+                batteryType: this._deviceData.batteryTypes[i]
             }
         })
     }
