@@ -15,20 +15,12 @@ export default class Dummy extends Device {
         this._fetchScanData = this._fetchScanData.bind(this)
     }
     _batteryTypes = {
-        0: "9V Alkaline",
-        1: "9V Lithium",
-        2: "9V Timer",
-        3: "AA Alkaline",
-        4: "AA Lithium",
-        5: "AA Timer"
-    }
-    _batteryTypes = {
-        0: "9V Alkaline",
-        1: "9V Lithium",
-        2: "9V Timer",
-        3: "AA Alkaline",
-        4: "AA Lithium",
-        5: "AA Timer"
+        "0": "9V Alkaline",
+        "1": "9V Lithium",
+        "2": "9V Timer",
+        "3": "AA Alkaline",
+        "4": "AA Lithium",
+        "5": "AA Timer"
     }
     _getScanData(){
         //Return scan data array

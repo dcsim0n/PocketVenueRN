@@ -42,12 +42,12 @@ export default class VRWB extends Device {
         this._fetchScanData = this._fetchScanData.bind(this)
     }
     _batteryTypes = {
-        0: "9V Alkaline",
-        1: "9V Lithium",
-        2: "9V Timer",
-        3: "AA Alkaline",
-        4: "AA Lithium",
-        5: "AA Timer"
+        "0": "9V Alkaline",
+        "1": "9V Lithium",
+        "2": "9V Timer",
+        "3": "AA Alkaline",
+        "4": "AA Lithium",
+        "5": "AA Timer"
     }
     _startScan(){
         //Initate scan process for uniqe Recievers
