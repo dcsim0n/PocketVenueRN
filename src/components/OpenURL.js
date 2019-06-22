@@ -7,7 +7,8 @@
 */
 
 import React, { useState, useEffect } from 'react'
-import { View, Text, Alert } from 'react-native'
+import { View, Text } from 'react-native'
+import alertError from './alertError'
 
 const ENCODING = 'utf8' //TODO: abstract this and other constants into constants file
 
@@ -18,6 +19,7 @@ const {parseString} = require('xml2js')
 async function openFile(url){
     
     const fileStat = await FileSystem.stat(url)
+   
     if(fileStat.isFile()){
         return FileSystem.readFile(fileStat.path,ENCODING)
     }else{
@@ -29,32 +31,24 @@ async function openFile(url){
 const OpenURL = (props) => {
 
     const url = props.navigation.getParam("url")
-    const [txList, setTxList] = useState("")
+    const [txList, setTxList] = useState(null)
     
-    try {
-        if(txList === ""){
-            openFile(url)
-            .then(( xmlResult ) => {
-                parseString(xmlResult,(err,result)=>{
-                    console.log('result', result)
-                    setTxList(result.FFX.TX)
-                })
+    if( !txList ){
+        openFile(url)
+        .then(( xmlResult ) => {
+            parseString(xmlResult,(err,result)=>{
+                console.log('result', result)
+                setTxList(result.FFX.TX)
             })
-        }
-        
-
-    } catch (error) {
-        Alert.alert(
-            "Error",
-            error.name + ": " + error.message,
-            [{ text: "OK"}])
+        },(error) => alertError(error))
     }
 
+
+    console.log(txList)
     return (
         <View>
             <Text>Lets open some data:</Text>
-            <Text>{ url } </Text>
-            <Text>{ /* */ }</Text>
+            {txList && txList.map(( tx ) => <Text>{ tx['$'].name + tx.channel[0]['$'].freq}</Text>)}
         </View>
     )
 }
