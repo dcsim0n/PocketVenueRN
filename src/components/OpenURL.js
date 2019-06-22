@@ -6,14 +6,14 @@
 |--------------------------------------------------
 */
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, Text, Alert } from 'react-native'
 
 const ENCODING = 'utf8' //TODO: abstract this and other constants into constants file
 
 const FileSystem = require('react-native-fs')
 
-const xml2js = require('xml2js')
+const {parseString} = require('xml2js')
 
 async function openFile(url){
     
@@ -29,24 +29,32 @@ async function openFile(url){
 const OpenURL = (props) => {
 
     const url = props.navigation.getParam("url")
-    const [xmlData, setXmlData] = useState("")
-
+    const [txList, setTxList] = useState("")
+    
     try {
-        openFile(url)
-        .then(( xmlResult ) => {
-            setXmlData(xmlResult)
-        })
+        if(txList === ""){
+            openFile(url)
+            .then(( xmlResult ) => {
+                parseString(xmlResult,(err,result)=>{
+                    console.log('result', result)
+                    setTxList(result.FFX.TX)
+                })
+            })
+        }
+        
+
     } catch (error) {
         Alert.alert(
             "Error",
             error.name + ": " + error.message,
             [{ text: "OK"}])
     }
+
     return (
         <View>
             <Text>Lets open some data:</Text>
             <Text>{ url } </Text>
-            <Text>{ xmlData }</Text>
+            <Text>{ /* */ }</Text>
         </View>
     )
 }
