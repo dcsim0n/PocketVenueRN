@@ -7,6 +7,7 @@ import renderer from 'react-test-renderer';
 const navigation = {
     getParam: ()=>"Hello World"
 }
+
 test('Renders properly', ()=>{
     renderer.create(<OpenURL navigation={navigation} />);
 })
