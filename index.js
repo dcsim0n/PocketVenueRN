@@ -28,7 +28,7 @@ const AppNavigator = createStackNavigator({
       screen: OpenURL 
     }
   })
-const App = createAppContainer(AppNavigator)
+export default App = createAppContainer(AppNavigator)
 
 
 AppRegistry.registerComponent(appName, () => App);
