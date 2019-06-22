@@ -20,6 +20,17 @@
 	<string>2.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.danacsimmons.Pocket-Venue</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>pocketVenueUrl</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>0.3</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -58,18 +69,37 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>pocketVenueUrl</string>
-			</array>
-			<key>CFBundleURLName</key>
-			<string>com.danacsimmons.Pocket-Venue</string>
-		</dict>
-	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.newendian.freqfinder.ffx</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>FreqFinder Data</string>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+		</dict>
+	</array>
+	<key>UTImportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>FFX</string>
+					<string>ffx</string>
+				</array>
+			</dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.newendian.freqfinder.ffx</string>
+			<key>UTTypeDescription</key>
+			<string>FreqFinder Data</string>
+		</dict>
+	</array>
 </dict>
 </plist>

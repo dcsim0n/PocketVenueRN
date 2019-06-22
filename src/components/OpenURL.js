@@ -16,7 +16,7 @@ const FileSystem = require('react-native-fs')
 const xml2js = require('xml2js')
 
 async function openFile(url){
-
+    
     const fileStat = await FileSystem.stat(url)
     if(fileStat.isFile()){
         return FileSystem.readFile(fileStat.path,ENCODING)
