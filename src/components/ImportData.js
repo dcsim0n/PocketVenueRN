@@ -28,7 +28,7 @@ async function openFile(url){
     }
 }
 
-const OpenURL = (props) => {
+const ImportData = (props) => {
 
     const url = props.navigation.getParam("url")
     const [txList, setTxList] = useState(null)
@@ -53,4 +53,4 @@ const OpenURL = (props) => {
     )
 }
 
-export default OpenURL
+export default ImportData

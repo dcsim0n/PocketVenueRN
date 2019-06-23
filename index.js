@@ -8,7 +8,7 @@ import DeviceList from './src/components/DeviceList';
 import DeviceDetails from './src/components/DeviceDetails'
 import DataDetails from './src/components/DataDetails'
 import Scanner from './src/components/Scaner'
-import OpenURL from './src/components/OpenURL'
+import ImportData from './src/components/ImportData'
 import {name as appName} from './app.json';
 
 const AppNavigator = createStackNavigator({
@@ -24,8 +24,8 @@ const AppNavigator = createStackNavigator({
     Scan: {
       screen: Scanner
     },
-    OpenURL:{
-      screen: OpenURL 
+    ImportData:{
+      screen: ImportData 
     }
   })
 export default App = createAppContainer(AppNavigator)
