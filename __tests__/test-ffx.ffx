@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+
+<FFX version="1.0">
+
+	<CalculationSettings sevenByTwo="true" threeByThree="true"
+		 spacingFactor="3.0" squeezeFactor="2.0"/>
+
+	<!-- Channel 1 - Lectrosonics US - Block 19 - 494.100 -->
+	<TX name="Channel 1" uuid="7e747786-12ec-4df1-975d-fc56621056af">
+		<TXType uuid="AAAAAAAA-0000-0000-000000000001"/>
+		<channel name="4D" freq="494.100" precision="3"/>
+		<options protection="default"/>
+	</TX>
+
+	<!-- Channel 2 - Lectrosonics US - Block 19 - 494.600 -->
+	<TX name="Channel 2" uuid="6dadbc72-9bff-4199-a084-e45e080d051a">
+		<TXType uuid="AAAAAAAA-0000-0000-000000000001"/>
+		<channel name="52" freq="494.600" precision="3"/>
+		<options protection="default"/>
+	</TX>
+
+	<!-- Channel 3 - Lectrosonics US - Block 19 - 495.900 -->
+	<TX name="Channel 3" uuid="701f6f9e-1811-40d6-9277-6b4aa4362ff8">
+		<TXType uuid="AAAAAAAA-0000-0000-000000000001"/>
+		<channel name="5F" freq="495.900" precision="3"/>
+		<options protection="default"/>
+	</TX>
+
+	<!-- Channel 4 - Lectrosonics US - Block 19 - 498.000 -->
+	<TX name="Channel 4" uuid="b4097fc4-6752-4f45-bc68-0f8a9ca419a4">
+		<TXType uuid="AAAAAAAA-0000-0000-000000000001"/>
+		<channel name="74" freq="498.000" precision="3"/>
+		<options protection="default"/>
+	</TX>
+
+	<!-- Channel 5 - Lectrosonics US - Block 19 - 498.800 -->
+	<TX name="Channel 5" uuid="a2a056eb-597c-4958-8d47-5b1fab9ee4bf">
+		<TXType uuid="AAAAAAAA-0000-0000-000000000001"/>
+		<channel name="7C" freq="498.800" precision="3"/>
+		<options protection="default"/>
+	</TX>
+
+	<TXType group="Lectrosonics US" uuid="AAAAAAAA-0000-0000-000000000001">
+		<make>Lectrosonics</make>
+		<model>Standard</model>
+		<bandwidth>0.15</bandwidth>
+		<band>Block 19</band>
+		<power>0.1</power>
+		<poweroptions>
+			<poweroption power=".050"/>
+			<poweroption power=".100"/>
+			<poweroption power=".250"/>
+		</poweroptions>
+		<channels>
+			<channelgenerator start="486.4" end="511.9" increment="0.1" precision="3" name="HEX"/>
+		</channels>
+	</TXType>
+</FFX>
+
