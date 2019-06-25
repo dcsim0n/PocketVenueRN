@@ -57,9 +57,10 @@ async function openFile(url){
     const fileStat = await FileSystem.stat(url)
    
     if(fileStat.isFile()){
-        return FileSystem.readFile(fileStat.path,ENCODING)
+        debug && console.log("File is valid", url)
+        return  await FileSystem.readFile(fileStat.path,ENCODING)
     }else{
-        console.log("Failed to open url:",url)
+        debug && console.log("Failed to open url:",url)
         throw new Error("File Error: url is not a valid file")
     }
 }
