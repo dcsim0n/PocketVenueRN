@@ -4,7 +4,6 @@
 1. Implement Venue 2 device support via libVRM2WB.js
 2. Implement Duet support via libM2T.js
 3. Polish component styles for DeviceList, DeviceDetails
-4. Implement device settings via DataDetails.js
 5. Test test test, Venue WB, Venue 2, Duet
 6. FreqFinder .ffx Import/Export
 

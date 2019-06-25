@@ -6,7 +6,7 @@
 */
 import Device from './libDevice'
 
-const debug = false //Switch to true to enable more console.logs
+const debug = true //Switch to true to enable more console.logs
 
 const blocks = require('./blocks.json')
 const events = {
@@ -16,31 +16,37 @@ const events = {
     BATTERY_TYPE: 'BATTERY_TYPE',
     PILOT_TONE: 'PILOT_TONE',
     RF_LEVEL: 'RF_LEVEL',
+    OUT_LEVEL: "OUT_LEVEL",
     ID: 'ID',
     SCAN_START: "SCAN_START" ,
     SCAN_STOP: "SCAN_STOP" ,
-    SCAN_POLL: "SCAN_POLL"
-
+    SCAN_POLL: "SCAN_POLL",
+    SET_CHANGE: "SET_CHANGE"
 }
 
 export default class VRWB extends Device {
     constructor(options){
         super(options) 
-        this.commands = {
-            deviceId: {type: events.ID, cmd:'id ?\r'},        //Device type
-            blocks:   {type: events.BLOCKS, cmd:'block(*) ?\r'},    //Reciever blocks
-            battVolt: {type: events.BATTERY_VOLTAGE, cmd:'bvolts(*) ?\r'}, //Battery voltage
-            battType: {type: events.BATTERY_TYPE, cmd: 'txbatt(*) ?\r'}, //Battery type as set in the device
-            pilot:    {type: events.PILOT_TONE, cmd:'signal(*) ?\r'},    //Pilot tone status
-            rxmeter:  {type: events.RF_LEVEL, cmd:'rmeter(*) ?\r'},  //Signal strength
-            freqs:    {type: events.FREQUENCIES, cmd: 'mhz(*) ?\r'},       //Frequenies of the recievers
-            startScan:{type: events.SCAN_START, cmd: 'rxscan(*) = 1\r'} ,
-            stopScan: {type: events.SCAN_STOP, cmd: 'rxscan(*) = 0\r'},
-            polScan:  {type: events.SCAN_POLL, cmd: 'pollsd(*) ?\r'}
-        }
         this._fetchData = this._fetchData.bind(this)
         this._fetchScanData = this._fetchScanData.bind(this)
     }
+    commands = {
+        deviceId: {type: events.ID, cmd:() => 'id ?\r'},        //Device type
+        blocks:   {type: events.BLOCKS, cmd:() => 'block(*) ?\r'},    //Reciever blocks
+        battVolt: {type: events.BATTERY_VOLTAGE, cmd:() => 'bvolts(*) ?\r'}, //Battery voltage
+        battType: {type: events.BATTERY_TYPE, cmd:() =>  'txbatt(*) ?\r'}, //Battery type as set in the device
+        pilot:    {type: events.PILOT_TONE, cmd:() => 'signal(*) ?\r'},    //Pilot tone status
+        rxmeter:  {type: events.RF_LEVEL, cmd:() => 'rmeter(*) ?\r'},  //Signal strength
+        freqs:    {type: events.FREQUENCIES, cmd:() =>  'mhz(*) ?\r'},       //Frequenies of the recievers
+        startScan:{type: events.SCAN_START, cmd:() =>  'rxscan(*) = 1\r'} ,
+        stopScan: {type: events.SCAN_STOP, cmd:() =>  'rxscan(*) = 0\r'},
+        polScan:  {type: events.SCAN_POLL, cmd:() =>  'pollsd(*) ?\r'},
+        outLevel: {type: events.OUT_LEVEL, cmd:() =>  'level(*) ?\r'},
+        setLevel: {type: events.SET_CHANGE, cmd: ([ index, level ]) => `level(${ index })=${ level }\r`},
+        setFreq:  {type: events.SET_CHANGE, cmd: ([ index, freq ]) => `mhz(${ index })=${ freq }\r`},
+        setBattType: {type: events.SET_CHANGE, cmd: ([ index, type ]) => `txbatt(${ index })=${ type }\r`}
+    }
+    
     _batteryTypes = {
         "0": "9V Alkaline",
         "1": "9V Lithium",
@@ -97,7 +103,7 @@ export default class VRWB extends Device {
         })
         
     } 
-    _getDevicesToScan(){
+    _getDevicesToScan(){ //TODO: Rename this method to getChannelsToScan for clarity
         //Iterate over known devices
         //Calculate which devices are unique and set a 'scan' flag
         //Return array of references to the devices
@@ -113,7 +119,8 @@ export default class VRWB extends Device {
         this.sendCmd(this.commands.blocks)
         this.sendCmd(this.commands.freqs)
         this.sendCmd(this.commands.battVolt)
-        this.sendCmd(this.commands.pilot)
+        this.sendCmd(this.commands.outLevel)
+        this.sendCmd(this.commands.pilot) //Should be last to trigger data update
     }
     _updateScanData(response){
         if(!response.index){
@@ -131,6 +138,7 @@ export default class VRWB extends Device {
         this.scanDataHandler(this.scanData)
     }
     _jobSuccessHandler(result,job){
+        debug && console.log("Recieved result:",result);
         switch (result.type) {
             case events.BLOCKS:
                 this._deviceData = Object.assign(this._deviceData,{blocks: this._parseData(result.payload)})
@@ -148,11 +156,17 @@ export default class VRWB extends Device {
                 this._deviceData = Object.assign(this._deviceData,{pilotTones: this._parseData(result.payload)})
                 this.dataHandler()
                 break;
+            case events.OUT_LEVEL:
+                this._deviceData = Object.assign(this._deviceData,{levels: this._parseData(result.payload)})
+                break;
             case events.SCAN_START:
                 debug && console.log('Started scan', result)
                 break;
             case events.SCAN_POLL:
                 this._updateScanData(result)
+                break;
+            case events.SET_CHANGE:
+                this.fetchData() //Refresh data after a setting change
                 break;
             default:
                 debug && console.log(`Unknown message type: ${result}`)
@@ -167,12 +181,14 @@ export default class VRWB extends Device {
         this.errorHandler && this.errorHandler(error)
     }
     _getDeviceData(){
+        debug && console.log("Organizing device data:", this._deviceData);
         return this._deviceData.blocks.map((block,i)=>{
             return {
                 index: i + 1,
                 block: block,
                 frequency: parseFloat(this._deviceData.frequencies[i]),
                 voltage: parseFloat(this._deviceData.voltages[i])/100,
+                level: parseInt(this._deviceData.levels[i]),
                 pilot: this._deviceData.pilotTones[i],
                 batteryType: this._deviceData.batteryTypes[i]
             }
@@ -180,5 +196,14 @@ export default class VRWB extends Device {
     }
     _getScanData(){
         return Object.values(this._scanData)
+    }
+    _setChannelSettings({index, level, batteryType, frequency }){
+        if([index, level, batteryType, frequency].includes(undefined)){
+            throw new Error("Data Error: missing required key in channel data object")
+        }
+        // {index, level, battType, frequency, }
+        this.sendCmd(this.commands.setLevel,[index,level]);
+        this.sendCmd(this.commands.setBattType,[index,batteryType])
+        this.sendCmd(this.commands.setFreq,[index,frequency])
     }
 }

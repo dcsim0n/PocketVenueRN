@@ -5,7 +5,7 @@
 | 2019 Dana Simmons
 |--------------------------------------------------
 */
-const debug = false //Switch to true to turn on more console.logs
+const debug = true //Switch to true to turn on more console.logs
 
 const net = require('react-native-tcp')
 const Queue = require('queue')
@@ -39,7 +39,7 @@ function netSend({address,port},cmd) { //Wrapper for net tcp opperations
 }
 
 export default class Device {
-    constructor({type,name,address,port,timeout=500,concurrency=1,autostart=true}){
+    constructor({type,name,address,port,timeout=1000,concurrency=1,autostart=true}){
         if (!type || !name || !address || !port)
             throw new Error('Missing required option')
 
@@ -103,9 +103,9 @@ export default class Device {
     get BatteryTypes(){
         return this._batteryTypes
     }
-    sendCmd(cmd){
+    sendCmd(cmd,args){
         this._msgQueue.push((callback)=>{
-            netSend(this.connectObj,cmd.cmd) //Promise for data
+            netSend(this.connectObj,cmd.cmd(args)) //Promise for data
             .then((data)=>{
                 callback(null, {...cmd, payload: data})
             },(error)=>{
@@ -133,7 +133,9 @@ export default class Device {
     fetchData(){
         this._fetchData() //Must be defined by child
     }
-
+    setChannelSettings(channelData){
+        this._setChannelSettings(channelData)
+    }
     _parseData(data){
         //maybe this should handle other formats of string?
        return data.split(/OK\s{|,|}/).filter((x)=>(x=='' || x=='\r\n') ? false : true)

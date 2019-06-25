@@ -11,9 +11,10 @@ const DataDetails = ( props ) => {
   const item = props.navigation.getParam("item");
   const [frequency, changeFrequency] = useState(item.frequency);
   const [batteryType, changeBattery] = useState(item.batteryType);
-  const [outLevel, changeLevel] = useState(item.outLevel);
+  const [level, changeLevel] = useState(item.level);
 
-  const { BatteryTypes } = props.navigation.getParam("device");
+  const device = props.navigation.getParam("device");
+  const { BatteryTypes } = device
 
   const freqs = [];
   for (let freq = blocks[item.block].start; freq <= blocks[item.block].end; freq += 0.1) {
@@ -57,18 +58,18 @@ const DataDetails = ( props ) => {
       </View>
 
       <View style={styles.container}>
-        <Text>Channel Output Level: {outLevel} </Text>
+        <Text>Channel Output Level: {level} </Text>
         <Slider //Channel output level slider
           width={200}
           minimumValue={-15}
           maximumValue={8}
-          value={outLevel}
+          value={level}
           step={1}
           onSlidingComplete={(value) => changeLevel(value)}
         />
         <Button
           title="Apply Changes"
-          onPress={() => console.log("TODO: Apply changes")}
+          onPress={() => device.setChannelSettings({index: item.index, level, frequency, batteryType})}
         />
       </View>
     </View>
