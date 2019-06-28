@@ -8,14 +8,14 @@
 import React, { Component } from "react";
 import uuid from "uuid/v1";
 import { connectDevice } from "../lib/connectDevice";
-import { View, FlatList, Button, Alert } from "react-native";
+import { View, FlatList, Button, Alert, Linking } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 import NewDevice from "./NewDevice";
 import DeviceListItem from "./DeviceListItem";
-
 import styles from "../stylesheets/appStyles";
 
 export default class DeviceList extends Component {
+  
   state = {
     isEditing: false,
     venues: []
@@ -74,8 +74,16 @@ export default class DeviceList extends Component {
       </View>
     );
   }
-
+  _openUrl({ url }) {
+    console.log("Event:", url)
+    this.props.navigation.push("ImportData", { url });
+  }
   componentDidMount() {
     this._readData();
+    Linking.addEventListener("url", e => this._openUrl(e));
+  }
+
+  componentWillUnmount() {
+    Linking.removeEventListener("url", e => this._openUrl(e));
   }
 }

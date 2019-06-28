@@ -8,6 +8,7 @@ import DeviceList from './src/components/DeviceList';
 import DeviceDetails from './src/components/DeviceDetails'
 import DataDetails from './src/components/DataDetails'
 import Scanner from './src/components/Scaner'
+import ImportData from './src/components/ImportData'
 import {name as appName} from './app.json';
 
 const AppNavigator = createStackNavigator({
@@ -22,8 +23,12 @@ const AppNavigator = createStackNavigator({
     },
     Scan: {
       screen: Scanner
+    },
+    ImportData:{
+      screen: ImportData 
     }
   })
-const App = createAppContainer(AppNavigator)
+export default App = createAppContainer(AppNavigator)
+
 
 AppRegistry.registerComponent(appName, () => App);
