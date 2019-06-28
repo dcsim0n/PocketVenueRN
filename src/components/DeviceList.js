@@ -79,7 +79,7 @@ export default class DeviceList extends Component {
   }
   _openUrl({ url }) {
     console.log("Event:", url)
-    this.props.navigation.push("OpenURL", { url });
+    this.props.navigation.push("ImportData", { url });
   }
   componentDidMount() {
     this._readData();
