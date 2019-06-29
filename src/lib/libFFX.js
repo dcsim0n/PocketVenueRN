@@ -23,9 +23,7 @@ function _ParseFFX(resolve, reject, url) {
   //return promise for this data
   try {
     const decodedURL = decodeURI(url);
-
     debug && console.log("Opening URL: ", decodedURL);
-
     if (!decodedURL.includes("ffx")) {
       throw new Error(
         "File Error: file does not end with a valid 'ffx' extension"
