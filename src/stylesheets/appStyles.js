@@ -6,6 +6,7 @@ export default styles = StyleSheet.create({
     baseText: {
       fontSize: defaultTextSize
     },
+    
     toolbar: {
       fontSize: defaultTextSize,
       flexDirection: 'row',
@@ -32,18 +33,24 @@ export default styles = StyleSheet.create({
       marginTop: 22,
       justifyContent: 'center'
     },
-    
     container:{
       flex: 1
     },
     celledList:{
+      backgroundColor: 'lightgrey',
       flexDirection: 'column',
       flex: 1,
     },
     celledListItem:{
       flex: 1,
       borderWidth: StyleSheet.hairlineWidth,
+      backgroundColor: 'white',
       padding:10,
-      margin:10
+      margin:10,
+      shadowColor: 'black',
+      shadowOffset: {
+        height: 5,
+      },
+      shadowOpacity: 1,
     }
   })
