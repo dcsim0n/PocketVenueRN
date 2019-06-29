@@ -38,9 +38,9 @@ export default class VRWB extends Device {
         pilot:    {type: events.PILOT_TONE, cmd:() => 'signal(*) ?\r'},    //Pilot tone status
         rxmeter:  {type: events.RF_LEVEL, cmd:() => 'rmeter(*) ?\r'},  //Signal strength
         freqs:    {type: events.FREQUENCIES, cmd:() =>  'mhz(*) ?\r'},       //Frequenies of the recievers
-        startScan:{type: events.SCAN_START, cmd:() =>  'rxscan(*) = 1\r'} ,
-        stopScan: {type: events.SCAN_STOP, cmd:() =>  'rxscan(*) = 0\r'},
-        polScan:  {type: events.SCAN_POLL, cmd:() =>  'pollsd(*) ?\r'},
+        startScan:{type: events.SCAN_START, cmd:(index) =>  `rxscan(${index}) = 1\r`} ,
+        stopScan: {type: events.SCAN_STOP, cmd:(index) =>  `rxscan(${index}) = 0\r`},
+        polScan:  {type: events.SCAN_POLL, cmd:(index) =>  `pollsd(${index}) ?\r`},
         outLevel: {type: events.OUT_LEVEL, cmd:() =>  'level(*) ?\r'},
         setLevel: {type: events.SET_CHANGE, cmd: ([ index, level ]) => `level(${ index })=${ level }\r`},
         setFreq:  {type: events.SET_CHANGE, cmd: ([ index, freq ]) => `mhz(${ index })=${ freq }\r`},
@@ -59,9 +59,8 @@ export default class VRWB extends Device {
         //Initate scan process for uniqe Recievers
         const devices = this._getDevicesToScan()
         devices.forEach((device)=>{
-            const cmdStr = this.commands.startScan.cmd.replace('*',device.index)
-            const newCmd = {type: this.commands.startScan.type, cmd: cmdStr}
-            this.sendCmd(newCmd)
+            
+            this.sendCmd(this.commands.startScan, device.index)
 
             //Initialize data structure
             const scanLength = blocks[device.block].scanLength
@@ -83,8 +82,7 @@ export default class VRWB extends Device {
     _stopScan(){
         const devicesToStop = this._getDevicesToScan()
         devicesToStop.forEach((device)=>{
-            const cmdStr = this.commands.stopScan.cmd.replace('*',device.index)
-            const newCmd = {type: this.commands.stopScan.type, cmd: cmdStr}
+            this.sendCmd(this.commands.stopScan, device.index)
         })
         this.stop() // Clear interval
 
@@ -97,9 +95,9 @@ export default class VRWB extends Device {
 
         const devicesToPoll = this._getDevicesToScan()
         devicesToPoll.forEach((device)=>{
-            const cmdStr = this.commands.polScan.cmd.replace('*',device.index)
-            const newCmd = {type: this.commands.polScan.type, cmd: cmdStr, index:device.index}
-            this.sendCmd(newCmd)
+            // const cmdStr = this.commands.polScan.cmd.replace('*',device.index)
+             const newCmd = {...this.commands.polScan, index: device.index}
+            this.sendCmd(newCmd, device.index)
         })
         
     } 
