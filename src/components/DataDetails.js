@@ -27,6 +27,7 @@ const DataDetails = ( props ) => {
       <TextInput
         value={ item.label }
         style={[styles.textInput, { textAlign: "center" }]}
+        onChangeText={( text ) => console.log(text) }
       />
       <Text style={styles.baseText}>Block: {item.block}</Text>
       <Text style={styles.baseText}>Voltage: {item.voltage} V</Text>

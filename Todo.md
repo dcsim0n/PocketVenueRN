@@ -3,10 +3,11 @@
 # 2.0 
 1. Implement Venue 2 device support via libVRM2WB.js
 2. Implement Duet support via libM2T.js
-3. Polish component styles for DeviceList, DeviceDetails
-5. Test test test, Venue WB, Venue 2, Duet
-6. Freqfinder Export
-7. Deploy imported data
+3. Test test test, Venue WB, Venue 2, Duet
+4. Freqfinder Export
+5. Deploy imported data
+6. Hookup channel labels
+7. Edit device menue
 
 #2.1
 1. Implement D2 device support
