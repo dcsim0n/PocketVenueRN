@@ -178,6 +178,11 @@ export default class VRWB extends Device {
         debug && console.log(error);
         this.errorHandler && this.errorHandler(error)
     }
+    _calculateHexValue(block,frequency){
+        const startFreq = blocks[block].start
+        const steps = (frequency - startFreq) * 10 //assume 100k stepsize
+        return parseInt(steps,10).toString(16) //avoid weird javascript math errors
+    }
     _getDeviceData(){
         debug && console.log("Organizing device data:", this._deviceData);
         return this._deviceData.blocks.map((block,i)=>{
@@ -188,7 +193,8 @@ export default class VRWB extends Device {
                 voltage: parseFloat(this._deviceData.voltages[i])/100,
                 level: parseInt(this._deviceData.levels[i]),
                 pilot: this._deviceData.pilotTones[i],
-                batteryType: this._deviceData.batteryTypes[i]
+                batteryType: this._deviceData.batteryTypes[i],
+                hex: this._calculateHexValue(block,parseFloat(this._deviceData.frequencies[i]))
             }
         })
     }
