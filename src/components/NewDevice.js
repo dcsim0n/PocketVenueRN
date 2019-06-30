@@ -27,9 +27,7 @@ export default class NewDevice extends Component {
       ({ venue }) => {
         const venueData = Object.assign(venue, data);
         return { venue: venueData };
-      },
-      () => console.log("State:", this.state)
-    );
+      });
   }
   render() {
     const { name, port, address } = this.state.venue;

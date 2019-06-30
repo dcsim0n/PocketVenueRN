@@ -8,12 +8,12 @@
 import React, { Component } from "react";
 import uuid from "uuid/v1";
 import { connectDevice } from "../lib/connectDevice";
-import { View, FlatList, Button, Alert, Linking } from "react-native";
+import { FlatList, Alert, Linking } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 import NewDevice from "./NewDevice";
 import DeviceListItem from "./DeviceListItem";
 import styles from "../stylesheets/appStyles";
-import { Icon } from "native-base";
+import { Header, Icon, Container, Content, Left, Body, Right, Title } from "native-base";
 
 export default class DeviceList extends Component {
   
@@ -22,11 +22,11 @@ export default class DeviceList extends Component {
     venues: []
   };
   
-  _addNewVenue = venue => {
-    console.log(this.state);
+  _addNewVenue = data => {
     const venues = this.state.venues || []; //Handle empty state with empty array
-    venue.key = uuid();
-    this.setState({ venues: [venue, ...venues] }, 
+    const newVenue = Object.assign({}, data, {key: uuid()}) //Make a NEW object
+    console.log(this.state,newVenue);
+    this.setState({ venues: [...venues, newVenue] }, 
       this._storeData
     );
   };
@@ -83,23 +83,30 @@ export default class DeviceList extends Component {
   
   render() {
     return (
-      <View style={{ flex: 1 }}>
-        <View style={styles.toolbar}>
-          <NewDevice addNewVenue={data => this._addNewVenue(data)} />
-          <Icon 
-          type="Feather" 
-          name="edit" 
-          onPress={() => this._toggleEdit()} 
-          style={{color: "blue"}}
+      <Container>
+          <Header>
+            <Left>
+              <NewDevice addNewVenue={data => this._addNewVenue(data)} />
+            </Left>
+            <Body>
+              <Title>Device List</Title>
+            </Body>
+            <Right>
+              <Icon 
+              type="Feather" 
+              name="edit" 
+              onPress={() => this._toggleEdit()} 
+              style={{color: "blue"}}
+              />
+            </Right>
+          </Header>
+        <Content>
+          <FlatList
+            data={this.state.venues}
+            renderItem={this._renderItem}
           />
-        </View>
-
-        <FlatList
-          contentContainerStyle={styles.listView}
-          data={this.state.venues}
-          renderItem={this._renderItem}
-        />
-      </View>
+        </Content>
+      </Container>
     );
   }
   _openUrl({ url }) {
