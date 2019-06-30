@@ -8,9 +8,10 @@
 3. `react-native link react-native-tcp`
 4. `react-native link react-native-svg`
 5. `react-native link @react-native-community/async-storage`
-6. `./node_modules/.bin/rn-nodeify --install stream,process,util --hack`
+6. `react-native link react-native-vector-icons`
+7. `./node_modules/.bin/rn-nodeify --install stream,process,util --hack`
     * Optionally you can use `yarn hack` here to do the same thing
-7. `react-native run-ios` This will run the default iOS simulator. Usually it's the latest iPhone. If you'd like to save some resources and run an older iPhone device, try `yarn iPhone` to run iPhone SE.
+8. `react-native run-ios` This will run the default iOS simulator. Usually it's the latest iPhone. If you'd like to save some resources and run an older iPhone device, try `yarn iPhone` to run iPhone SE.
 
 This should get you up and running
 

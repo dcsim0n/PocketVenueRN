@@ -25,7 +25,9 @@ export default class DeviceList extends Component {
     console.log(this.state);
     const venues = this.state.venues || []; //Handle empty state with empty array
     venue.key = uuid();
-    this.setState({ venues: [venue, ...venues] }, this._storeData);
+    this.setState({ venues: [venue, ...venues] }, 
+      this._storeData
+    );
   };
 
   _onPressItem = deviceData => {
@@ -35,7 +37,9 @@ export default class DeviceList extends Component {
 
   _removeDevice = id => {
     const { venues } = this.state;
-    this.setState({ venues: venues.filter(({ key }) => key !== id) });
+    this.setState({ venues: venues.filter(({ key }) => key !== id) },
+      this._storeData
+    );
   };
   
   _toggleEdit = () => {
