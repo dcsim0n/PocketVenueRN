@@ -5,11 +5,14 @@ import styles from '../stylesheets/appStyles'
 const DeviceListItem = (props) => {
     const {device} = props
     return (
-        <TouchableOpacity onPress={()=>props.onPressItem(device)}>
+        <View>
+            <TouchableOpacity onPress={()=>props.onPressItem(device)}>
+                
+                <Text style={styles.listItem}>{`${device.name} @ ${device.address} : ${device.port}`}</Text>
+                
+            </TouchableOpacity>
             
-            <Text style={styles.listItem}>{`${device.name} @ ${device.address} : ${device.port}`}</Text>
-            
-        </TouchableOpacity>
+        </View>
     )
 }
 

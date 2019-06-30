@@ -3,11 +3,12 @@ import PropTypes from "prop-types";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import styles from "../stylesheets/appStyles";
 
+
 const DetailListItem = props => {
 
   return (
     <View
-    style={styles.celledListItem}
+      style={styles.celledListItem}
     >
       <TouchableOpacity
         onPress={() => props.onBlockPress(props.item)}
@@ -20,6 +21,7 @@ const DetailListItem = props => {
           <Text>{props.item.voltage.toFixed(2)}</Text>
         </Text>
       </TouchableOpacity>
+      
     </View>
   );
 };

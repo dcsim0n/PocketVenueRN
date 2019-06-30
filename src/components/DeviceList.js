@@ -21,7 +21,7 @@ export default class DeviceList extends Component {
     venues: []
   };
 
-  addNewVenue = venue => {
+  _addNewVenue = venue => {
     console.log(this.state);
     const venues = this.state.venues || []; //Handle empty state with empty array
 
@@ -33,8 +33,17 @@ export default class DeviceList extends Component {
     const device = connectDevice(deviceData);
     this.props.navigation.push("Device", { device });
   };
+  _removeDevice = (id) =>{
+    const { venues } = this.state
+    this.setState({venues: venues.filter(({ key }) => key !== id )})
+  }
   _renderItem = ({ item }) => (
-    <DeviceListItem device={item} onPressItem={this._onPressItem} />
+    <DeviceListItem 
+    device={item} 
+    onPressItem={this._onPressItem} 
+    removeDevice={this._removeDevice}
+    editing={this.state.isEditing}
+    />
   );
   _storeData = async () => {
     try {
@@ -58,12 +67,16 @@ export default class DeviceList extends Component {
       ]);
     }
   };
+  _toggleEdit = () =>{
+    console.log('this.state.isEditing :', this.state.isEditing);
+    this.setState({isEditing: !this.state.isEditing })
+  }
   render() {
     return (
       <View style={{ flex: 1 }}>
         <View style={styles.toolbar}>
-          <NewDevice addNewVenue={data => this.addNewVenue(data)} />
-          <Button title={"Edit"} />
+          <NewDevice addNewVenue={data => this._addNewVenue(data)} />
+          <Button title={"Edit"} onPress={()=> this._toggleEdit()} />
         </View>
 
         <FlatList
