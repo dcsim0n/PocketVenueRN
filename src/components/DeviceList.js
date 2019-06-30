@@ -13,6 +13,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 import NewDevice from "./NewDevice";
 import DeviceListItem from "./DeviceListItem";
 import styles from "../stylesheets/appStyles";
+import { Icon } from "native-base";
 
 export default class DeviceList extends Component {
   
@@ -85,7 +86,12 @@ export default class DeviceList extends Component {
       <View style={{ flex: 1 }}>
         <View style={styles.toolbar}>
           <NewDevice addNewVenue={data => this._addNewVenue(data)} />
-          <Button title={"Edit"} onPress={() => this._toggleEdit()} />
+          <Icon 
+          type="Feather" 
+          name="edit" 
+          onPress={() => this._toggleEdit()} 
+          style={{color: "blue"}}
+          />
         </View>
 
         <FlatList

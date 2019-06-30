@@ -3,6 +3,7 @@ import { View, Modal, Text, Picker, Button } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import styles from "../stylesheets/appStyles";
 import devices from "../lib/deviceTypes";
+import { Icon } from "native-base";
 export default class NewDevice extends Component {
   constructor(props) {
     super(props);
@@ -11,7 +12,7 @@ export default class NewDevice extends Component {
         address: "127.0.0.1",
         port: "4080",
         name: "New Venue",
-        type: devices.VRWB,
+        type: devices.VRWB
       },
       modalVisible: false
     };
@@ -92,11 +93,12 @@ export default class NewDevice extends Component {
           </View>
         </Modal>
 
-        <Button
-          title={"New Venue"}
-          onPress={() => {
-            this.setModalVisible(true);
-          }}
+        { /* Add new device button */ }
+        <Icon 
+          type="Feather"
+          name="plus-circle"
+          onPress={() => this.setModalVisible(true)}
+          style={{ color: "blue" }}
         />
       </View>
     );
