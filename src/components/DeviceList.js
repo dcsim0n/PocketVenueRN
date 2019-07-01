@@ -12,13 +12,12 @@ import { FlatList, Alert, Linking } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 import NewDevice from "./NewDevice";
 import DeviceListItem from "./DeviceListItem";
-import styles from "../stylesheets/appStyles";
 import { Header, Icon, Container, Content, Left, Body, Right, Title } from "native-base";
 
 export default class DeviceList extends Component {
   
   state = {
-    isEditing: false,
+    editing: false,
     venues: []
   };
   
@@ -44,8 +43,8 @@ export default class DeviceList extends Component {
   };
   
   _toggleEdit = () => {
-    console.log("this.state.isEditing :", this.state.isEditing);
-    this.setState({ isEditing: !this.state.isEditing });
+    console.log("this.state.editing :", this.state.editing);
+    this.setState({ editing: !this.state.editing });
   };
 
   _renderItem = ({ item }) => (
@@ -53,7 +52,7 @@ export default class DeviceList extends Component {
       device={item}
       onPressItem={this._onPressItem}
       removeDevice={this._removeDevice}
-      editing={this.state.isEditing}
+      editing={this.state.editing}
     />
   );
 
@@ -96,13 +95,14 @@ export default class DeviceList extends Component {
               type="Feather" 
               name="edit" 
               onPress={() => this._toggleEdit()} 
-              style={{color: "blue"}}
+              style={ this.state.editing ? { color: "red" } : { color: "blue" }}
               />
             </Right>
           </Header>
         <Content>
           <FlatList
             data={this.state.venues}
+            editing={this.state.editing}
             renderItem={this._renderItem}
           />
         </Content>
