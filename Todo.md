@@ -7,7 +7,6 @@
 4. Freqfinder Export
 5. Deploy imported data
 6. Hookup channel labels
-7. Edit device menue
 
 #2.1
 1. Implement D2 device support
