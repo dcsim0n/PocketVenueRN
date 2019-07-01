@@ -8,24 +8,26 @@
 import React, { Component } from "react";
 import uuid from "uuid/v1";
 import { connectDevice } from "../lib/connectDevice";
-import { View, FlatList, Button, Alert, Linking } from "react-native";
+import { FlatList, Alert, Linking } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 import NewDevice from "./NewDevice";
 import DeviceListItem from "./DeviceListItem";
-import styles from "../stylesheets/appStyles";
+import { Header, Icon, Container, Content, Left, Body, Right, Title } from "native-base";
 
 export default class DeviceList extends Component {
   
   state = {
-    isEditing: false,
+    editing: false,
     venues: []
   };
   
-  _addNewVenue = venue => {
-    console.log(this.state);
+  _addNewVenue = data => {
     const venues = this.state.venues || []; //Handle empty state with empty array
-    venue.key = uuid();
-    this.setState({ venues: [venue, ...venues] }, this._storeData);
+    const newVenue = Object.assign({}, data, {key: uuid()}) //Make a NEW object
+    console.log(this.state,newVenue);
+    this.setState({ venues: [...venues, newVenue] }, 
+      this._storeData
+    );
   };
 
   _onPressItem = deviceData => {
@@ -35,12 +37,14 @@ export default class DeviceList extends Component {
 
   _removeDevice = id => {
     const { venues } = this.state;
-    this.setState({ venues: venues.filter(({ key }) => key !== id) });
+    this.setState({ venues: venues.filter(({ key }) => key !== id) },
+      this._storeData
+    );
   };
   
   _toggleEdit = () => {
-    console.log("this.state.isEditing :", this.state.isEditing);
-    this.setState({ isEditing: !this.state.isEditing });
+    console.log("this.state.editing :", this.state.editing);
+    this.setState({ editing: !this.state.editing });
   };
 
   _renderItem = ({ item }) => (
@@ -48,7 +52,7 @@ export default class DeviceList extends Component {
       device={item}
       onPressItem={this._onPressItem}
       removeDevice={this._removeDevice}
-      editing={this.state.isEditing}
+      editing={this.state.editing}
     />
   );
 
@@ -78,18 +82,30 @@ export default class DeviceList extends Component {
   
   render() {
     return (
-      <View style={{ flex: 1 }}>
-        <View style={styles.toolbar}>
-          <NewDevice addNewVenue={data => this._addNewVenue(data)} />
-          <Button title={"Edit"} onPress={() => this._toggleEdit()} />
-        </View>
-
-        <FlatList
-          contentContainerStyle={styles.listView}
-          data={this.state.venues}
-          renderItem={this._renderItem}
-        />
-      </View>
+      <Container>
+          <Header>
+            <Left>
+              <NewDevice addNewVenue={data => this._addNewVenue(data)} />
+            </Left>
+            <Body>
+              <Title>Device List</Title>
+            </Body>
+            <Right>
+              <Icon 
+              name="remove-circle-outline" 
+              onPress={() => this._toggleEdit()} 
+              style={ this.state.editing ? { color: "red" } : { color: "blue" }}
+              />
+            </Right>
+          </Header>
+        <Content>
+          <FlatList
+            data={this.state.venues}
+            editing={this.state.editing}
+            renderItem={this._renderItem}
+          />
+        </Content>
+      </Container>
     );
   }
   _openUrl({ url }) {
