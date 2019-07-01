@@ -38,9 +38,9 @@ export default class VRWB extends Device {
         pilot:    {type: events.PILOT_TONE, cmd:() => 'signal(*) ?\r'},    //Pilot tone status
         rxmeter:  {type: events.RF_LEVEL, cmd:() => 'rmeter(*) ?\r'},  //Signal strength
         freqs:    {type: events.FREQUENCIES, cmd:() =>  'mhz(*) ?\r'},       //Frequenies of the recievers
-        startScan:{type: events.SCAN_START, cmd:(index) =>  `rxscan(${index}) = 1\r`} ,
-        stopScan: {type: events.SCAN_STOP, cmd:(index) =>  `rxscan(${index}) = 0\r`},
-        polScan:  {type: events.SCAN_POLL, cmd:(index) =>  `pollsd(${index}) ?\r`},
+        startScan:{type: events.SCAN_START, cmd:(index) =>  `rxscan(${index})=1\r`} ,
+        stopScan: {type: events.SCAN_STOP, cmd:(index) =>  `rxscan(${index})=0\r`},
+        polScan:  {type: events.SCAN_POLL, cmd:(index) =>  `pollsd(${index})? $\r`},
         outLevel: {type: events.OUT_LEVEL, cmd:() =>  'level(*) ?\r'},
         setLevel: {type: events.SET_CHANGE, cmd: ([ index, level ]) => `level(${ index })=${ level }\r`},
         setFreq:  {type: events.SET_CHANGE, cmd: ([ index, freq ]) => `mhz(${ index })=${ freq }\r`},
@@ -173,8 +173,9 @@ export default class VRWB extends Device {
         debug && console.log(this._msgQueue)
     }
     _jobErrorHandler(error){
-        this._msgQueue.end()
+        this._msgQueue.end() //Important to stop the queue as soon as anything goes wrong.
         this.stop()
+        this._stopScan() //Just in case an error happens while scanning, shut down the remote device
         debug && console.log(error);
         this.errorHandler && this.errorHandler(error)
     }

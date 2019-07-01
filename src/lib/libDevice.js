@@ -27,6 +27,7 @@ function netSend({address,port},cmd) { //Wrapper for net tcp opperations
             if(isOK(decodedData)){
                 resolve(decodedData)
             }else{
+                debug && console.log("Recieved bad response",decodedData)
                 reject(new Error("Recieved error from Device"))
             }
         })
