@@ -93,8 +93,7 @@ export default class NewDevice extends Component {
 
         { /* Add new device button */ }
         <Icon 
-          type="Feather"
-          name="plus-circle"
+          name="add-circle"
           onPress={() => this.setModalVisible(true)}
           style={{ color: "blue" }}
         />

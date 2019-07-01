@@ -28,8 +28,7 @@ const DeviceListItem = props => {
         <Animated.View style={{ opacity: opacity}}>
           <Button style={{ backgroundColor: "red" }} onPress={() => props.removeDevice(device.key)}>
             <Icon
-            type="Feather"
-            name="trash-2"
+            name="trash"
             style={{ color: "white" }}
             />
           </Button>

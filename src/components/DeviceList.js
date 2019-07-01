@@ -92,8 +92,7 @@ export default class DeviceList extends Component {
             </Body>
             <Right>
               <Icon 
-              type="Feather" 
-              name="edit" 
+              name="remove-circle-outline" 
               onPress={() => this._toggleEdit()} 
               style={ this.state.editing ? { color: "red" } : { color: "blue" }}
               />
