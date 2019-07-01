@@ -1,21 +1,20 @@
-import React, { useState, useEffect, useLayoutEffect } from "react";
-import { View, Text, Animated } from "react-native";
-import { Icon, ListItem, Body, Right } from "native-base";
-import styles from "../stylesheets/appStyles";
+import React, { useState, useEffect } from "react";
+import { Text, Animated } from "react-native";
+import { Icon, ListItem, Body, Right, Button } from "native-base";
 
 const DeviceListItem = props => {
   const { device } = props;
   const [opacity, setOpacity] = useState(new Animated.Value(0))
   useEffect(() => {
-    if(props.editing && opacity === 0){
+    if(props.editing){
         Animated.timing(opacity,{
-            duration: 1000,
+            duration: 300,
             toValue: 1
         }).start();
-        
-    }else{
+    }
+    else{
         Animated.timing(opacity,{
-            duration: 1000,
+            duration: 300,
             toValue: 0
         }).start() 
     }
@@ -27,12 +26,13 @@ const DeviceListItem = props => {
       </Body>
       <Right>
         <Animated.View style={{ opacity: opacity}}>
+          <Button style={{ backgroundColor: "red" }} onPress={() => props.removeDevice(device.key)}>
             <Icon
             type="Feather"
             name="trash-2"
-            onPress={() => props.removeDevice(device.key)}
-            style={{ color: 'red' }}
+            style={{ color: "white" }}
             />
+          </Button>
         </Animated.View>
       </Right>
     </ListItem>
