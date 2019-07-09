@@ -4,25 +4,13 @@
 | 2019 Dana Simmons
 |--------------------------------------------------
 */
+
 import Device from './libDevice'
+import events from './events';
 
 const debug = false //Switch to true to enable more console.logs
 
 const blocks = require('./blocks.json')
-const events = {
-    BLOCKS: 'BLOCKS',
-    FREQUENCIES: 'FREQUENCIES',
-    BATTERY_VOLTAGE: 'BATTERY_VOLTAGE',
-    BATTERY_TYPE: 'BATTERY_TYPE',
-    PILOT_TONE: 'PILOT_TONE',
-    RF_LEVEL: 'RF_LEVEL',
-    OUT_LEVEL: "OUT_LEVEL",
-    ID: 'ID',
-    SCAN_START: "SCAN_START" ,
-    SCAN_STOP: "SCAN_STOP" ,
-    SCAN_POLL: "SCAN_POLL",
-    SET_CHANGE: "SET_CHANGE"
-}
 
 export default class VRWB extends Device {
     constructor(options){
@@ -113,8 +101,8 @@ export default class VRWB extends Device {
 
     }
     _fetchData(){
-        this.sendCmd(this.commands.battType)
         this.sendCmd(this.commands.blocks)
+        this.sendCmd(this.commands.battType)
         this.sendCmd(this.commands.freqs)
         this.sendCmd(this.commands.battVolt)
         this.sendCmd(this.commands.outLevel)
