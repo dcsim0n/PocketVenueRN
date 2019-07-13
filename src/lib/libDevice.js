@@ -12,7 +12,7 @@ const Queue = require('queue')
 const encoding = 'utf8'
 
 function isOK(response){
-    okCheck = RegExp(/OK .*/)
+    okCheck = RegExp(/OK.*/)
     return okCheck.test(response)
 }
  
