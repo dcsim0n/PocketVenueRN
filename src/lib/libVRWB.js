@@ -90,16 +90,12 @@ export default class VRWB extends Device {
         })
         
     } 
-    _getDevicesToScan(){ //TODO: Rename this method to getChannelsToScan for clarity
-        //Iterate over known devices
-        //Calculate which devices are unique and set a 'scan' flag
-        //Return array of references to the devices
-        const devices = this._getDeviceData()
+    _getDevicesToScan(){
+        const devices = this.deviceData
         if(devices.length === 0 ){throw new Error('Scan Error: device must be connected first')}
         return devices.filter((item,index)=>{ //Compares each item's block value and filters diplicates
             return devices.findIndex((item2)=>item2.block === item.block) === index
         })
-
     }
     _fetchData(){
         this.sendCmd(this.commands.blocks)
