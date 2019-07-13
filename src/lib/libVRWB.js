@@ -8,7 +8,7 @@
 import Device from './libDevice'
 import events from './events';
 
-const debug = false //Switch to true to enable more console.logs
+const DEBUG = true //Switch to true to enable more console.logs
 
 const blocks = require('./blocks.json')
 
@@ -17,8 +17,8 @@ export default class VRWB extends Device {
         super(options) 
         this._fetchData = this._fetchData.bind(this)
         this._fetchScanData = this._fetchScanData.bind(this)
+        this._deviceData = Device.initDeviceData(6)
     }
-    numOfChannels = 6
     commands = {
         deviceId: {type: events.ID, cmd:() => 'id ?\r'},        //Device type
         blocks:   {type: events.BLOCKS, cmd:() => 'block(*) ?\r'},    //Reciever blocks
@@ -121,33 +121,53 @@ export default class VRWB extends Device {
         data.forEach((value,i)=>{
             this._scanData[response.index].scan[offset + i] = value
         })
-        debug && console.log('this._scanData', this._scanData)
+        DEBUG && console.log('this._scanData', this._scanData)
         this.scanDataHandler(this.scanData)
     }
+    _updateDeviceData({prop, dataArray}){
+        const newData = this._deviceData.map(( channel, i) => {
+            const newChannel = Object.assign({}, channel, { [prop] : dataArray[i] })
+            return newChannel
+        })
+        DEBUG && console.log("Updating device data:",newData);
+        this._deviceData = newData
+    }
     _jobSuccessHandler(result,job){
-        debug && console.log("Recieved result:",result);
+        DEBUG && console.log("Recieved result:",result);
         switch (result.type) {
-            case events.BLOCKS:
-                this._deviceData = Object.assign(this._deviceData,{blocks: this._parseData(result.payload)})
+            case events.BLOCKS: {
+                const dataArray = this._parseData(result.payload)
+                this._updateDeviceData({ prop: "block", dataArray })
+                break; 
+            }
+            case events.FREQUENCIES: {
+                const dataArray = this._parseData(result.payload).map( freq => parseFloat( freq ))
+                this._updateDeviceData({prop: "frequency", dataArray})
                 break;
-            case events.FREQUENCIES:
-                this._deviceData = Object.assign(this._deviceData,{frequencies: this._parseData(result.payload)})
+            }
+            case events.BATTERY_VOLTAGE: {
+                const dataArray = this._parseData(result.payload).map( volt => parseFloat( volt ) / 100 )
+                this._updateDeviceData({ prop: "voltage", dataArray })
                 break;
-            case events.BATTERY_VOLTAGE:
-                this._deviceData = Object.assign(this._deviceData,{voltages: this._parseData(result.payload)})
+            }
+            case events.BATTERY_TYPE: {
+                const dataArray = this._parseData(result.payload)
+                this._updateDeviceData({ prop: "batteryType", dataArray })
                 break;
-            case events.BATTERY_TYPE:
-                this._deviceData = Object.assign(this._deviceData,{batteryTypes: this._parseData(result.payload)})
-                break;
-            case events.PILOT_TONE:
-                this._deviceData = Object.assign(this._deviceData,{pilotTones: this._parseData(result.payload)})
+            }
+            case events.PILOT_TONE: {
+                const dataArray = this._parseData(result.payload)                
+                this._updateDeviceData({ prop: "pilot", dataArray })
                 this.dataHandler()
                 break;
-            case events.OUT_LEVEL:
-                this._deviceData = Object.assign(this._deviceData,{levels: this._parseData(result.payload)})
+            }
+            case events.OUT_LEVEL: {
+                const dataArray = this._parseData(result.payload).map( level => parseInt( level ))
+                this._updateDeviceData({ prop: "level", dataArray })
                 break;
-            case events.SCAN_START:
-                debug && console.log('Started scan', result)
+            }
+            case events.SCAN_START: 
+                DEBUG && console.log('Started scan', result)
                 break;
             case events.SCAN_POLL:
                 this._updateScanData(result)
@@ -156,16 +176,16 @@ export default class VRWB extends Device {
                 this.fetchData() //Refresh data after a setting change
                 break;
             default:
-                debug && console.log(`Unknown message type: ${result}`)
+                DEBUG && console.log(`Unknown message type: ${result}`)
                 break;
         }
-        debug && console.log(this._msgQueue)
+        DEBUG && console.log(this._msgQueue)
     }
     _jobErrorHandler(error){
         this._msgQueue.end() //Important to stop the queue as soon as anything goes wrong.
         this.stop()
         this._stopScan() //Just in case an error happens while scanning, shut down the remote device
-        debug && console.log(error);
+        DEBUG && console.log(error);
         this.errorHandler && this.errorHandler(error)
     }
     _calculateHexValue(block,frequency){
@@ -174,19 +194,7 @@ export default class VRWB extends Device {
         return parseInt(steps,10).toString(16) //avoid weird javascript math errors
     }
     _getDeviceData(){
-        debug && console.log("Organizing device data:", this._deviceData);
-        return this._deviceData.blocks.map((block,i)=>{
-            return {
-                index: i + 1,
-                block: block,
-                frequency: parseFloat(this._deviceData.frequencies[i]),
-                voltage: parseFloat(this._deviceData.voltages[i])/100,
-                level: parseInt(this._deviceData.levels[i]),
-                pilot: this._deviceData.pilotTones[i],
-                batteryType: this._deviceData.batteryTypes[i],
-                hex: this._calculateHexValue(block,parseFloat(this._deviceData.frequencies[i]))
-            }
-        })
+        return this._deviceData
     }
     _getScanData(){
         return Object.values(this._scanData)

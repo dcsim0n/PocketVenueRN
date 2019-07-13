@@ -104,6 +104,27 @@ export default class Device {
     get BatteryTypes(){
         return this._batteryTypes
     }
+    static initDeviceData(numOfChannels){
+        let initData = []
+        for (let i = 0; i < numOfChannels; i++){
+                initData.push({
+                index: i + 1,
+                block: "",
+                frequency: 0,
+                voltage: 0,
+                level: 0,
+                pilot: "0",
+                batteryType: "",
+                hex: "",
+                enabled: false,
+                txblock: "",
+                scanData: []
+            })
+        }
+        DEBUG && console.log("Device Channels:", this.numOfChannels)
+        DEBUG && console.log("Initialized deviceData", initData)
+        return initData;
+    }
     sendCmd(cmd,args){
         this._msgQueue.push((callback)=>{
             netSend(this.connectObj,cmd.cmd(args)) //Promise for data
