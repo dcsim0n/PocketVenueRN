@@ -76,6 +76,14 @@ export default class VRM2WB extends Device {
 
         })
     }
+    _stopScan(){
+        const devicesToStop = this._getDevicesToScan()
+        devicesToStop.forEach((device)=>{
+            this.sendCmd(this.commands.stopScan, device.index)
+        })
+        this.stop() // Clear interval
+
+    }
     _fetchScanData(){
 
 
@@ -174,9 +182,5 @@ export default class VRM2WB extends Device {
     }
     _getScanData(){
         return Object.values(this._scanData)
-    }
-    _stopScan(){
-        console.log("Todo: stop the scanning process!");
-    }
-    
+    }    
 }

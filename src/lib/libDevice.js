@@ -181,22 +181,24 @@ export default class Device {
         }
         const scanBlob = data.slice(scanIndex).trim()
 
+        
+        
+        if((scanBlob.length % 2) !== 0){
+            throw new Error("Device Error: recieved an odd number of scan bytest")
+        }
+        
+        const offset = parseInt(offsetBlob.msb + offsetBlob.lsb, 16)
+        const scanInts = []
+        
         if(DEBUG){
             console.groupCollapsed("Parsed Packet")
             console.log('data', data)
             console.log('status', status)
             console.log("offsetBlob", offsetBlob)
             console.log('scanBlob', scanBlob)
+            console.log("offset:", offset)
             console.groupEnd()
         }
-
-        
-        if((scanBlob.length % 2) !== 0){
-            throw new Error("Device Error: recieved an odd number of scan bytest")
-        }
-        
-        const offset = parseInt(offsetBlob.msb, 16) + parseInt(offsetBlob.lsb, 16)
-        const scanInts = []
         for (let i = 0; i < scanBlob.length; i = i + 2 ){
             const hexByte = scanBlob.slice(i,i+2)
             scanInts.push(parseInt(hexByte,16))
