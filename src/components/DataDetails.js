@@ -82,7 +82,7 @@ DataDetails.propTypes = {
     frequency: PropTypes.number.isRequired,
     block: PropTypes.string.isRequired,
     voltage: PropTypes.number.isRequired,
-    batteryType: PropTypes.number.isRequired,
+    batteryType: PropTypes.string.isRequired,
     outLevel: PropTypes.number.isRequired
   })
 };

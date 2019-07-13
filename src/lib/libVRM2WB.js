@@ -146,7 +146,7 @@ export default class VRM2WB extends Device {
                 break;
             }
             case events.OUT_LEVEL: {
-                const dataArray = this._parseData(result.payload)
+                const dataArray = this._parseData(result.payload).map( lvl => parseInt( lvl ))
                 this._updateDeviceData({prop: "level", dataArray})
                 break;
             }
