@@ -7,29 +7,30 @@
 
 import Device from './libDevice';
 import events from './events'
-import console = require('console');
 
-const blocks = require('./blocks.json')
+const DEBUG = true;
+const blocks = require('./blocks.json');
 
 export default class VRM2WB extends Device {
     constructor(options){
         super(options)
         
     }
+    numOfChannels = 6
     commands = { //TODO: verify these commands for Venue 2!
         deviceId: {type: events.ID, cmd:() => 'id ?\r'},        //Device type
-        blocks:   {type: events.BLOCKS, cmd:() => 'block(*) ?\r'},    //Reciever blocks
-        battVolt: {type: events.BATTERY_VOLTAGE, cmd:() => 'bvolts(*) ?\r'}, //Battery voltage
+        blocks:   {type: events.BLOCKS, cmd:( index ) => `rxblock(${ index }) ?\r`},    //Reciever blocks
+        battVolt: {type: events.BATTERY_VOLTAGE, cmd:() => 'txblevel(*) ?\r'}, //Battery voltage
         battType: {type: events.BATTERY_TYPE, cmd:() =>  'txbatt(*) ?\r'}, //Battery type as set in the device
-        pilot:    {type: events.PILOT_TONE, cmd:() => 'signal(*) ?\r'},    //Pilot tone status
+        pilot:    {type: events.PILOT_TONE, cmd:() => 'rxlink(*) ?\r'},    //Pilot tone status
         rxmeter:  {type: events.RF_LEVEL, cmd:() => 'rmeter(*) ?\r'},  //Signal strength
-        freqs:    {type: events.FREQUENCIES, cmd:() =>  'mhz(*) ?\r'},       //Frequenies of the recievers
+        freqs:    {type: events.FREQUENCIES, cmd:() =>  'rxfreq(*) ?\r'},       //Frequenies of the recievers
         startScan:{type: events.SCAN_START, cmd:(index) =>  `rxscan(${index})=1\r`} ,
         stopScan: {type: events.SCAN_STOP, cmd:(index) =>  `rxscan(${index})=0\r`},
         polScan:  {type: events.SCAN_POLL, cmd:(index) =>  `pollsd(${index})? $\r`},
-        outLevel: {type: events.OUT_LEVEL, cmd:() =>  'level(*) ?\r'},
-        setLevel: {type: events.SET_CHANGE, cmd: ([ index, level ]) => `level(${ index })=${ level }\r`},
-        setFreq:  {type: events.SET_CHANGE, cmd: ([ index, freq ]) => `mhz(${ index })=${ freq }\r`},
+        outLevel: {type: events.OUT_LEVEL, cmd:() =>  'rxalevel(*) ?\r'},
+        setLevel: {type: events.SET_CHANGE, cmd: ([ index, level ]) => `rxalevel(${ index })=${ level }\r`},
+        setFreq:  {type: events.SET_CHANGE, cmd: ([ index, freq ]) => `rxfreq(${ index })=${ freq }\r`},
         setBattType: {type: events.SET_CHANGE, cmd: ([ index, type ]) => `txbatt(${ index })=${ type }\r`}
     }
     
@@ -40,7 +41,6 @@ export default class VRM2WB extends Device {
         "3": "9V Lithium"
     }
     _fetchData(){
-        this.sendCmd(this.commands.blocks)
         this.sendCmd(this.commands.battType)
         this.sendCmd(this.commands.freqs)
         this.sendCmd(this.commands.battVolt)
@@ -85,6 +85,9 @@ export default class VRM2WB extends Device {
 
     _getDeviceData(){
         console.log("Todo: do something with data and return it")
+    }
+    _stopScan(){
+        console.log("Todo: stop the scanning process!");
     }
     
 }
