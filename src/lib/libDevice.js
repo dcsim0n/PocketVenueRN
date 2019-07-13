@@ -159,8 +159,8 @@ export default class Device {
         this._setChannelSettings(channelData)
     }
     _parseData(data){
-        //maybe this should handle other formats of string?
-       return data.split(/OK\s{|,|}/).filter((x)=>(x=='' || x=='\r\n') ? false : true)
+        //this can handle strings like "OK {x,y,z}" and 'OK "DATA" ' 
+       return data.split(/OK\s[{\"]|,|[}\"]/).filter((x)=>(x=='' || x=='\r\n') ? false : true)
     }
 
     _parseScanPacket(data){
