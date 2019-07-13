@@ -15,6 +15,6 @@ export default class M2T extends Device{
             freqs: 'txrffreq(*) ?\r'
         }
     }
-
+    numOfChannels = 2
 
 }

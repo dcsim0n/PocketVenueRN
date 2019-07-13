@@ -14,6 +14,7 @@ export default class Dummy extends Device {
         this._fetchData = this._fetchData.bind(this)
         this._fetchScanData = this._fetchScanData.bind(this)
     }
+    numOfChannels = 6
     _batteryTypes = {
         "0": "9V Alkaline",
         "1": "9V Lithium",

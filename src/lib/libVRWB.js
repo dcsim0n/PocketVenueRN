@@ -18,6 +18,7 @@ export default class VRWB extends Device {
         this._fetchData = this._fetchData.bind(this)
         this._fetchScanData = this._fetchScanData.bind(this)
     }
+    numOfChannels = 6
     commands = {
         deviceId: {type: events.ID, cmd:() => 'id ?\r'},        //Device type
         blocks:   {type: events.BLOCKS, cmd:() => 'block(*) ?\r'},    //Reciever blocks

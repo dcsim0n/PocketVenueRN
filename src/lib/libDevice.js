@@ -5,7 +5,7 @@
 | 2019 Dana Simmons
 |--------------------------------------------------
 */
-const debug = false //Switch to true to turn on more console.logs
+const DEBUG = true //Switch to true to turn on more console.logs
 
 const net = require('react-native-tcp')
 const Queue = require('queue')
@@ -27,7 +27,7 @@ function netSend({address,port},cmd) { //Wrapper for net tcp opperations
             if(isOK(decodedData)){
                 resolve(decodedData)
             }else{
-                debug && console.log("Recieved bad response",decodedData)
+                DEBUG && console.log("Recieved bad response",decodedData)
                 reject(new Error("Recieved error from Device"))
             }
         })
@@ -50,7 +50,7 @@ export default class Device {
         this.type = type
         this.name = name
         this._intervalRef = null
-        this._deviceData = {}
+        this._deviceData = []
         this._scanData = {}
 
         // Public interface methods
@@ -82,7 +82,7 @@ export default class Device {
             this._intervalRef = setInterval(this.fetchData,refreshInterval)
             this.fetchData() 
         }else{
-            debug && console.log("Notice: Device.start() called but device is alreaded connected")
+            DEBUG && console.log("Notice: Device.start() called but device is alreaded connected")
         }
     }
     
@@ -160,7 +160,7 @@ export default class Device {
         }
         const scanBlob = data.slice(scanIndex).trim()
 
-        if(debug){
+        if(DEBUG){
             console.groupCollapsed("Parsed Packet")
             console.log('data', data)
             console.log('status', status)
