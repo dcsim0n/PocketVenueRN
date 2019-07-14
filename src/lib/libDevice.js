@@ -105,7 +105,7 @@ export default class Device {
     get BatteryTypes(){
         return this._batteryTypes
     }
-    static initDeviceData(numOfChannels){
+    static initDeviceData(numOfChannels){ //All devices should have this structure 
         let initData = []
         for (let i = 0; i < numOfChannels; i++){
                 initData.push({
@@ -119,7 +119,8 @@ export default class Device {
                 hex: "",
                 enabled: false,
                 txblock: "",
-                scanData: []
+                scanData: [],
+                label: ""
             })
         }
         DEBUG && console.log("Device Channels:", this.numOfChannels)

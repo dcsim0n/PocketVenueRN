@@ -35,7 +35,9 @@ export default class VRM2WB extends Device {
         outLevel: ( ) => ({ type: events.OUT_LEVEL, cmd: 'rxalevel(*) ?\r' }),
         setLevel: ( index, level ) => ({ type: events.SET_CHANGE, index, cmd: `rxalevel(${ index })=${ level }\r` }),
         setFreq:  ( index, freq ) => ({ type: events.SET_CHANGE, cmd: `rxfreq(${ index })=${ freq * 1000 }\r` }),
-        setBattType: ( index, type ) => ({ type: events.SET_CHANGE, cmd: `txbatt(${ index })=${ type }\r` })
+        setBattType: ( index, type ) => ({ type: events.SET_CHANGE, cmd: `txbatt(${ index })=${ type }\r` }),
+        rxLabel: ( index ) =>  ({ type: events.RX_LABEL, index, cmd: `rxname(${index}) ?\r` }),
+        setRxLabel: ( index, label ) =>  ({ type: events.SET_CHANGE, index, cmd: `rxname(${ index })="${label}"\r` })
     }
     
     _batteryTypes = {
@@ -46,8 +48,9 @@ export default class VRM2WB extends Device {
     }
 
     _fetchData(){
-        this._deviceData.forEach( ch => { //query block for each channel
+        this._deviceData.forEach( ch => { //query block and label for each channel
             this.sendCmd(this.commands.blocks( ch.index ))
+            this.sendCmd(this.commands.rxLabel( ch.index ))
         })
         this.sendCmd(this.commands.battType())
         this.sendCmd(this.commands.freqs())
@@ -128,10 +131,16 @@ export default class VRM2WB extends Device {
     _jobSuccessHandler(result,job){
         DEBUG && console.log("Recieved Result:",result)
         switch (result.type) {
-            case events.BLOCKS:
+            case events.BLOCKS:{
                 const {index} = result
                 this._deviceData[index - 1].block = this._parseData(result.payload)[0] //TODO: can this be less ugly?
                 break;
+            }
+            case events.RX_LABEL:{
+                const { index } = result
+                this._deviceData[index - 1].label = this._parseData(result.payload)[0]
+                break;
+            }
             case events.BATTERY_TYPE: {
                 const dataArray = this._parseData(result.payload)
                 this._updateDeviceData({prop: "batteryType", dataArray})
@@ -187,14 +196,15 @@ export default class VRM2WB extends Device {
     _getScanData(){
         return Object.values(this._scanData)
     } 
-    
-    _setChannelSettings({index, level, batteryType, frequency }){
-        if([index, level, batteryType, frequency].includes(undefined)){
+
+    _setChannelSettings({index, label, level, batteryType, frequency }){
+        if([index, label, level, batteryType, frequency].includes(undefined)){
             throw new Error("Data Error: missing required key in channel data object")
         }
         // {index, level, battType, frequency, }
         this.sendCmd( this.commands.setLevel( index, level ));
         this.sendCmd(this.commands.setBattType( index, batteryType ))
         this.sendCmd(this.commands.setFreq( index, frequency ))
+        this.sendCmd(this.commands.setRxLabel( index, label ))
     }
 }

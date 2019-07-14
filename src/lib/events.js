@@ -12,5 +12,6 @@ export default events = {
   SCAN_STOP: "SCAN_STOP" ,
   SCAN_POLL: "SCAN_POLL",
   SET_CHANGE: "SET_CHANGE",
-  RX_PRESENT: "RX_PRESENT"
+  RX_PRESENT: "RX_PRESENT",
+  RX_LABEL: "RX_LABEL"
 }
