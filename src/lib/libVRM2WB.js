@@ -33,7 +33,7 @@ export default class VRM2WB extends Device {
         polScan:  {type: events.SCAN_POLL, cmd:(index) =>  `pollsd(${index})? $\r`},
         outLevel: {type: events.OUT_LEVEL, cmd:() =>  'rxalevel(*) ?\r'},
         setLevel: {type: events.SET_CHANGE, cmd: ([ index, level ]) => `rxalevel(${ index })=${ level }\r`},
-        setFreq:  {type: events.SET_CHANGE, cmd: ([ index, freq ]) => `rxfreq(${ index })=${ freq }\r`},
+        setFreq:  {type: events.SET_CHANGE, cmd: ([ index, freq ]) => `rxfreq(${ index })=${ freq * 1000 }\r`},
         setBattType: {type: events.SET_CHANGE, cmd: ([ index, type ]) => `txbatt(${ index })=${ type }\r`}
     }
     
@@ -51,6 +51,7 @@ export default class VRM2WB extends Device {
         this.sendCmd(this.commands.battType)
         this.sendCmd(this.commands.freqs)
         this.sendCmd(this.commands.battVolt)
+        this.sendCmd(this.commands.battType)
         this.sendCmd(this.commands.outLevel)
         this.sendCmd(this.commands.pilot)
     }
@@ -132,9 +133,11 @@ export default class VRM2WB extends Device {
                 const {index} = result
                 this._deviceData[index - 1].block = this._parseData(result.payload)[0] //TODO: can this be less ugly?
                 break;
-            case events.BATTERY_TYPE:
-                console.log("Todo: do something with battery types")
+            case events.BATTERY_TYPE: {
+                const dataArray = this._parseData(result.payload)
+                this._updateDeviceData({prop: "batteryType", dataArray})
                 break;
+            }
             case events.FREQUENCIES: {
                 const dataArray = this._parseData(result.payload).map( freq => parseFloat(freq) / 1000 )
                 this._updateDeviceData({prop: "frequency", dataArray})
@@ -183,5 +186,14 @@ export default class VRM2WB extends Device {
     }
     _getScanData(){
         return Object.values(this._scanData)
-    }    
+    } 
+    _setChannelSettings({index, level, batteryType, frequency }){
+        if([index, level, batteryType, frequency].includes(undefined)){
+            throw new Error("Data Error: missing required key in channel data object")
+        }
+        // {index, level, battType, frequency, }
+        this.sendCmd(this.commands.setLevel,[index,level]);
+        this.sendCmd(this.commands.setBattType,[index,batteryType])
+        this.sendCmd(this.commands.setFreq,[index,frequency])
+    }
 }

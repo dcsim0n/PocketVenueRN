@@ -18,6 +18,7 @@ function isOK(response){
  
 function netSend({address,port},cmd) { //Wrapper for net tcp opperations
     const client = net.createConnection(port,address,()=>{
+        DEBUG && console.log("Sending",cmd);
         client.write(cmd)
     })
     return new Promise((resolve,reject)=>{
