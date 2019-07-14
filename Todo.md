@@ -2,10 +2,8 @@
 
 # 2.0 
 1. Implement Duet support via libM2T.js
-2. Test test test, Venue WB, Venue 2, Duet
 3. Freqfinder Export
 4. Deploy imported data
-5. Hookup channel labels
 6. Screenshots for README
 
 #2.1
