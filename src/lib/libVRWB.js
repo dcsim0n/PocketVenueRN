@@ -5,7 +5,7 @@
 |--------------------------------------------------
 */
 
-import Device from './libDevice'
+import Device from './libDevice';
 import events from './events';
 
 const DEBUG = true //Switch to true to enable more console.logs
@@ -13,6 +13,7 @@ const DEBUG = true //Switch to true to enable more console.logs
 const blocks = require('./blocks.json')
 
 export default class VRWB extends Device {
+
     constructor(options){
         super(options) 
         this._fetchData = this._fetchData.bind(this)
@@ -20,6 +21,7 @@ export default class VRWB extends Device {
         this._deviceData = Device.initDeviceData(6)
         
     }
+
     commands = {
         deviceId: ( ) => ({ type: events.ID, cmd: 'id ?\r' }),        //Device type
         blocks:   ( ) =>({ type: events.BLOCKS, cmd: 'block(*) ?\r' }),    //Reciever blocks
@@ -45,13 +47,12 @@ export default class VRWB extends Device {
         "4": "AA Lithium",
         "5": "AA Timer"
     }
+
     _startScan(){
         //Initate scan process for uniqe Recievers
         const devices = this._getDevicesToScan()
-        devices.forEach((device)=>{
-            
+        devices.forEach((device)=>{           
             this.sendCmd( this.commands.startScan( device.index))
-
             //Initialize data structure
             const scanLength = blocks[device.block].scanLength
             const start = blocks[device.block].start
@@ -59,37 +60,30 @@ export default class VRWB extends Device {
             
             this._scanData = Object.assign(this._scanData, { //TODO: this structure can be combined with _deviceData
                 [device.index] : {
-                    block: device.block, 
+                    block: device.block,
                     scan: Array(scanLength).fill(0),
                     start,
                     end
                 }
             })
-
         })
-
     }
+
     _stopScan(){
         const devicesToStop = this._getDevicesToScan()
         devicesToStop.forEach((device)=>{
             this.sendCmd( this.commands.stopScan( device.index ))
         })
         this.stop() // Clear interval
-
     }
-    _fetchScanData(){
-        //Iterate over list of devices that are scanning
-        //Send commands to retrieve data from them
-        //Organize data and update _scanData acordingly
-        //Call event handler to let clients know data is updated
 
+    _fetchScanData(){
         const devicesToPoll = this._getDevicesToScan()
         devicesToPoll.forEach((device)=>{
-            // const cmdStr = this.commands.polScan.cmd.replace('*',device.index)
             this.sendCmd( this.commands.polScan( device.index ))
-        })
-        
-    } 
+        }) 
+    }
+
     _getDevicesToScan(){
         const devices = this.deviceData
         if(devices.length === 0 ){throw new Error('Scan Error: device must be connected first')}
@@ -97,6 +91,7 @@ export default class VRWB extends Device {
             return devices.findIndex((item2)=>item2.block === item.block) === index
         })
     }
+
     _fetchData(){
         this.sendCmd(this.commands.blocks())
         this.sendCmd(this.commands.battType())
@@ -105,6 +100,7 @@ export default class VRWB extends Device {
         this.sendCmd(this.commands.outLevel())
         this.sendCmd(this.commands.pilot()) //Should be last to trigger data update
     }
+
     _updateScanData(response){
         if(!response.index){
             throw new Error("updateScanData requires a reciever index to associate data with")
@@ -120,6 +116,7 @@ export default class VRWB extends Device {
         DEBUG && console.log('this._scanData', this._scanData)
         this.scanDataHandler(this.scanData)
     }
+
     _updateDeviceData({prop, dataArray}){
         const newData = this._deviceData.map(( channel, i) => {
             const newChannel = Object.assign({}, channel, { [prop] : dataArray[i] })
@@ -128,6 +125,7 @@ export default class VRWB extends Device {
         DEBUG && console.log("Updating device data:",newData);
         this._deviceData = newData
     }
+
     _jobSuccessHandler(result,job){
         DEBUG && console.log("Recieved result:",result);
         switch (result.type) {
@@ -177,6 +175,7 @@ export default class VRWB extends Device {
         }
         DEBUG && console.log(this._msgQueue)
     }
+
     _jobErrorHandler(error){
         this._msgQueue.end() //Important to stop the queue as soon as anything goes wrong.
         this.stop()
@@ -185,17 +184,21 @@ export default class VRWB extends Device {
         DEBUG && console.log(error);
         this.errorHandler && this.errorHandler(error)
     }
+
     _calculateHexValue(block,frequency){
         const startFreq = blocks[block].start
         const steps = (frequency - startFreq) * 10 //assume 100k stepsize
         return parseInt(steps,10).toString(16) //avoid weird javascript math errors
     }
+
     _getDeviceData(){
         return this._deviceData
     }
+
     _getScanData(){
         return Object.values(this._scanData)
     }
+
     _setChannelSettings({index, level, batteryType, frequency }){
         if([index, level, batteryType, frequency].includes(undefined)){
             throw new Error("Data Error: missing required key in channel data object")

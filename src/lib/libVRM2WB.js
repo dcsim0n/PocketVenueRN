@@ -44,9 +44,9 @@ export default class VRM2WB extends Device {
         "2": "9V Alkaline",
         "3": "9V Lithium"
     }
+
     _fetchData(){
         this._deviceData.forEach( ch => { //query block for each channel
-            
             this.sendCmd(this.commands.blocks( ch.index ))
         })
         this.sendCmd(this.commands.battType())
@@ -56,17 +56,15 @@ export default class VRM2WB extends Device {
         this.sendCmd(this.commands.outLevel())
         this.sendCmd(this.commands.pilot())
     }
+
     _startScan(){
         const devices = this._getDevicesToScan()
-        devices.forEach((device)=>{
-            
+        devices.forEach((device)=>{        
             this.sendCmd( this.commands.startScan( device.index ))
-
             //Initialize data structure
             const scanLength = blocks[device.block].scanLength
             const start = blocks[device.block].start
-            const end = blocks[device.block].end
-            
+            const end = blocks[device.block].end            
             this._scanData = Object.assign(this._scanData, { //TODO: this structure can be combined with _deviceData
                 [device.index] : {
                     block: device.block, 
@@ -75,9 +73,9 @@ export default class VRM2WB extends Device {
                     end
                 }
             })
-
         })
     }
+
     _stopScan(){
         const devicesToStop = this._getDevicesToScan()
         devicesToStop.forEach(( device )=>{
@@ -86,12 +84,14 @@ export default class VRM2WB extends Device {
         this.stop() // Clear interval
 
     }
+
     _fetchScanData(){
         const devicesToPoll = this._getDevicesToScan()
         devicesToPoll.forEach((device)=>{
             this.sendCmd( this.commands.polScan( device.index ))
         })  
     } 
+
     _getDevicesToScan(){
         const devices = this.deviceData
         if(devices.length === 0 ){throw new Error('Scan Error: device must be connected first')}
@@ -99,6 +99,7 @@ export default class VRM2WB extends Device {
             return devices.findIndex((item2)=>item2.block === item.block) === index
         })
     }
+
     _updateScanData(response){
         if(!response.index){
             throw new Error("updateScanData requires a reciever index to associate data with")
@@ -123,6 +124,7 @@ export default class VRM2WB extends Device {
         DEBUG && console.log("Updating device data:",newData);
         this._deviceData = newData
     }
+
     _jobSuccessHandler(result,job){
         DEBUG && console.log("Recieved Result:",result)
         switch (result.type) {
@@ -181,9 +183,11 @@ export default class VRM2WB extends Device {
     _getDeviceData(){
         return this._deviceData
     }
+
     _getScanData(){
         return Object.values(this._scanData)
     } 
+    
     _setChannelSettings({index, level, batteryType, frequency }){
         if([index, level, batteryType, frequency].includes(undefined)){
             throw new Error("Data Error: missing required key in channel data object")
