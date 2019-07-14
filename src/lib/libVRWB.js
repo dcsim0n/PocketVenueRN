@@ -33,7 +33,7 @@ export default class VRWB extends Device {
         polScan:  {type: events.SCAN_POLL, cmd:(index) =>  `pollsd(${index})? $\r`},
         outLevel: {type: events.OUT_LEVEL, cmd:() =>  'level(*) ?\r'},
         setLevel: {type: events.SET_CHANGE, cmd: ([ index, level ]) => `level(${ index })=${ level }\r`},
-        setFreq:  {type: events.SET_CHANGE, cmd: ([ index, freq ]) => `mhz(${ index })=${ freq }\r`},
+        setFreq:  {type: events.SET_CHANGE, cmd: ([ index, freq ]) => `mhz(${ index })=${ freq.toFixed(1) }\r`}, //Decimal point is required
         setBattType: {type: events.SET_CHANGE, cmd: ([ index, type ]) => `txbatt(${ index })=${ type }\r`}
     }
     
@@ -204,6 +204,6 @@ export default class VRWB extends Device {
         // {index, level, battType, frequency, }
         this.sendCmd(this.commands.setLevel,[index,level]);
         this.sendCmd(this.commands.setBattType,[index,batteryType])
-        this.sendCmd(this.commands.setFreq,[index,frequency])
+        this.sendCmd(this.commands.setFreq,[index,frequency]) //Frequency must contain a decimal
     }
 }
