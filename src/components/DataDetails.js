@@ -12,6 +12,7 @@ const DataDetails = ( props ) => {
   const [frequency, changeFrequency] = useState(item.frequency);
   const [batteryType, changeBattery] = useState(item.batteryType);
   const [level, changeLevel] = useState(item.level);
+  const [label, changeLabel] = useState(item.label);
 
   const device = props.navigation.getParam("device");
   const { BatteryTypes } = device
@@ -25,9 +26,9 @@ const DataDetails = ( props ) => {
     <View style={ styles.container }>
       <Text style={ styles.baseText }>Ch: { item.index }, Label: </Text>
       <TextInput
-        value={ item.label }
+        value={ label }
         style={[styles.textInput, { textAlign: "center" }]}
-        onChangeText={( text ) => console.log(text) }
+        onChangeText={( text ) => changeLabel( text ) }
       />
       <Text style={styles.baseText}>Block: {item.block}</Text>
       <Text style={styles.baseText}>Voltage: {item.voltage} V</Text>
@@ -70,7 +71,7 @@ const DataDetails = ( props ) => {
         />
         <Button
           title="Apply Changes"
-          onPress={() => device.setChannelSettings({index: item.index, level, frequency, batteryType})}
+          onPress={() => device.setChannelSettings({index: item.index, label, level, frequency, batteryType})}
         />
       </View>
     </View>
