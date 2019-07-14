@@ -21,21 +21,21 @@ export default class VRM2WB extends Device {
     }
     
     commands = { 
-        deviceId: {type: events.ID, cmd:() => 'id ?\r'},        //Device type
-        blocks:   {type: events.BLOCKS, cmd:( index ) => `rxblock(${ index }) ?\r`},    //Reciever block
-        battVolt: {type: events.BATTERY_VOLTAGE, cmd:() => 'txblevel(*) ?\r'}, //Battery voltage
-        battType: {type: events.BATTERY_TYPE, cmd:() =>  'txbatt(*) ?\r'}, //Battery type as set in the device
-        pilot:    {type: events.PILOT_TONE, cmd:() => 'rxlink(*) ?\r'},    //Pilot tone status
-        rxmeter:  {type: events.RF_LEVEL, cmd:() => 'rmeter(*) ?\r'},  //Signal strength
-        freqs:    {type: events.FREQUENCIES, cmd:() =>  'rxfreq(*) ?\r'},       //Frequenies of the recievers
-        rxpresent:{type: events.RX_PRESENT, com:() => 'rxpresent(*) ?\r'},
-        startScan:{type: events.SCAN_START, cmd:(index) =>  `rxscan(${index})=1\r`} ,
-        stopScan: {type: events.SCAN_STOP, cmd:(index) =>  `rxscan(${index})=0\r`},
-        polScan:  {type: events.SCAN_POLL, cmd:(index) =>  `pollsd(${index})? $\r`},
-        outLevel: {type: events.OUT_LEVEL, cmd:() =>  'rxalevel(*) ?\r'},
-        setLevel: {type: events.SET_CHANGE, cmd: ([ index, level ]) => `rxalevel(${ index })=${ level }\r`},
-        setFreq:  {type: events.SET_CHANGE, cmd: ([ index, freq ]) => `rxfreq(${ index })=${ freq * 1000 }\r`},
-        setBattType: {type: events.SET_CHANGE, cmd: ([ index, type ]) => `txbatt(${ index })=${ type }\r`}
+        deviceId: ( ) => ({ type: events.ID, cmd: 'id ?\r' }),                                    //Device type
+        blocks:   ( index ) => ({ type: events.BLOCKS, index, cmd: `rxblock(${ index }) ?\r` }),  //Reciever block
+        battVolt: ( ) => ({ type: events.BATTERY_VOLTAGE, cmd: 'txblevel(*) ?\r' }),              //Battery voltage
+        battType: ( ) => ({ type: events.BATTERY_TYPE, cmd: 'txbatt(*) ?\r' }),                   //Battery type as set in the device
+        pilot:    ( ) => ({ type: events.PILOT_TONE, cmd: 'rxlink(*) ?\r' }),                     //Pilot tone status
+        rxmeter:  ( ) => ({ type: events.RF_LEVEL, cmd: 'rmeter(*) ?\r' }),                       //Signal strength
+        freqs:    ( ) => ({ type: events.FREQUENCIES, cmd: 'rxfreq(*) ?\r' }),                    //Frequenies of the recievers
+        rxpresent:( ) => ({ type: events.RX_PRESENT, cmd: 'rxpresent(*) ?\r' }),                  // Channels with recievers installed
+        startScan:( index ) => ({ type: events.SCAN_START, index, cmd: `rxscan(${ index })=1\r` }),       // Send start scan command
+        stopScan: ( index ) => ({ type: events.SCAN_STOP, index, cmd:`rxscan(${ index })=0\r` }),         //Send stop scan command
+        polScan:  ( index ) => ({ type: events.SCAN_POLL, index, cmd: `pollsd(${ index })? $\r` }),
+        outLevel: ( ) => ({ type: events.OUT_LEVEL, cmd: 'rxalevel(*) ?\r' }),
+        setLevel: ( index, level ) => ({ type: events.SET_CHANGE, index, cmd: `rxalevel(${ index })=${ level }\r` }),
+        setFreq:  ( index, freq ) => ({ type: events.SET_CHANGE, cmd: `rxfreq(${ index })=${ freq * 1000 }\r` }),
+        setBattType: ( index, type ) => ({ type: events.SET_CHANGE, cmd: `txbatt(${ index })=${ type }\r` })
     }
     
     _batteryTypes = {
@@ -46,21 +46,21 @@ export default class VRM2WB extends Device {
     }
     _fetchData(){
         this._deviceData.forEach( ch => { //query block for each channel
-            const newCmd = {...this.commands.blocks, index: ch.index}
-            this.sendCmd(newCmd,ch.index)
+            
+            this.sendCmd(this.commands.blocks( ch.index ))
         })
-        this.sendCmd(this.commands.battType)
-        this.sendCmd(this.commands.freqs)
-        this.sendCmd(this.commands.battVolt)
-        this.sendCmd(this.commands.battType)
-        this.sendCmd(this.commands.outLevel)
-        this.sendCmd(this.commands.pilot)
+        this.sendCmd(this.commands.battType())
+        this.sendCmd(this.commands.freqs())
+        this.sendCmd(this.commands.battVolt())
+        this.sendCmd(this.commands.battType())
+        this.sendCmd(this.commands.outLevel())
+        this.sendCmd(this.commands.pilot())
     }
     _startScan(){
         const devices = this._getDevicesToScan()
         devices.forEach((device)=>{
             
-            this.sendCmd(this.commands.startScan, device.index)
+            this.sendCmd( this.commands.startScan( device.index ))
 
             //Initialize data structure
             const scanLength = blocks[device.block].scanLength
@@ -80,21 +80,17 @@ export default class VRM2WB extends Device {
     }
     _stopScan(){
         const devicesToStop = this._getDevicesToScan()
-        devicesToStop.forEach((device)=>{
-            this.sendCmd(this.commands.stopScan, device.index)
+        devicesToStop.forEach(( device )=>{
+            this.sendCmd( this.commands.stopScan( device.index ))
         })
         this.stop() // Clear interval
 
     }
     _fetchScanData(){
-
-
         const devicesToPoll = this._getDevicesToScan()
         devicesToPoll.forEach((device)=>{
-             const newCmd = {...this.commands.polScan, index: device.index}
-            this.sendCmd(newCmd, device.index)
-        })
-        
+            this.sendCmd( this.commands.polScan( device.index ))
+        })  
     } 
     _getDevicesToScan(){
         const devices = this.deviceData
@@ -193,8 +189,8 @@ export default class VRM2WB extends Device {
             throw new Error("Data Error: missing required key in channel data object")
         }
         // {index, level, battType, frequency, }
-        this.sendCmd(this.commands.setLevel,[index,level]);
-        this.sendCmd(this.commands.setBattType,[index,batteryType])
-        this.sendCmd(this.commands.setFreq,[index,frequency])
+        this.sendCmd( this.commands.setLevel( index, level ));
+        this.sendCmd(this.commands.setBattType( index, batteryType ))
+        this.sendCmd(this.commands.setFreq( index, frequency ))
     }
 }

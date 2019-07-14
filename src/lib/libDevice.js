@@ -126,9 +126,9 @@ export default class Device {
         DEBUG && console.log("Initialized deviceData", initData)
         return initData;
     }
-    sendCmd(cmd,args){
+    sendCmd(cmd){
         this._msgQueue.push((callback)=>{
-            netSend(this.connectObj,cmd.cmd(args)) //Promise for data
+            netSend(this.connectObj,cmd.cmd) //Promise for data
             .then((data)=>{
                 callback(null, {...cmd, payload: data})
             },(error)=>{
