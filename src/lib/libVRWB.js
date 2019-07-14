@@ -21,20 +21,20 @@ export default class VRWB extends Device {
         
     }
     commands = {
-        deviceId: {type: events.ID, cmd:() => 'id ?\r'},        //Device type
-        blocks:   {type: events.BLOCKS, cmd:() => 'block(*) ?\r'},    //Reciever blocks
-        battVolt: {type: events.BATTERY_VOLTAGE, cmd:() => 'bvolts(*) ?\r'}, //Battery voltage
-        battType: {type: events.BATTERY_TYPE, cmd:() =>  'txbatt(*) ?\r'}, //Battery type as set in the device
-        pilot:    {type: events.PILOT_TONE, cmd:() => 'signal(*) ?\r'},    //Pilot tone status
-        rxmeter:  {type: events.RF_LEVEL, cmd:() => 'rmeter(*) ?\r'},  //Signal strength
-        freqs:    {type: events.FREQUENCIES, cmd:() =>  'mhz(*) ?\r'},       //Frequenies of the recievers
-        startScan:{type: events.SCAN_START, cmd:(index) =>  `rxscan(${index})=1\r`} ,
-        stopScan: {type: events.SCAN_STOP, cmd:(index) =>  `rxscan(${index})=0\r`},
-        polScan:  {type: events.SCAN_POLL, cmd:(index) =>  `pollsd(${index})? $\r`},
-        outLevel: {type: events.OUT_LEVEL, cmd:() =>  'level(*) ?\r'},
-        setLevel: {type: events.SET_CHANGE, cmd: ([ index, level ]) => `level(${ index })=${ level }\r`},
-        setFreq:  {type: events.SET_CHANGE, cmd: ([ index, freq ]) => `mhz(${ index })=${ freq.toFixed(1) }\r`}, //Decimal point is required
-        setBattType: {type: events.SET_CHANGE, cmd: ([ index, type ]) => `txbatt(${ index })=${ type }\r`}
+        deviceId: ( ) => ({ type: events.ID, cmd: 'id ?\r' }),        //Device type
+        blocks:   ( ) =>({ type: events.BLOCKS, cmd: 'block(*) ?\r' }),    //Reciever blocks
+        battVolt: ( ) =>({ type: events.BATTERY_VOLTAGE, cmd: 'bvolts(*) ?\r' }), //Battery voltage
+        battType: ( ) =>({ type: events.BATTERY_TYPE, cmd: 'txbatt(*) ?\r' }), //Battery type as set in the device
+        pilot:    ( ) =>({ type: events.PILOT_TONE, cmd: 'signal(*) ?\r' }),    //Pilot tone status
+        rxmeter:  ( ) =>({ type: events.RF_LEVEL, cmd: 'rmeter(*) ?\r' }),  //Signal strength
+        freqs:    ( ) =>({ type: events.FREQUENCIES, cmd: 'mhz(*) ?\r' }),       //Frequenies of the recievers
+        startScan:( index ) =>({ type: events.SCAN_START, index, cmd: `rxscan(${index})=1\r` }) ,
+        stopScan: ( index ) =>({ type: events.SCAN_STOP, index, cmd: `rxscan(${index})=0\r` }),
+        polScan:  ( index ) =>({ type: events.SCAN_POLL, index, cmd: `pollsd(${ index })? $\r` }),
+        outLevel: ( ) =>({ type: events.OUT_LEVEL, cmd: 'level(*) ?\r' }),
+        setLevel: ( index, level ) =>({ type: events.SET_CHANGE, index, cmd: `level(${ index })=${ level }\r` }),
+        setFreq:  ( index, freq ) =>({ type: events.SET_CHANGE, index, cmd: `mhz(${ index })=${ freq.toFixed(1) }\r` }), //Decimal point is required
+        setBattType: ( index, type ) =>({ type: events.SET_CHANGE, index, cmd: `txbatt(${ index })=${ type }\r` })
     }
     
     _batteryTypes = {
@@ -50,7 +50,7 @@ export default class VRWB extends Device {
         const devices = this._getDevicesToScan()
         devices.forEach((device)=>{
             
-            this.sendCmd(this.commands.startScan, device.index)
+            this.sendCmd( this.commands.startScan( device.index))
 
             //Initialize data structure
             const scanLength = blocks[device.block].scanLength
@@ -72,7 +72,7 @@ export default class VRWB extends Device {
     _stopScan(){
         const devicesToStop = this._getDevicesToScan()
         devicesToStop.forEach((device)=>{
-            this.sendCmd(this.commands.stopScan, device.index)
+            this.sendCmd( this.commands.stopScan( device.index ))
         })
         this.stop() // Clear interval
 
@@ -86,8 +86,7 @@ export default class VRWB extends Device {
         const devicesToPoll = this._getDevicesToScan()
         devicesToPoll.forEach((device)=>{
             // const cmdStr = this.commands.polScan.cmd.replace('*',device.index)
-             const newCmd = {...this.commands.polScan, index: device.index}
-            this.sendCmd(newCmd, device.index)
+            this.sendCmd( this.commands.polScan( device.index ))
         })
         
     } 
@@ -99,12 +98,12 @@ export default class VRWB extends Device {
         })
     }
     _fetchData(){
-        this.sendCmd(this.commands.blocks)
-        this.sendCmd(this.commands.battType)
-        this.sendCmd(this.commands.freqs)
-        this.sendCmd(this.commands.battVolt)
-        this.sendCmd(this.commands.outLevel)
-        this.sendCmd(this.commands.pilot) //Should be last to trigger data update
+        this.sendCmd(this.commands.blocks())
+        this.sendCmd(this.commands.battType())
+        this.sendCmd(this.commands.freqs())
+        this.sendCmd(this.commands.battVolt())
+        this.sendCmd(this.commands.outLevel())
+        this.sendCmd(this.commands.pilot()) //Should be last to trigger data update
     }
     _updateScanData(response){
         if(!response.index){
@@ -202,8 +201,8 @@ export default class VRWB extends Device {
             throw new Error("Data Error: missing required key in channel data object")
         }
         // {index, level, battType, frequency, }
-        this.sendCmd(this.commands.setLevel,[index,level]);
-        this.sendCmd(this.commands.setBattType,[index,batteryType])
-        this.sendCmd(this.commands.setFreq,[index,frequency]) //Frequency must contain a decimal
+        this.sendCmd(this.commands.setLevel( index, level ));
+        this.sendCmd(this.commands.setBattType( index, batteryType ))
+        this.sendCmd(this.commands.setFreq( index, frequency )) //Frequency must contain a decimal
     }
 }
