@@ -28,6 +28,7 @@ export default class VRM2WB extends Device {
         pilot:    {type: events.PILOT_TONE, cmd:() => 'rxlink(*) ?\r'},    //Pilot tone status
         rxmeter:  {type: events.RF_LEVEL, cmd:() => 'rmeter(*) ?\r'},  //Signal strength
         freqs:    {type: events.FREQUENCIES, cmd:() =>  'rxfreq(*) ?\r'},       //Frequenies of the recievers
+        rxpresent:{type: events.RX_PRESENT, com:() => 'rxpresent(*) ?\r'},
         startScan:{type: events.SCAN_START, cmd:(index) =>  `rxscan(${index})=1\r`} ,
         stopScan: {type: events.SCAN_STOP, cmd:(index) =>  `rxscan(${index})=0\r`},
         polScan:  {type: events.SCAN_POLL, cmd:(index) =>  `pollsd(${index})? $\r`},
