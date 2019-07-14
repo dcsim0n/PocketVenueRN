@@ -173,7 +173,8 @@ export default class VRM2WB extends Device {
     _jobErrorHandler(error){ //Handle an error from the message qeue
         this._msgQueue.end()
         this.stop()
-        this._stopScan()
+        //WARNING: this causes a loop when there is no connection to a device
+        //this._stopScan()
         this.errorHandler && this.errorHandler(error)
     }
 

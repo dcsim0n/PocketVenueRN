@@ -18,6 +18,7 @@ export default class VRWB extends Device {
         this._fetchData = this._fetchData.bind(this)
         this._fetchScanData = this._fetchScanData.bind(this)
         this._deviceData = Device.initDeviceData(6)
+        
     }
     commands = {
         deviceId: {type: events.ID, cmd:() => 'id ?\r'},        //Device type
@@ -180,7 +181,8 @@ export default class VRWB extends Device {
     _jobErrorHandler(error){
         this._msgQueue.end() //Important to stop the queue as soon as anything goes wrong.
         this.stop()
-        this._stopScan() //Just in case an error happens while scanning, shut down the remote device
+        // WARNING: This causes a loop when there is no connection
+        //this._stopScan() //Just in case an error happens while scanning, shut down the remote device
         DEBUG && console.log(error);
         this.errorHandler && this.errorHandler(error)
     }
