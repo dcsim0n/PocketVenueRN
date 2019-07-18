@@ -9,7 +9,7 @@ const DEBUG = false;
 
 const FileSystem = require("react-native-fs");
 
-const { parseString } = require("xml2js");
+const { Builder, parseString } = require("xml2js");
 
 export function ParseFFX(url) {
   return new Promise((resolve, reject) => {
@@ -53,7 +53,10 @@ function _ParseFFX(resolve, reject, url) {
     reject(error);
   }
 }
-
+function _RenderFFX(txList){
+  const builder = new Builder({ rootName: "FFX" })
+  
+}
 async function openFile(url) {
   const fileStat = await FileSystem.stat(url);
 
