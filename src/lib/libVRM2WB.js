@@ -138,7 +138,7 @@ export default class VRM2WB extends Device {
             }
             case events.RX_LABEL:{
                 const { index } = result
-                this._deviceData[index - 1].label = this._parseData(result.payload)[0]
+                this._deviceData[index - 1].label = this._parseData(result.payload)[0] || ""
                 break;
             }
             case events.BATTERY_TYPE: {
@@ -197,7 +197,7 @@ export default class VRM2WB extends Device {
         return Object.values(this._scanData)
     } 
 
-    _setChannelSettings({index, label, level, batteryType, frequency }){
+    _setChannelSettings({index, label="", level, batteryType, frequency }){
         if([index, label, level, batteryType, frequency].includes(undefined)){
             throw new Error("Data Error: missing required key in channel data object")
         }
