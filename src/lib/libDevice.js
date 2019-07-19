@@ -161,7 +161,9 @@ export default class Device {
         this._setChannelSettings(channelData)
     }
     _parseData(data){
-        //this can handle strings like "OK {x,y,z}" and 'OK "DATA" ' 
+        //this can handle strings like "OK {x,y,z}" and 'OK "DATA"
+        //TODO: strings like 'OK ""' get parsed as undefinded because the filter removes all empty strings 
+        // can we change this behavior to avoid fixes like git: fb6b77
        return data.split(/OK\s[{\"]|,|[}\"]/).filter((x)=>(x=='' || x=='\r\n') ? false : true)
     }
 
