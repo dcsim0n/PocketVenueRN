@@ -2,9 +2,13 @@
 
 # 2.0 
 1. Implement Duet support via libM2T.js
-3. Freqfinder Export
-4. Deploy imported data
-6. Screenshots for README
+2. Freqfinder Export
+3. Deploy imported data
+4. Screenshots for README
+5. Add Device settings / warning levels
+6. channel lables for venue wb
+
+
 
 #2.1
 1. Implement D2 device support
