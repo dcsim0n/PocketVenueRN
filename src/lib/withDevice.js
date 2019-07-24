@@ -1,3 +1,9 @@
+/**
+|--------------------------------------------------
+| Device HOC wrapper
+| 2019 Dana Simmons
+|--------------------------------------------------
+*/
 import React, { Component } from "react";
 import { Alert } from "react-native";
 import PropTypes from "prop-types";
