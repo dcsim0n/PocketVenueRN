@@ -10,5 +10,6 @@ import globalReducer from './globalReducer'
 
 export default combineReducers({
   venues: venueReducer,
+  //activeDevice: activeDeviceReduer, may not need this yet
   globals: globalReducer
 })
