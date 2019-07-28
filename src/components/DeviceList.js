@@ -14,19 +14,25 @@ import NewDevice from "./NewDevice";
 import DeviceListItem from "./DeviceListItem";
 import { Header, Icon, Container, Content, Left, Body, Right, Title } from "native-base";
 import { newVenue, popVenue } from '../actions/actions'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 
-export default class DeviceList extends Component {
+class DeviceList extends Component {
+  constructor(props) {
+    super(props)
   
-  state = {
-    editing: false,
-    venues: []
-  };
+    this.state = {
+       editing: false
+    }
+  }
+  
   
   _addNewVenue = data => {
-    const venues = this.state.venues || []; //Handle empty state with empty array
-    const newVenue = Object.assign({}, data, {key: uuid()}) //Make a NEW object
-    console.log(this.state,newVenue);
-    
+    //const venues = this.state.venues || []; //Handle empty state with empty array
+    //const newVenue = Object.assign({}, data, {key: uuid()}) //Make a NEW object
+    //console.log(this.state,newVenue);
+    this.props.newVenue(data);
+
   };
 
   _onPressItem = deviceData => {
@@ -35,10 +41,10 @@ export default class DeviceList extends Component {
   };
 
   _removeDevice = id => {
-    const { venues } = this.state;
-    this.setState({ venues: venues.filter(({ key }) => key !== id) },
-      this._storeData
-    );
+    // const { venues } = this.state;
+    // this.setState({ venues: venues.filter(({ key }) => key !== id) },
+    //   this._storeData
+    // );
   };
   
   _toggleEdit = () => {
@@ -59,7 +65,7 @@ export default class DeviceList extends Component {
     try {
       await AsyncStorage.setItem(
         "@PocketVenue:devices",
-        JSON.stringify(this.state.venues)
+        JSON.stringify(this.props.venues)
       );
     } catch (error) {
       Alert.alert("Data Store Error", `${error.name}: ${error.message}`, [
@@ -70,8 +76,8 @@ export default class DeviceList extends Component {
 
   _readData = async () => {
     try {
-      const venues = await AsyncStorage.getItem("@PocketVenue:devices");
-      this.setState({ venues: JSON.parse(venues) });
+      // const venues = await AsyncStorage.getItem("@PocketVenue:devices");
+      // this.setState({ venues: JSON.parse(venues) });
     } catch (error) {
       Alert.alert("Data Store Error", `${error.name}: ${error.message}`, [
         { text: "OK" }
@@ -99,7 +105,7 @@ export default class DeviceList extends Component {
           </Header>
         <Content>
           <FlatList
-            data={this.state.venues}
+            data={this.props.venues}
             editing={this.state.editing}
             renderItem={this._renderItem}
           />
@@ -121,3 +127,17 @@ export default class DeviceList extends Component {
     Linking.removeEventListener("url", e => this._openUrl(e));
   }
 }
+const mapStateToProps = (state, props) => {
+  return {
+    ...props,
+    venues: state.venues
+  }
+}
+
+const mapDispatchToProps = (dispatch, props) => {
+  return {
+    newVenue : ( settings ) => dispatch(newVenue( settings )),
+    popVenue : ( settings ) => bindActionCreators(popVenue(settings), dispatch,)
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(DeviceList)
