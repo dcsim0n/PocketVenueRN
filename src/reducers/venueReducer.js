@@ -14,7 +14,7 @@ export default function venueReducer( state = initialState, {type, payload} ){
         return [...state, payload] //This can be cleaned up with separate reducers
 
       case C.POP_VENUE:
-        return state.filter((venue) => venue.key !== payload.key)
+        return state.filter((venue) => venue.key !== payload)
         
       default:
         return state;

@@ -6,47 +6,38 @@
 */
 
 import React, { Component } from "react";
-import uuid from "uuid/v1";
 import { connectDevice } from "../lib/connectDevice";
 import { FlatList, Alert, Linking } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 import NewDevice from "./NewDevice";
 import DeviceListItem from "./DeviceListItem";
 import { Header, Icon, Container, Content, Left, Body, Right, Title } from "native-base";
-import { newVenue, popVenue } from '../actions/actions'
+import { newVenue, removeVenue } from '../actions/actions'
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 
 class DeviceList extends Component {
   constructor(props) {
     super(props)
-  
+
     this.state = {
-       editing: false
+      editing: false
     }
   }
-  
-  
-  _addNewVenue = data => {
-    //const venues = this.state.venues || []; //Handle empty state with empty array
-    //const newVenue = Object.assign({}, data, {key: uuid()}) //Make a NEW object
-    //console.log(this.state,newVenue);
-    this.props.newVenue(data);
 
+
+  _addNewVenue = connectionSettings => {
+    this.props.newVenue( connectionSettings)  ;
   };
 
-  _onPressItem = deviceData => {
-    const device = connectDevice(deviceData);
+  _onPressItem = connectionSettings => {
+    const device = connectDevice(connectionSettings);
     this.props.navigation.push("Device", { device });
   };
 
-  _removeDevice = id => {
-    // const { venues } = this.state;
-    // this.setState({ venues: venues.filter(({ key }) => key !== id) },
-    //   this._storeData
-    // );
+  _removeDevice = ( uuid ) => {
+    this.props.removeVenue( uuid )
   };
-  
+
   _toggleEdit = () => {
     console.log("this.state.editing :", this.state.editing);
     this.setState({ editing: !this.state.editing });
@@ -84,25 +75,25 @@ class DeviceList extends Component {
       ]);
     }
   };
-  
+
   render() {
     return (
       <Container>
-          <Header>
-            <Left>
-              <NewDevice addNewVenue={data => this._addNewVenue(data)} />
-            </Left>
-            <Body>
-              <Title>Device List</Title>
-            </Body>
-            <Right>
-              <Icon 
-              name="remove-circle-outline" 
-              onPress={() => this._toggleEdit()} 
-              style={ this.state.editing ? { color: "red" } : { color: "blue" }}
-              />
-            </Right>
-          </Header>
+        <Header>
+          <Left>
+            <NewDevice addNewVenue={data => this._addNewVenue(data)} />
+          </Left>
+          <Body>
+            <Title>Device List</Title>
+          </Body>
+          <Right>
+            <Icon
+              name="remove-circle-outline"
+              onPress={() => this._toggleEdit()}
+              style={this.state.editing ? { color: "red" } : { color: "blue" }}
+            />
+          </Right>
+        </Header>
         <Content>
           <FlatList
             data={this.props.venues}
@@ -136,8 +127,8 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = (dispatch, props) => {
   return {
-    newVenue : ( settings ) => dispatch(newVenue( settings )),
-    popVenue : ( settings ) => bindActionCreators(popVenue(settings), dispatch,)
+    newVenue: (connectionSettings) => dispatch(newVenue(connectionSettings)),
+    removeVenue: (uuid) => dispatch(removeVenue(uuid))
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(DeviceList)
