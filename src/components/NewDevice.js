@@ -77,7 +77,8 @@ export default class NewDevice extends Component {
             <Button
               title={"Add"}
               onPress={() => {
-                this.props.addNewVenue(this.state.venue);
+                const settings = Object.assign({},this.state.venue) //Make each venue unique
+                this.props.addNewVenue( settings );
                 this.setModalVisible(!this.state.modalVisible);
               }}
             />
