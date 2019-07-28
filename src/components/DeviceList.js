@@ -13,6 +13,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 import NewDevice from "./NewDevice";
 import DeviceListItem from "./DeviceListItem";
 import { Header, Icon, Container, Content, Left, Body, Right, Title } from "native-base";
+import { newVenue, popVenue } from '../actions/actions'
 
 export default class DeviceList extends Component {
   
@@ -25,9 +26,7 @@ export default class DeviceList extends Component {
     const venues = this.state.venues || []; //Handle empty state with empty array
     const newVenue = Object.assign({}, data, {key: uuid()}) //Make a NEW object
     console.log(this.state,newVenue);
-    this.setState({ venues: [...venues, newVenue] }, 
-      this._storeData
-    );
+    
   };
 
   _onPressItem = deviceData => {

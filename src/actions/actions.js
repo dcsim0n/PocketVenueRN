@@ -5,8 +5,11 @@
 |--------------------------------------------------
 */
 import C from '../constants';
+import uuid from 'uuid/v1';
+
 
 export function newVenue(settings) {
+  settings.key = uuid(); //Generate unique key
   return { type: C.NEW_VENUE, payload: settings };
 }
 
