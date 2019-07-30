@@ -7,8 +7,9 @@
 import React, { Component } from "react";
 import { Alert } from "react-native";
 import PropTypes from "prop-types";
+import { connect } from 'react-redux'
 
-export function withDevice(ComponentToWrap) {
+function withDevice(ComponentToWrap) {
   class Wrapper extends Component {
     constructor(props) {
       super(props);
@@ -68,6 +69,7 @@ export function withDevice(ComponentToWrap) {
           scanData={this.state.scanData}
           device={this.device}
           navigateWithDevice={this.navigateWithDevice}
+          settings={this.props.settings}
           {...this.props}
         />
       );
@@ -76,6 +78,14 @@ export function withDevice(ComponentToWrap) {
   Wrapper.propTypes = {
     navigation: PropTypes.object.isRequired
   };
-
-  return Wrapper;
+  
+  const mapStateToProps = (state, ownProps) => {
+    return {
+      settings: state.settings
+    }
+  }
+  // Connect HOC to Redux Store
+  return connect(mapStateToProps)(Wrapper)
 }
+
+export default withDevice

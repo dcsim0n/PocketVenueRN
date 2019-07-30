@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import uuid from "uuid/v1";
 import PropTypes from "prop-types";
 import { View, Text, Button, FlatList } from "react-native";
-import { withDevice } from "../lib/withDevice";
+import withDevice from "../lib/withDevice";
 import DetailListItem from "./DetailListItem";
 import styles from "../stylesheets/appStyles";
 
