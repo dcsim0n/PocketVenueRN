@@ -20,3 +20,7 @@ export function removeVenue(uuid) {
 export function applySetting(setting) {
   return { type: C.APPLY_SETTING, payload: setting }
 }
+
+export function setActiveVenue( uuid ) {
+  return { type: C.SET_ACTIVE_VENUE, payload: uuid }
+}

@@ -31,7 +31,7 @@ class DeviceList extends Component {
 
   _onPressItem = connectionSettings => {
     const device = connectDevice(connectionSettings);
-    this.setActiveVenue(connectionSettings.key)
+    this.props.setActiveVenue(connectionSettings.key)
     this.props.navigation.push("Device");
   };
 
