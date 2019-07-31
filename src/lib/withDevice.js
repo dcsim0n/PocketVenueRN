@@ -7,14 +7,20 @@
 import React, { Component } from "react";
 import { Alert } from "react-native";
 import PropTypes from "prop-types";
+import VRWB from './libVRWB' 
+import VRM2WB from './libVRM2WB'
+import Dummy from './libDummy'
+import DeviceTypes from './deviceTypes'
 import { connect } from 'react-redux'
 
-function withDevice(ComponentToWrap) {
+let DEVICE = null;
+
+export function withDevice(ComponentToWrap) {
   class Wrapper extends Component {
     constructor(props) {
       super(props);
+      this.device = DEVICE
       this.navigation = this.props.navigation;
-      this.device = this.navigation.getParam("device");
       this.blurListener = this.navigation.addListener(
         "willBlur",
         this.componentWillBlur
@@ -37,8 +43,8 @@ function withDevice(ComponentToWrap) {
     handleScanData = () => {
       this.setState({ scanData: this.device.scanData });
     };
-    navigateWithDevice = screenName => {
-      this.navigation.push(screenName, { device: this.device });
+    navigateWithDevice = ( screenName, params ) => {
+      this.navigation.push(screenName, { device: this.device, ...params});
     };
     handleError = error => {
       this.device.stop();
@@ -46,6 +52,7 @@ function withDevice(ComponentToWrap) {
         { text: "OK" }
       ]);
     };
+
     componentDidFocus = () => {
       console.log("focusing");
       this.device.start(
@@ -54,6 +61,7 @@ function withDevice(ComponentToWrap) {
         this.handleError
       );
     };
+
     componentWillBlur = () => {
       console.log("blurring..");
       this.device.stop();
@@ -88,4 +96,25 @@ function withDevice(ComponentToWrap) {
   return connect(mapStateToProps)(Wrapper)
 }
 
-export default withDevice
+
+
+
+//Factory function for instantiating new device
+
+export function connectDevice(options){
+    const {type} = options
+    switch (type) {
+        case DeviceTypes.VRM2WB:
+            DEVICE = new VRM2WB(options)
+            break;
+        case DeviceTypes.VRWB:
+            DEVICE = new VRWB(options)
+            break;
+        case DeviceTypes.TEST:
+            DEVICE = new Dummy(options)
+            break;
+        default:
+            return null
+    }
+    return DEVICE
+}

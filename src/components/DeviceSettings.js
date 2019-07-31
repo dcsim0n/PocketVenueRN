@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Text, View } from 'react-native'
-import withDevice from '../lib/withDevice';
+import { withDevice } from '../lib/withDevice';
 import Slider from '@react-native-community/slider';
 
 

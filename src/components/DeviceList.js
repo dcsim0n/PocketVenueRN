@@ -6,13 +6,13 @@
 */
 
 import React, { Component } from "react";
-import { connectDevice } from "../lib/connectDevice";
+import { connectDevice } from "../lib/withDevice";
 import { FlatList, Alert, Linking } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 import NewDevice from "./NewDevice";
 import DeviceListItem from "./DeviceListItem";
 import { Header, Icon, Container, Content, Left, Body, Right, Title } from "native-base";
-import { newVenue, removeVenue } from '../actions/actions'
+import { newVenue, removeVenue, setActiveVenue } from '../actions/actions'
 import { connect } from 'react-redux'
 
 class DeviceList extends Component {
@@ -31,7 +31,8 @@ class DeviceList extends Component {
 
   _onPressItem = connectionSettings => {
     const device = connectDevice(connectionSettings);
-    this.props.navigation.push("Device", { device });
+    this.setActiveVenue(connectionSettings.key)
+    this.props.navigation.push("Device");
   };
 
   _removeDevice = ( uuid ) => {
@@ -127,8 +128,9 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = (dispatch, props) => {
   return {
-    newVenue: (connectionSettings) => dispatch(newVenue(connectionSettings)),
-    removeVenue: (uuid) => dispatch(removeVenue(uuid))
+    newVenue: ( connectionSettings ) => dispatch( newVenue( connectionSettings )),
+    removeVenue: ( uuid ) => dispatch(removeVenue( uuid )),
+    setActiveVenue: ( uuid ) => dispatch(setActiveVenue( uuid ))
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(DeviceList)
