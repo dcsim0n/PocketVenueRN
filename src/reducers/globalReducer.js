@@ -8,7 +8,7 @@
 import C from '../constants'
 
 const initialState = {
-    activeVenue: null
+    activeVenueKey: null
 }
 
 export default (state = initialState, { type, payload }) => {
@@ -19,7 +19,7 @@ export default (state = initialState, { type, payload }) => {
     case C.SET_ACTIVE_VENUE:
         return {
             ...state,
-            activeVenue: payload
+            activeVenueKey: payload
         }
     default:
         return state

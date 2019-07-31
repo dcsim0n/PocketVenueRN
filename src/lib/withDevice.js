@@ -88,8 +88,10 @@ export function withDevice(ComponentToWrap) {
   };
   
   const mapStateToProps = (state, ownProps) => {
+    const activeKey = state.globals.activeVenueKey
+    const venues = state.venues
     return {
-      settings: state.settings
+      settings: state.venues.filter( venue => venue.key === activeKey )
     }
   }
   // Connect HOC to Redux Store
