@@ -1,3 +1,10 @@
+/**
+|--------------------------------------------------
+| Settings component for Venue Devices 
+| 2019 Dana Simmonss
+|--------------------------------------------------
+*/
+
 import React, { Component } from 'react'
 import { Text, View } from 'react-native'
 import { withDevice } from '../lib/withDevice';

@@ -1,6 +1,6 @@
 /**
 |--------------------------------------------------
-| Device HOC wrapper
+| Device HOC wrapper and Connect Function
 | 2019 Dana Simmons
 |--------------------------------------------------
 */

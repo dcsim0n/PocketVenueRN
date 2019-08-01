@@ -1,3 +1,10 @@
+/**
+|--------------------------------------------------
+| Main Detail View Component for Connected Devices
+| 2019 Dana Simmons
+|--------------------------------------------------
+*/
+
 import React, { Component } from "react";
 import uuid from "uuid/v1";
 import PropTypes from "prop-types";

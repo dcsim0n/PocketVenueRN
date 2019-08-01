@@ -7,6 +7,7 @@
 4. Screenshots for README
 5. Add Device settings / warning levels
 6. channel lables for venue wb
+7. Connect redux store to async storage
 
 
 

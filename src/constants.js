@@ -1,3 +1,10 @@
+/**
+|--------------------------------------------------
+| Redux Action Constants
+| 2019 Dana Simmonss
+|--------------------------------------------------
+*/
+
 export default {
   NEW_VENUE : "NEW_VENUE",
   POP_VENUE : "POP_VENUE",
