@@ -8,7 +8,6 @@
 import React, { Component } from "react";
 import { connectDevice } from "../lib/withDevice";
 import { FlatList, Alert, Linking } from "react-native";
-import AsyncStorage from "@react-native-community/async-storage";
 import NewDevice from "./NewDevice";
 import DeviceListItem from "./DeviceListItem";
 import { Header, Icon, Container, Content, Left, Body, Right, Title } from "native-base";
@@ -52,30 +51,6 @@ class DeviceList extends Component {
       editing={this.state.editing}
     />
   );
-
-  _storeData = async () => {
-    try {
-      await AsyncStorage.setItem(
-        "@PocketVenue:devices",
-        JSON.stringify(this.props.venues)
-      );
-    } catch (error) {
-      Alert.alert("Data Store Error", `${error.name}: ${error.message}`, [
-        { text: "OK" }
-      ]);
-    }
-  };
-
-  _readData = async () => {
-    try {
-      // const venues = await AsyncStorage.getItem("@PocketVenue:devices");
-      // this.setState({ venues: JSON.parse(venues) });
-    } catch (error) {
-      Alert.alert("Data Store Error", `${error.name}: ${error.message}`, [
-        { text: "OK" }
-      ]);
-    }
-  };
 
   render() {
     return (
