@@ -86,11 +86,12 @@ class DeviceList extends Component {
   }
 
   componentDidMount() {
-    this._readData();
+    // Adds an event listener for urls that can be passed from other apps
     Linking.addEventListener("url", e => this._openUrl(e));
   }
 
   componentWillUnmount() {
+    // Make sure to remove the listener we added above 
     Linking.removeEventListener("url", e => this._openUrl(e));
   }
 }

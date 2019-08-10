@@ -10,16 +10,15 @@
 import React from 'react'
 import { AppRegistry } from 'react-native';
 import { createStackNavigator, createAppContainer} from 'react-navigation'
-import { createStore } from 'redux'
+import { store, persistor } from './store'
 import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 import DeviceList from './src/components/DeviceList';
 import DeviceDetails from './src/components/DeviceDetails'
 import DataDetails from './src/components/DataDetails'
 import Scanner from './src/components/Scaner'
 import ImportData from './src/components/ImportData'
 import DeviceSettings from './src/components/DeviceSettings';
-import { saveData, readData} from './datastorage'
-import rootReducer from './src/reducers/rootReducer'
 import {name as appName} from './app.json';
 
 const AppNavigator = createStackNavigator({
@@ -44,18 +43,19 @@ const AppNavigator = createStackNavigator({
   })
 const AppContainer = createAppContainer(AppNavigator)
 
-const store = createStore(rootReducer);
 
 const App = ( ) => {
   return (
-    <Provider store={store} >
-      <AppContainer />
-    </Provider>
+    <PersistGate persistor={ persistor } >
+      <Provider store={store} >
+        <AppContainer />
+      </Provider>
+    </ PersistGate> 
   )
 }
 
-store.subscribe(()=>{
-  console.log('state', store.getState())
-  saveData(store.getState())
-})
+// store.subscribe(()=>{
+//   console.log('state', store.getState())
+//   saveData(store.getState())
+// })
 AppRegistry.registerComponent(appName, ()=> App );
