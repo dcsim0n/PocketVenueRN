@@ -105,18 +105,20 @@ export function withDevice(ComponentToWrap) {
 
 export function connectDevice(options){
     const {type} = options
-    switch (type) {
-        case DeviceTypes.VRM2WB:
-            DEVICE = new VRM2WB(options)
-            break;
-        case DeviceTypes.VRWB:
-            DEVICE = new VRWB(options)
-            break;
-        case DeviceTypes.TEST:
-            DEVICE = new Dummy(options)
-            break;
-        default:
-            return null
-    }
+    // switch (type) {
+    //     case DeviceTypes.VRM2WB:
+    //         DEVICE = new VRM2WB(options)
+    //         break;
+    //     case DeviceTypes.VRWB:
+    //         DEVICE = new VRWB(options)
+    //         break;
+    //     case DeviceTypes.TEST:
+    //         DEVICE = new Dummy(options)
+    //         break;
+    //     default:
+    //         return null
+    // }
+    const { device, settings } = DeviceTypes[type].initialize( options )
+    DEVICE = device
     return DEVICE
 }
