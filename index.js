@@ -54,8 +54,7 @@ const App = ( ) => {
   )
 }
 
-// store.subscribe(()=>{
-//   console.log('state', store.getState())
-//   saveData(store.getState())
-// })
+store.subscribe(()=>{
+  console.log('state', store.getState())
+})
 AppRegistry.registerComponent(appName, ()=> App );
