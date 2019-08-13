@@ -11,7 +11,7 @@ import { FlatList, Alert, Linking } from "react-native";
 import NewDevice from "./NewDevice";
 import DeviceListItem from "./DeviceListItem";
 import { Header, Icon, Container, Content, Left, Body, Right, Title } from "native-base";
-import { newVenue, removeVenue, setActiveVenue } from '../actions/actions'
+import { newVenue, removeVenue, setActiveVenue, addSetting} from '../actions/actions'
 import { connect } from 'react-redux'
 
 class DeviceList extends Component {
@@ -25,12 +25,13 @@ class DeviceList extends Component {
 
 
   _addNewVenue = connectionSettings => {
-    this.props.newVenue( connectionSettings)  ;
+    this.props.newVenue( connectionSettings);
   };
 
   _onPressItem = connectionSettings => {
-    const device = connectDevice(connectionSettings);
+    const { device, preferences } = connectDevice(connectionSettings);
     this.props.setActiveVenue(connectionSettings.key)
+    this.props.addSetting( preferences )
     this.props.navigation.push("Device");
   };
 
@@ -105,6 +106,7 @@ const mapStateToProps = (state, props) => {
 const mapDispatchToProps = (dispatch, props) => {
   return {
     newVenue: ( connectionSettings ) => dispatch( newVenue( connectionSettings )),
+    addSetting: ( preferences ) => dispatch( addSetting( preferences )),
     removeVenue: ( uuid ) => dispatch(removeVenue( uuid )),
     setActiveVenue: ( uuid ) => dispatch(setActiveVenue( uuid ))
   }

@@ -17,8 +17,8 @@ export function removeVenue(uuid) {
   return { type: C.POP_VENUE, payload: uuid };
 }
 
-export function applySetting(setting) {
-  return { type: C.APPLY_SETTING, payload: setting }
+export function addSetting( preferences ) {
+  return { type: C.ADD_SETTING, payload: preferences }
 }
 
 export function setActiveVenue( uuid ) {

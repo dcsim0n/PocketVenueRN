@@ -17,16 +17,20 @@ export default DeviceTypes = {
         name: 'Venue 2 / VRM2WB',
         initialize: ( options ) =>{
             const device = new VRM2WB( options )
-            const settings = buildBatterySettings(device.BatteryTypes)
-            return { device, settings }
+            const preferences = buildBatterySettings(device.BatteryTypes)
+            // preferences is an array object, 
+            // not sure how I feel about adding a key to it
+            // vvvvvvvv    
+            preferences.key = options.key
+            return { device, preferences }
         }
     },
     VRWB: {
         name: 'Venue WB / VRWB',
         initialize: ( options ) =>{
             const device = new VRWB( options )
-            const settings = buildBatterySettings(device.BatteryTypes)
-            return { device, settings }
+            const preferences = buildBatterySettings(device.BatteryTypes)
+            return { device, preferences }
         }
     } ,
     // M2T: {
@@ -48,8 +52,8 @@ export default DeviceTypes = {
         name: "Demo Mode",
         initialize: ( options ) =>{
             const device = new Dummy( options )
-            const settings = buildBatterySettings(device.BatteryTypes)
-            return { device, settings }
-        }
+            const preferences = buildBatterySettings(device.BatteryTypes)
+            return { device, preferences }
+       }
     }
 }

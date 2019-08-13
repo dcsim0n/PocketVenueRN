@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { View, Modal, Text, Picker, Button } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import styles from "../stylesheets/appStyles";
-import devices from "../lib/deviceTypes";
+import DeviceTypes from "../lib/deviceTypes";
 import { Icon } from "native-base";
 export default class NewDevice extends Component {
   constructor(props) {
@@ -12,7 +12,7 @@ export default class NewDevice extends Component {
         address: "127.0.0.1",
         port: "4080",
         name: "New Venue",
-        type: devices.VRWB
+        type: "VRWB"
       },
       modalVisible: false
     };
@@ -69,8 +69,8 @@ export default class NewDevice extends Component {
               selectedValue={this.state.venue.type}
               onValueChange={value => this.setVeneuState({ type: value })}
             >
-              {Object.values(devices).map(value => (
-                <Picker.Item key={value} value={value} label={value} />
+              {Object.keys(DeviceTypes).map( key => (
+                <Picker.Item key={ key } value={ key } label={ DeviceTypes[ key ].name } />
               ))}
             </Picker>
 

@@ -7,9 +7,6 @@
 import React, { Component } from "react";
 import { Alert } from "react-native";
 import PropTypes from "prop-types";
-import VRWB from './libVRWB' 
-import VRM2WB from './libVRM2WB'
-import Dummy from './libDummy'
 import DeviceTypes from './deviceTypes'
 import { connect } from 'react-redux'
 
@@ -118,7 +115,7 @@ export function connectDevice(options){
     //     default:
     //         return null
     // }
-    const { device, settings } = DeviceTypes[type].initialize( options )
+    const { device, preferences  } = DeviceTypes[type].initialize( options )
     DEVICE = device
-    return DEVICE
+    return { device, preferences }
 }
