@@ -5,10 +5,8 @@ import M2T from './libM2T'
 
 function buildBatterySettings( batteryTypes ){
     const settings = Object.keys(batteryTypes).map(( key ) => {
-        return [ // create a 'Warn' and a 'Alert' setting for each type of battery
-            { setingKey: `${batteryTypes[key]} Warn`,  value: 0 , index: key },
-            { setingKey: `${batteryTypes[key]} Alert`,  value: 0, index: key }
-        ]
+        // create a 'Warn' and a 'Alert' setting for each type of battery
+        return { setingKey: `${batteryTypes[key]}`,  alert: 0, warn: 0 , index: key }
     })
     return settings 
 }
