@@ -17,12 +17,14 @@ export default function venueReducer( state = initialState, {type, payload} ){
         return state.filter((venue) => venue.key !== payload)
       
       case C.ADD_SETTING:
-        return state.map(( venue ) => {
+        const newState = state.map(( venue ) => {
           if( venue.key === payload.key ){
             venue.preferences = payload // This doesn't do any merging
           }
           return venue                             // Another map loop would let us merge 0(n^2)
         })
+        return newState
+        break;
       default:
         return state;
     }

@@ -30,6 +30,7 @@ export default DeviceTypes = {
         initialize: ( options ) =>{
             const device = new VRWB( options )
             const preferences = buildBatterySettings(device.BatteryTypes)
+            preferences.key = options.key
             return { device, preferences }
         }
     } ,
@@ -53,6 +54,7 @@ export default DeviceTypes = {
         initialize: ( options ) =>{
             const device = new Dummy( options )
             const preferences = buildBatterySettings(device.BatteryTypes)
+            preferences.key = options.key
             return { device, preferences }
        }
     }
