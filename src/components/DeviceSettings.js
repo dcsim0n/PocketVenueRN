@@ -12,30 +12,30 @@ import Slider from '@react-native-community/slider';
 
 
  class DeviceSettings extends Component {
-  constructor(props) {
-    super(props)
+  // constructor(props) {
+  //   super(props)
     
-    this.state = {
-       /* Some settings will go here */
-       batterySettings: [
-         {type: "AA Alkaline", warn: 1, alert: 1},
-         {type: "AA Lithium", warn: 1, alert: 1},
-         {type: "9V Alkaline", warn: 1, alert: 1},
-         {type: "9V Lithium", warn: 1, alert: 1}
-       ]
-    }
-  }
+  //   this.state = {
+  //      /* Some settings will go here */
+  //      batterySettings: [
+  //        {type: "AA Alkaline", warn: 1, alert: 1},
+  //        {type: "AA Lithium", warn: 1, alert: 1},
+  //        {type: "9V Alkaline", warn: 1, alert: 1},
+  //        {type: "9V Lithium", warn: 1, alert: 1}
+  //      ]
+  //   }
+  // }
   
   render() {
     return (
       <View>
-        { this.state.batterySettings.map(( setting ) => (
-          <View>
+        { this.props.preferences.map(( setting ) => (
+          <View key={ setting.preferenceKey }>
             <Text>{setting.type}</Text>
             <Text>Warn Level</Text>
-            <Slider minimumValue={0} maximumValue={9} value={setting.warn} />
+            <Slider  minimumValue={0} maximumValue={9} value={setting.warn} />
             <Text>Alert Level</Text>
-            <Slider minimumValue={0} maximumValue={9} value={setting.alert} />
+            <Slider  minimumValue={0} maximumValue={9} value={setting.alert} />
           </View>
         ))}
       </View>

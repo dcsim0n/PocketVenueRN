@@ -9,7 +9,7 @@ import { Alert } from "react-native";
 import PropTypes from "prop-types";
 import DeviceTypes from './deviceTypes'
 import { connect } from 'react-redux'
-
+import { addSetting } from '../actions/actions'
 let DEVICE = null;
 
 export function withDevice(ComponentToWrap) {
@@ -74,7 +74,6 @@ export function withDevice(ComponentToWrap) {
           scanData={this.state.scanData}
           device={this.device}
           navigateWithDevice={this.navigateWithDevice}
-          settings={this.props.settings}
           {...this.props}
         />
       );
@@ -84,15 +83,23 @@ export function withDevice(ComponentToWrap) {
     navigation: PropTypes.object.isRequired
   };
   
-  const mapStateToProps = (state, ownProps) => {
+
+  // This passes props through the Wrapper component, they must allso be added
+  const mapStateToProps = (state, ownProps) => { 
     const activeKey = state.globals.activeVenueKey
     const venues = state.venues
     return {
-      settings: state.venues.filter( venue => venue.key === activeKey )
+      preferences: state.venues.filter( venue => venue.key === activeKey )[0].preferences
+    }
+  }
+
+  const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+      addSetting: ( preferences ) => dispatch( addSetting( preferences ))
     }
   }
   // Connect HOC to Redux Store
-  return connect(mapStateToProps)(Wrapper)
+  return connect(mapStateToProps, mapDispatchToProps)(Wrapper)
 }
 
 
