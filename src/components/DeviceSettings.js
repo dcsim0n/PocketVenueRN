@@ -24,6 +24,7 @@ import Slider from '@react-native-community/slider';
       // insert newPreference into new preferece array using newPreference.index
       // dispatch newPreferences.
     const newPreferenceList = this.props.preferences.slice() //copy preferences
+    newPreferenceList.key = this.props.preferences.key // keep track of the associated devcie key
     newPreferenceList[setting.index] = newPreference  
     this.props.addSetting( newPreferenceList );
   }
