@@ -12,20 +12,21 @@ import Slider from '@react-native-community/slider';
 
 
  class DeviceSettings extends Component {
-  // constructor(props) {
-  //   super(props)
-    
-  //   this.state = {
-  //      /* Some settings will go here */
-  //      batterySettings: [
-  //        {type: "AA Alkaline", warn: 1, alert: 1},
-  //        {type: "AA Lithium", warn: 1, alert: 1},
-  //        {type: "9V Alkaline", warn: 1, alert: 1},
-  //        {type: "9V Lithium", warn: 1, alert: 1}
-  //      ]
-  //   }
-  // }
-  
+
+  handleSlide( {setting, value, type} ){
+    const newPreference = Object.assign(
+      {},
+      setting,
+      {[type]: value }
+      );
+      console.log("new preference is: ", newPreference)
+      // make new preference array
+      // insert newPreference into new preferece array using newPreference.index
+      // dispatch newPreferences.
+    const newPreferenceList = this.props.preferences.slice() //copy preferences
+    newPreferenceList[setting.index] = newPreference  
+    this.props.addSetting( newPreferenceList );
+  }
   render() {
     return (
       <View>
@@ -33,9 +34,19 @@ import Slider from '@react-native-community/slider';
           <View key={ setting.preferenceKey }>
             <Text>{setting.type}</Text>
             <Text>Warn Level</Text>
-            <Slider  minimumValue={0} maximumValue={9} value={setting.warn} />
+            <Slider  
+             minimumValue={0} 
+             maximumValue={9} 
+             value={setting.warn} 
+             onValueChange={( value ) => this.handleSlide( { setting, value, type:'warn' } )} 
+            />
             <Text>Alert Level</Text>
-            <Slider  minimumValue={0} maximumValue={9} value={setting.alert} />
+            <Slider  
+             minimumValue={0} 
+             maximumValue={9} 
+             value={setting.alert}
+             onValueChange={( value ) => this.handleSlide( { setting, value, type:'alert' } )} 
+             />
           </View>
         ))}
       </View>
