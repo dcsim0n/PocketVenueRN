@@ -18,14 +18,7 @@ export function withDevice(ComponentToWrap) {
       super(props);
       this.device = DEVICE
       this.navigation = this.props.navigation;
-      this.blurListener = this.navigation.addListener(
-        "willBlur",
-        this.componentWillBlur
-      );
-      this.focusListener = this.navigation.addListener(
-        "didFocus",
-        this.componentDidFocus
-      );
+
       this.state = {
         deviceData: [],
         scanData: [],
@@ -49,24 +42,6 @@ export function withDevice(ComponentToWrap) {
         { text: "OK" }
       ]);
     };
-
-    componentDidFocus = () => {
-      console.log("focusing");
-      this.device.start(
-        this.state.refreshRate,
-        this.handleDeviceData,
-        this.handleError
-      );
-    };
-
-    componentWillBlur = () => {
-      console.log("blurring..");
-      this.device.stop();
-    };
-    componentWillUnmount() {
-      this.blurListener.remove();
-      this.focusListener.remove();
-    }
     render() {
       return (
         <ComponentToWrap
