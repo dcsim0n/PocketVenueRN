@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import styles from "../stylesheets/appStyles";
+import { connect } from 'react-redux';
 
 
 const DetailListItem = props => {
@@ -31,7 +32,8 @@ DetailListItem.propTypes = {
     frequency: PropTypes.number.isRequired,
     pilot: PropTypes.string.isRequired,
     voltage: PropTypes.number.isRequired,
-    index: PropTypes.number.isRequired
+    index: PropTypes.number.isRequired,
+    battType: PropTypes.string.isRequired
   })
 };
 
@@ -44,4 +46,11 @@ const cellStyles = StyleSheet.create({
     marginVertical: 500,
   },
 })
-export default DetailListItem;
+
+const maptStateToProps = ( state, ownProps ) =>{
+  const activeKey = state.globals.activeVenueKey
+  return {
+    preferences: state.venues.filter( venue => venue.key === activeKey )[0].preferences
+  }
+}
+export default connect(mapStateToProps)(DetailListItem);
