@@ -30,9 +30,7 @@ export default class WithBlurListeners extends Component {
   componentDidFocus = () => {
     console.log("focusing");
     this.device.start(
-      this.state.refreshRate,
-      this.handleDeviceData,
-      this.handleError
+      //Where do these callbacks come from?
     );
   };
   componentWillBlur = () => {
