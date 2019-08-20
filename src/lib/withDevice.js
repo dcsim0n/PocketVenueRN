@@ -42,11 +42,23 @@ export function withDevice(ComponentToWrap) {
         { text: "OK" }
       ]);
     };
+    start = ( refreshRate = this.state.refreshRate, handleData = this.handleDeviceData, handleError = this.handleError) => {
+      this.device.start(
+        refreshRate,
+        handleData,
+        handleError
+      );
+    }
+    stop = ( /* any arguments? */ ) =>{
+      this.device.stop();
+    }
     render() {
       return (
         <ComponentToWrap
           deviceData={this.state.deviceData}
           scanData={this.state.scanData}
+          start={this.start}
+          stop={this.stop}
           device={this.device}
           navigateWithDevice={this.navigateWithDevice}
           {...this.props}
@@ -77,26 +89,11 @@ export function withDevice(ComponentToWrap) {
   return connect(mapStateToProps, mapDispatchToProps)(Wrapper)
 }
 
-
-
-
 //Factory function for instantiating new device
 
 export function connectDevice(options){
     const {type} = options
-    // switch (type) {
-    //     case DeviceTypes.VRM2WB:
-    //         DEVICE = new VRM2WB(options)
-    //         break;
-    //     case DeviceTypes.VRWB:
-    //         DEVICE = new VRWB(options)
-    //         break;
-    //     case DeviceTypes.TEST:
-    //         DEVICE = new Dummy(options)
-    //         break;
-    //     default:
-    //         return null
-    // }
+
     const { device, preferences  } = DeviceTypes[type].initialize( options )
     DEVICE = device
     return { device, preferences }

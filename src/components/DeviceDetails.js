@@ -12,6 +12,7 @@ import { View, Text, Button, FlatList } from "react-native";
 import { withDevice } from "../lib/withDevice";
 import DetailListItem from "./DetailListItem";
 import styles from "../stylesheets/appStyles";
+import  BlurListener  from './BlurListener';
 
 class DeviceDetails extends Component {
   _onBlockPress = item => {
@@ -20,33 +21,35 @@ class DeviceDetails extends Component {
   };
   render() {
     return (
-      <View style={styles.container}>
+      <BlurListener {...this.props} >
         <View style={styles.container}>
-          <Text>{`${this.props.device.name} @ ${this.props.device.address}: ${
-            this.props.device.type
-          }`}</Text>
-          <FlatList
-            contentContainerStyle={styles.celledList}
-            numColumns={2}
-            horizontal={false}
-            data={this.props.deviceData}
-            keyExtractor={() => uuid()}
-            renderItem={({ item }) => (
-              <DetailListItem onBlockPress={this._onBlockPress} item={item} />
-            )}
-          />
+          <View style={styles.container}>
+            <Text>{`${this.props.device.name} @ ${this.props.device.address}: ${
+              this.props.device.type
+            }`}</Text>
+            <FlatList
+              contentContainerStyle={styles.celledList}
+              numColumns={2}
+              horizontal={false}
+              data={this.props.deviceData}
+              keyExtractor={() => uuid()}
+              renderItem={({ item }) => (
+                <DetailListItem onBlockPress={this._onBlockPress} item={item} />
+              )}
+            />
+          </View>
+          <View style={[styles.toolbar, { alignContent: "flex-end" }]}>
+            <Button
+              title={"Scan"}
+              onPress={() => this.props.navigateWithDevice("Scan")}
+            />
+            <Button
+              title={"Device Settings"}
+              onPress={() => this.props.navigateWithDevice("DeviceSettings")}
+            />
+          </View>
         </View>
-        <View style={[styles.toolbar, { alignContent: "flex-end" }]}>
-          <Button
-            title={"Scan"}
-            onPress={() => this.props.navigateWithDevice("Scan")}
-          />
-          <Button
-            title={"Device Settings"}
-            onPress={() => this.props.navigateWithDevice("DeviceSettings")}
-          />
-        </View>
-      </View>
+      </BlurListener>
     );
   }
 }

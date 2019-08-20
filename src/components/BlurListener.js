@@ -6,7 +6,6 @@
 */
 
 import React, { Component } from 'react';
-import { Text, View } from 'react-native';
 import { PropTypes } from 'prop-types';
 
 export default class WithBlurListeners extends Component {
@@ -29,13 +28,11 @@ export default class WithBlurListeners extends Component {
   
   componentDidFocus = () => {
     console.log("focusing");
-    this.device.start(
-      //Where do these callbacks come from?
-    );
+    this.props.start( /* override defaults here */ );
   };
   componentWillBlur = () => {
     console.log("blurring..");
-    this.device.stop();
+    this.props.stop();
   };
   componentWillUnmount() {
     this.blurListener.remove();
@@ -48,7 +45,9 @@ export default class WithBlurListeners extends Component {
   }
 }
 
-WithBlurListeners.PropTypes = {
+WithBlurListeners.propTypes = {
   device: PropTypes.object.isRequired,
+  start: PropTypes.object.isRequired,
+  stop: PropTypes.object.isRequired,
   navigation: PropTypes.object.isRequired
 };
