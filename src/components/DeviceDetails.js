@@ -34,7 +34,11 @@ class DeviceDetails extends Component {
               data={this.props.deviceData}
               keyExtractor={() => uuid()}
               renderItem={({ item }) => (
-                <DetailListItem onBlockPress={this._onBlockPress} item={item} />
+                <DetailListItem 
+                onBlockPress={this._onBlockPress} 
+                item={item} 
+                preferences={this.props.preferences} 
+                />
               )}
             />
           </View>

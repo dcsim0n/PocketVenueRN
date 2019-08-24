@@ -73,11 +73,13 @@ Device Structure
   type: "VRM2WB"
   preferences: {
     0: { //battery types from device
+      name: "Descriptive name",
       warnLevel: 12, // red ?
       alertLevel: 14 // yellow ?
     },
     1: {
       {
+        name: "Descriptive name",
         warnLevel: 13,
         alertLevel: 15
       }
