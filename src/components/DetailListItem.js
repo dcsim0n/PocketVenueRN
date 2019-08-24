@@ -4,22 +4,42 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import styles from "../stylesheets/appStyles";
 import { connect } from 'react-redux';
 
-
+function  bbgColor(item,preferences){ //Battery background color
+  //Pull the warn/alert settings out of the preference hash
+  console.log("Getting preference", item)
+  const itemBatteryPreference = preferences[item.batteryType] 
+  let bgcolor = "none";
+  if ( item.voltage <= itemBatteryPreference.warn ){
+    bgcolor = "yellow";
+  }
+  if ( item.voltage <= itemBatteryPreference.alert ){
+    bgcolor = "red";
+  }
+  return bgcolor; 
+}
 const DetailListItem = props => {
-
+  const { item, preferences } = props
   return (
     <View
       style={styles.celledListItem}
     >
       <TouchableOpacity
-        onPress={() => props.onBlockPress(props.item)}
+        onPress={() => props.onBlockPress(item)}
       >
         <Text style={{fontSize: 16}}>
-          <Text>CH {props.item.index} : {props.item.label || "No Label"}{'\n'}</Text>
-          <Text>Blk: {props.item.block}</Text>
-          <Text> Hex: {props.item.hex}{'\n'}</Text>
-          <Text style={cellStyles.frequency}>{props.item.frequency.toFixed(2)}{'\n'}</Text>
-          <Text>{props.item.voltage.toFixed(2)}</Text>
+          <Text>CH {item.index} : {item.label || "No Label"}{'\n'}</Text>
+          <Text>Blk: {item.block}</Text>
+          <Text> Hex: {item.hex}{'\n'}</Text>
+          <Text 
+           style={cellStyles.frequency}
+          >
+            {item.frequency.toFixed(2)}{'\n'}
+          </Text>
+          <Text 
+           style={{ backgroundColor: bbgColor(item,preferences) }}
+          >
+            {item.voltage.toFixed(2)}
+          </Text>
         </Text>
       </TouchableOpacity>
       
@@ -33,7 +53,7 @@ DetailListItem.propTypes = {
     pilot: PropTypes.string.isRequired,
     voltage: PropTypes.number.isRequired,
     index: PropTypes.number.isRequired,
-    battType: PropTypes.string.isRequired
+    batteryType: PropTypes.string.isRequired
   })
 };
 
@@ -47,10 +67,5 @@ const cellStyles = StyleSheet.create({
   },
 })
 
-const maptStateToProps = ( state, ownProps ) =>{
-  const activeKey = state.globals.activeVenueKey
-  return {
-    preferences: state.venues.filter( venue => venue.key === activeKey )[0].preferences
-  }
-}
-export default connect(mapStateToProps)(DetailListItem);
+
+export default DetailListItem;

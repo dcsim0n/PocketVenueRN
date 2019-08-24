@@ -22,29 +22,35 @@ class DeviceDetails extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.container}>
-          <Text>{`${this.props.device.name} @ ${this.props.device.address}: ${
-            this.props.device.type
-          }`}</Text>
-          <FlatList
-            contentContainerStyle={styles.celledList}
-            numColumns={2}
-            horizontal={false}
-            data={this.props.deviceData}
-            keyExtractor={() => uuid()}
-            renderItem={({ item }) => (
-              <DetailListItem onBlockPress={this._onBlockPress} item={item} />
-            )}
-          />
-        </View>
-        <View style={[styles.toolbar, { alignContent: "flex-end" }]}>
-          <Button
-            title={"Scan"}
-            onPress={() => this.props.navigateWithDevice("Scan")}
-          />
-          <Button
-            title={"Device Settings"}
-            onPress={() => this.props.navigateWithDevice("DeviceSettings")}
-          />
+          <View style={styles.container}>
+            <Text>{`${this.props.device.name} @ ${this.props.device.address}: ${
+              this.props.device.type
+            }`}</Text>
+            <FlatList
+              contentContainerStyle={styles.celledList}
+              numColumns={2}
+              horizontal={false}
+              data={this.props.deviceData}
+              keyExtractor={() => uuid()}
+              renderItem={({ item }) => (
+                <DetailListItem 
+                onBlockPress={this._onBlockPress} 
+                item={item} 
+                preferences={this.props.preferences} 
+                />
+              )}
+            />
+          </View>
+          <View style={[styles.toolbar, { alignContent: "flex-end" }]}>
+            <Button
+              title={"Scan"}
+              onPress={() => this.props.navigateWithDevice("Scan")}
+            />
+            <Button
+              title={"Device Settings"}
+              onPress={() => this.props.navigateWithDevice("DeviceSettings")}
+            />
+          </View>
         </View>
       </View>
     );
