@@ -25,10 +25,10 @@ export default class WithBlurListeners extends Component {
       this.componentDidFocus
     );
   }
-  
+  //Pass startOnFocus=true to start the device when the focus event is called.
   componentDidFocus = () => {
     console.log("focusing");
-    this.props.start( /* override defaults here */ );
+    this.props.startOnFocus && this.props.start( /* override defaults here */ );
   };
   componentWillBlur = () => {
     console.log("blurring..");
@@ -47,7 +47,8 @@ export default class WithBlurListeners extends Component {
 
 WithBlurListeners.propTypes = {
   device: PropTypes.object.isRequired,
-  start: PropTypes.object.isRequired,
-  stop: PropTypes.object.isRequired,
-  navigation: PropTypes.object.isRequired
+  start: PropTypes.function.isRequired,
+  stop: PropTypes.function.isRequired,
+  navigation: PropTypes.object.isRequired,
+  startOnFocus: PropTypes.bool
 };
