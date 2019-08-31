@@ -6,12 +6,13 @@
 */
 
 import React, { Component } from "react";
-import { connectDevice } from "../lib/withDevice";
 import { FlatList, Alert, Linking } from "react-native";
 import NewDevice from "./NewDevice";
 import DeviceListItem from "./DeviceListItem";
 import { Header, Icon, Container, Content, Left, Body, Right, Title } from "native-base";
 import { newVenue, removeVenue, setActiveVenue, addSetting} from '../actions/actions'
+import styles from '../stylesheets/appStyles'
+import { connectDevice } from "../lib/withDevice";
 import { connect } from 'react-redux'
 
 class DeviceList extends Component {
@@ -56,12 +57,12 @@ class DeviceList extends Component {
   render() {
     return (
       <Container>
-        <Header>
+        <Header style={styles.header}>
           <Left>
             <NewDevice addNewVenue={data => this._addNewVenue(data)} />
           </Left>
           <Body>
-            <Title>Device List</Title>
+            <Title style={styles.header}>Device List</Title>
           </Body>
           <Right>
             <Icon
