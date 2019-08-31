@@ -21,7 +21,7 @@ class DeviceDetails extends Component {
   };
   render() {
     return (
-      <BlurListener {...this.props} >
+      <BlurListener {...this.props} startOnFocus={true} >
         <View style={styles.container}>
           <View style={styles.container}>
             <Text>{`${this.props.device.name} @ ${this.props.device.address}: ${

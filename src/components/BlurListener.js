@@ -47,8 +47,8 @@ export default class WithBlurListeners extends Component {
 
 WithBlurListeners.propTypes = {
   device: PropTypes.object.isRequired,
-  start: PropTypes.function.isRequired,
-  stop: PropTypes.function.isRequired,
+  start: PropTypes.func.isRequired,
+  stop: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
   startOnFocus: PropTypes.bool
 };

@@ -1,19 +1,21 @@
 import React, { Component } from 'react'
 import { Text, View, Button, ScrollView } from 'react-native'
+import { withDevice } from '../lib/withDevice';
+import BlurListener from './BlurListener'
 import RfGraph from './RfGraph'
 import styles from '../stylesheets/appStyles'
 import uuid from 'uuid/v1';
 
 
-export default class Scaner extends Component {
+class Scaner extends Component {
     constructor(props) {
         super(props)
         this.state = {
             scanData: [],
             scanInterval: 1000
         }
-        this.device = this.props.navigation.getParam('device')
-        this.onBlur = this.props.navigation.addListener('willBlur',this.componentWillBlur)
+        this.device = this.props.device
+        
     }
     handleUpdate = (data)=>{
         console.log("calback called, todo: update state with data")
@@ -31,22 +33,19 @@ export default class Scaner extends Component {
     }
     render() {
         return (
-            <View style={styles.container}>
-                <ScrollView >
-                    { this.state.scanData.map( (scan) => <RfGraph scan={scan} tx={this.filterTxByBlock(scan.block)} key={uuid()} /> ) }
-                    <View style={styles.toolbar} >
-                        <Button title={"Start Scan"} onPress={this.onStartPress} />
-                        <Button title={"Stop Scan"} onPress={this.onStopPress} />
-                    </View>
-                </ScrollView>
-            </View>
+            <BlurListener {...this.props} startOnFocus={false} >
+                <View style={styles.container}>
+                    <ScrollView >
+                        { this.state.scanData.map( (scan) => <RfGraph scan={scan} tx={this.filterTxByBlock(scan.block)} key={uuid()} /> ) }
+                        <View style={styles.toolbar} >
+                            <Button title={"Start Scan"} onPress={this.onStartPress} />
+                            <Button title={"Stop Scan"} onPress={this.onStopPress} />
+                        </View>
+                    </ScrollView>
+                </View>
+            </BlurListener>
         )
     }
-    componentWillBlur = () => {
-        this.device.stop()
-    }
 
-    componentWillUnmount () {
-        this.onBlur.remove()
-    }
 }
+export default withDevice(Scaner)

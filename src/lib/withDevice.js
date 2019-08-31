@@ -71,7 +71,7 @@ export function withDevice(ComponentToWrap) {
   };
   
 
-  // This passes props through the Wrapper component, they must allso be added
+  // Pass preferences to ComponentToWrap
   const mapStateToProps = (state, ownProps) => { 
     const activeKey = state.globals.activeVenueKey
     const venues = state.venues
@@ -90,10 +90,10 @@ export function withDevice(ComponentToWrap) {
 }
 
 //Factory function for instantiating new device
-
+//DEVICE is the global connected device
+//TODO: refactor to allow multiple devices to be connected at once
 export function connectDevice(options){
     const {type} = options
-
     const { device, preferences  } = DeviceTypes[type].initialize( options )
     DEVICE = device
     return { device, preferences }
