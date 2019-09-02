@@ -7,12 +7,9 @@
 import React, { Component } from "react";
 import { Alert } from "react-native";
 import PropTypes from "prop-types";
-import VRWB from './libVRWB' 
-import VRM2WB from './libVRM2WB'
-import Dummy from './libDummy'
 import DeviceTypes from './deviceTypes'
 import { connect } from 'react-redux'
-
+import { addSetting } from '../actions/actions'
 let DEVICE = null;
 
 export function withDevice(ComponentToWrap) {
@@ -21,14 +18,7 @@ export function withDevice(ComponentToWrap) {
       super(props);
       this.device = DEVICE
       this.navigation = this.props.navigation;
-      this.blurListener = this.navigation.addListener(
-        "willBlur",
-        this.componentWillBlur
-      );
-      this.focusListener = this.navigation.addListener(
-        "didFocus",
-        this.componentDidFocus
-      );
+
       this.state = {
         deviceData: [],
         scanData: [],
@@ -52,32 +42,25 @@ export function withDevice(ComponentToWrap) {
         { text: "OK" }
       ]);
     };
-
-    componentDidFocus = () => {
-      console.log("focusing");
+    start = ( refreshRate = this.state.refreshRate, handleData = this.handleDeviceData, handleError = this.handleError) => {
       this.device.start(
-        this.state.refreshRate,
-        this.handleDeviceData,
-        this.handleError
+        refreshRate,
+        handleData,
+        handleError
       );
-    };
-
-    componentWillBlur = () => {
-      console.log("blurring..");
+    }
+    stop = ( /* any arguments? */ ) =>{
       this.device.stop();
-    };
-    componentWillUnmount() {
-      this.blurListener.remove();
-      this.focusListener.remove();
     }
     render() {
       return (
         <ComponentToWrap
           deviceData={this.state.deviceData}
           scanData={this.state.scanData}
+          start={this.start}
+          stop={this.stop}
           device={this.device}
           navigateWithDevice={this.navigateWithDevice}
-          settings={this.props.settings}
           {...this.props}
         />
       );
@@ -87,36 +70,31 @@ export function withDevice(ComponentToWrap) {
     navigation: PropTypes.object.isRequired
   };
   
-  const mapStateToProps = (state, ownProps) => {
+
+  // Pass preferences to ComponentToWrap
+  const mapStateToProps = (state, ownProps) => { 
     const activeKey = state.globals.activeVenueKey
     const venues = state.venues
     return {
-      settings: state.venues.filter( venue => venue.key === activeKey )
+      preferences: state.venues.filter( venue => venue.key === activeKey )[0].preferences
+    }
+  }
+
+  const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+      addSetting: ( preferences ) => dispatch( addSetting( preferences ))
     }
   }
   // Connect HOC to Redux Store
-  return connect(mapStateToProps)(Wrapper)
+  return connect(mapStateToProps, mapDispatchToProps)(Wrapper)
 }
 
-
-
-
 //Factory function for instantiating new device
-
+//DEVICE is the global connected device
+//TODO: refactor to allow multiple devices to be connected at once
 export function connectDevice(options){
     const {type} = options
-    switch (type) {
-        case DeviceTypes.VRM2WB:
-            DEVICE = new VRM2WB(options)
-            break;
-        case DeviceTypes.VRWB:
-            DEVICE = new VRWB(options)
-            break;
-        case DeviceTypes.TEST:
-            DEVICE = new Dummy(options)
-            break;
-        default:
-            return null
-    }
-    return DEVICE
+    const { device, preferences  } = DeviceTypes[type].initialize( options )
+    DEVICE = device
+    return { device, preferences }
 }

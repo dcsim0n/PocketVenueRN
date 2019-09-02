@@ -6,7 +6,10 @@ export default styles = StyleSheet.create({
     baseText: {
       fontSize: defaultTextSize
     },
-    
+    header: {
+      backgroundColor: 'whitesmoke',
+      color: 'black'
+    },
     toolbar: {
       fontSize: defaultTextSize,
       flexDirection: 'row',
