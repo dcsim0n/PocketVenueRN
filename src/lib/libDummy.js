@@ -32,12 +32,12 @@ export default class Dummy extends Device {
     _getDeviceData(){
         //Return device data array
         return [
-            {index: 1, label: "Ch 1 Test", block: "19", frequency: 500, voltage: 1.4, pilot: "1"},
-            {index: 2, label: "Ch 2 Test", block: "19", frequency: 510, voltage: 1.4, pilot: "1"},
-            {index: 3, label: "Ch 3 Test", block: "19", frequency: 490, voltage: 1.4, pilot: "1"},
-            {index: 4, label: "Ch 4 Test", block: "19", frequency: 495, voltage: 1.4, pilot: "1"},
-            {index: 5, label: "Ch 5 Test", block: "19", frequency: 505, voltage: 1.4, pilot: "1"},
-            {index: 6, label: "Ch 6 Test", block: "19", frequency: 512, voltage: 1.4, pilot: "1"}
+            {index: 1, label: "Ch 1 Test", block: "19", frequency: 500, voltage: 1.4, pilot: "1", batteryType: "4"},
+            {index: 2, label: "Ch 2 Test", block: "19", frequency: 510, voltage: 1.4, pilot: "1", batteryType: "4"},
+            {index: 3, label: "Ch 3 Test", block: "19", frequency: 490, voltage: 1.4, pilot: "1", batteryType: "4"},
+            {index: 4, label: "Ch 4 Test", block: "19", frequency: 495, voltage: 1.4, pilot: "1", batteryType: "4"},
+            {index: 5, label: "Ch 5 Test", block: "19", frequency: 505, voltage: 1.4, pilot: "1", batteryType: "4"},
+            {index: 6, label: "Ch 6 Test", block: "19", frequency: 512, voltage: 1.4, pilot: "1", batteryType: "4"}
         ]
     }
     _fetchData(){
