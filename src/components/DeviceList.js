@@ -33,7 +33,7 @@ class DeviceList extends Component {
     const { device, preferences } = connectDevice(connectionSettings);
     this.props.setActiveVenue(connectionSettings.key)
     this.props.addSetting( preferences )
-    this.props.navigation.push("Device");
+    this.props.navigation.push("Device"); //Push to the Device Details page
   };
 
   _removeDevice = ( uuid ) => {
