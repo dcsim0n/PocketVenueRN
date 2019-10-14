@@ -5,7 +5,7 @@
 */
 const ENCODING = "utf8"; //TODO: abstract this and other constants into constants file
 
-const debug = true;
+const DEBUG = false;
 
 const FileSystem = require("react-native-fs");
 
@@ -23,7 +23,7 @@ function _ParseFFX(resolve, reject, url) {
   //return promise for this data
   try {
     const decodedURL = decodeURI(url);
-    debug && console.log("Opening URL: ", decodedURL);
+    DEBUG && console.log("Opening URL: ", decodedURL);
     if (!decodedURL.includes("ffx")) {
       throw new Error(
         "File Error: file does not end with a valid 'ffx' extension"
@@ -58,10 +58,10 @@ async function openFile(url) {
   const fileStat = await FileSystem.stat(url);
 
   if (fileStat.isFile()) {
-    debug && console.log("File is valid", url);
+    DEBUG && console.log("File is valid", url);
     return await FileSystem.readFile(fileStat.path, ENCODING);
   } else {
-    debug && console.log("Failed to open url:", url);
+    DEBUG && console.log("Failed to open url:", url);
     throw new Error("File Error: url is not a valid file");
   }
 }
