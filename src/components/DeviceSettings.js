@@ -11,6 +11,8 @@ import { withDevice } from "../lib/withDevice";
 import Slider from "@react-native-community/slider";
 
 class DeviceSettings extends Component {
+  
+  
   //TODO: add local state values to improve slider performance,
   // only dispatch redux action on onSlideComplete.
   handleSlide({ key, value, type }) { // <-- here type is the "type" of value: "warn", "alert", etc.. 
@@ -44,7 +46,7 @@ class DeviceSettings extends Component {
               minimumValue={0}
               maximumValue={9}
               value={this.props.preferences[key].warn}
-              onValueChange={value =>
+              onSlidingComplete={value =>
                 this.handleSlide({ key, value, type: "warn" })
               }
             />
@@ -53,7 +55,7 @@ class DeviceSettings extends Component {
               minimumValue={0}
               maximumValue={9}
               value={this.props.preferences[key].alert}
-              onValueChange={value =>
+              onSlidingComplete={value =>
                 this.handleSlide({ key, value, type: "alert" })
               }
             />
