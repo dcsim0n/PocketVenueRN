@@ -25,31 +25,31 @@ class DeviceList extends Component {
   }
 
 
-  _addNewVenue = connectionSettings => {
+  addNewVenue = connectionSettings => {
     this.props.newVenue( connectionSettings);
   };
 
-  _onPressItem = connectionSettings => {
+  onPressItem = connectionSettings => {
     const { device, preferences } = connectDevice(connectionSettings);
     this.props.setActiveVenue(connectionSettings.key)
     this.props.addSetting( preferences )
     this.props.navigation.push("Device"); //Push to the Device Details page
   };
 
-  _removeDevice = ( uuid ) => {
+  removeDevice = ( uuid ) => {
     this.props.removeVenue( uuid )
   };
 
-  _toggleEdit = () => {
+  toggleEdit = () => {
     console.log("this.state.editing :", this.state.editing);
     this.setState({ editing: !this.state.editing });
   };
 
-  _renderItem = ({ item }) => (
+  renderItem = ({ item }) => (
     <DeviceListItem
       device={item}
-      onPressItem={this._onPressItem}
-      removeDevice={this._removeDevice}
+      onPressItem={this.onPressItem}
+      removeDevice={this.removeDevice}
       editing={this.state.editing}
     />
   );
@@ -59,7 +59,7 @@ class DeviceList extends Component {
       <Container>
         <Header style={styles.header}>
           <Left>
-            <NewDevice addNewVenue={data => this._addNewVenue(data)} />
+            <NewDevice addNewVenue={data => this.addNewVenue(data)} />
           </Left>
           <Body>
             <Title style={styles.header}>Device List</Title>
@@ -67,7 +67,7 @@ class DeviceList extends Component {
           <Right>
             <Icon
               name="remove-circle-outline"
-              onPress={() => this._toggleEdit()}
+              onPress={() => this.toggleEdit()}
               style={this.state.editing ? { color: "red" } : { color: "blue" }}
             />
           </Right>
@@ -76,7 +76,7 @@ class DeviceList extends Component {
           <FlatList
             data={this.props.venues}
             editing={this.state.editing}
-            renderItem={this._renderItem}
+            renderItem={this.renderItem}
           />
         </Content>
       </Container>
