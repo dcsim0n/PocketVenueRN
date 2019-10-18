@@ -10,7 +10,7 @@ import C from '../constants'
 const initialState = []
 export default function venueReducer( state = initialState, {type, payload} ){
     switch (type) {
-      case C.NEW_VENUE:
+      case C.NEW_VENUE: //Add new venue to state
         return [...state, payload] //This can be cleaned up with separate reducers
 
       case C.POP_VENUE:

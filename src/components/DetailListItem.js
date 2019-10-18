@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 
 function  bbgColor(item,preferences){ //Battery background color
   //Pull the warn/alert settings out of the preference hash
-  console.log("Getting preference", item)
+  // item represents the channel data of a receiver
   const itemBatteryPreference = preferences[item.batteryType] 
   let bgcolor = "transparent";
   if ( item.voltage <= itemBatteryPreference.warn ){

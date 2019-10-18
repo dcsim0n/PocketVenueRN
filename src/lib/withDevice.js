@@ -93,8 +93,8 @@ export function withDevice(ComponentToWrap) {
 //DEVICE is the global connected device
 //TODO: refactor to allow multiple devices to be connected at once
 export function connectDevice(options){
-    const {type} = options
-    const { device, preferences  } = DeviceTypes[type].initialize( options )
-    DEVICE = device
+    const {type} = options //Connection options like device type, address, and port. Stored in redux state
+    const { device, preferences  } = DeviceTypes[type].initialize( options ) //Initialize based on type
+    DEVICE = device // this reference is used in the withDevice wrapper 
     return { device, preferences }
 }

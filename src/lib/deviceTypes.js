@@ -13,7 +13,7 @@ function buildBatterySettings(batteryTypes) {
   return preferences;
 }
 
-export default (DeviceTypes = {
+export default DeviceTypes = {
   VRM2WB: {
     name: "Venue 2 / VRM2WB",
     initialize: options => {
@@ -65,4 +65,4 @@ export default (DeviceTypes = {
       return { device, preferences };
     }
   }
-});
+}
