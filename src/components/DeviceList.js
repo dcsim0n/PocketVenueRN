@@ -9,7 +9,7 @@ import React, { Component } from "react";
 import { FlatList, Alert, Linking } from "react-native";
 import NewDevice from "./NewDevice";
 import DeviceListItem from "./DeviceListItem";
-import { Header, Icon, Container, Content, Left, Body, Right, Title } from "native-base";
+import { Button, Header, Icon, Container, Content, Left, Body, Right, Title } from "native-base";
 import { newVenue, removeVenue, setActiveVenue, addSetting} from '../actions/actions'
 import styles from '../stylesheets/appStyles'
 import { connectDevice } from "../lib/withDevice";
@@ -58,11 +58,18 @@ class DeviceList extends Component {
     return (
       <Container>
         <Header style={styles.header}>
-          <Left>
-            <NewDevice addNewVenue={data => this.addNewVenue(data)} />
+          <Left style={{flexDirection:'row', marginRight:20}}>
+              <NewDevice addNewVenue={data => this.addNewVenue(data)} />
+              <Button transparent >
+                <Icon name="folder-open" style={{color: 'blue'}}/>
+              </Button>
+
           </Left>
           <Body>
+            
+              
             <Title style={styles.header}>Device List</Title>
+            
           </Body>
           <Right>
             <Icon
