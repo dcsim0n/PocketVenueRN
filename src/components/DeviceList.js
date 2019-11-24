@@ -61,6 +61,7 @@ class DeviceList extends Component {
           <Left style={{flexDirection:'row', marginRight:20}}>
               <NewDevice addNewVenue={data => this.addNewVenue(data)} />
               <Button transparent >
+                { /* Icon names come from Ionicons portion of native-base */ }
                 <Icon name="folder-open" style={{color: 'blue'}}/>
               </Button>
 

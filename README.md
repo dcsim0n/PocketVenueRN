@@ -4,14 +4,9 @@
 ### [Please Use Yarn] Yarn package manager will save you a lot of headaches
 ## Setup
 1. `yarn install`
-2. `react-native link react-native-gesture-handler`
-3. `react-native link react-native-tcp`
-4. `react-native link react-native-svg`
-5. `react-native link @react-native-community/async-storage`
-6. `react-native link react-native-vector-icons`
-7. `./node_modules/.bin/rn-nodeify --install stream,process,util --hack`
-    * Optionally you can use `yarn hack` here to do the same thing
-8. `react-native run-ios` This will run the default iOS simulator. Usually it's the latest iPhone. If you'd like to save some resources and run an older iPhone device, try `yarn iPhone` to run iPhone SE.
+2. `./link.sh`
+3. `yarn hack`
+4. `react-native run-ios` This will run the default iOS simulator. Usually it's the latest iPhone. If you'd like to save some resources and run an older iPhone device, try `yarn iPhone` to run iPhone SE.
 
 This should get you up and running
 
