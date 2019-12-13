@@ -2,18 +2,24 @@ import React from "react";
 import PropTypes from "prop-types";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import styles from "../stylesheets/appStyles";
-import { connect } from 'react-redux';
+import alertError from "./alertError";
 
 function  bbgColor(item,preferences){ //Battery background color
   //Pull the warn/alert settings out of the preference hash
   // item represents the channel data of a receiver
+  
   const itemBatteryPreference = preferences[item.batteryType] 
+  
   let bgcolor = "transparent";
-  if ( item.voltage <= itemBatteryPreference.warn ){
-    bgcolor = "yellow";
-  }
-  if ( item.voltage <= itemBatteryPreference.alert ){
-    bgcolor = "red";
+  try{
+    if ( item.voltage <= itemBatteryPreference.warn ){
+      bgcolor = "yellow";
+    }
+    if ( item.voltage <= itemBatteryPreference.alert ){
+      bgcolor = "red";
+    }
+  }catch(err){
+    alertError(new Error(`Problem calculating battery warnings: ${err.message}`))
   }
   return bgcolor; 
 }
