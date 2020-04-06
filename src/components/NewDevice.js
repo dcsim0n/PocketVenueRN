@@ -1,10 +1,11 @@
 import React, { Component } from "react";
-import { View, Modal, Text, Picker } from "react-native";
-import { Button } from 'native-base'
+import { Button, View, Modal, Text, Picker } from "react-native";
+import {Button as BaseButton }  from 'native-base';
 import { TextInput } from "react-native-gesture-handler";
 import styles from "../stylesheets/appStyles";
 import DeviceTypes from "../lib/deviceTypes";
 import { Icon } from "native-base";
+
 export default class NewDevice extends Component {
   constructor(props) {
     super(props);
@@ -94,14 +95,14 @@ export default class NewDevice extends Component {
         </Modal>
 
         { /* Add new device button */ }
-        <Button transparent >
+        <BaseButton transparent >
           <Icon 
             name="add-circle"
             onPress={() => this.setModalVisible(true)}
             style={{ color: "blue" }}
-          />
-        </Button>
-      </View>
+            />
+        </BaseButton>
+    </View>
     );
   }
 }
