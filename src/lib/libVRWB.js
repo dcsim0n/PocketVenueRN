@@ -8,7 +8,7 @@
 import Device from './libDevice';
 import events from './events';
 
-const DEBUG = false //Switch to true to enable more console.logs
+const DEBUG = true //Switch to true to enable more console.logs
 
 const blocks = require('./blocks.json')
 

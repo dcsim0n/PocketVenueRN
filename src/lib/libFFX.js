@@ -5,7 +5,7 @@
 */
 const ENCODING = "utf8"; //TODO: abstract this and other constants into constants file
 
-const DEBUG = false;
+const DEBUG = true;
 
 const FileSystem = require("react-native-fs");
 

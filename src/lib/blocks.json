@@ -19,7 +19,7 @@
     "944":{"start":944.100,"end":951.900,"scanLength":256},
     "A1":{"start":470.100,"end":537.575,"scanLength":675},
     "B1":{"start":537.600,"end":614.375,"scanLength":768},
-    "C1":{"start":614.400,"end":691.175,"scanLength":768}
-    
-    
+    "B2":{"start":563.200,"end":639.900,"scanLength":768},
+    "C1":{"start":614.400,"end":691.175,"scanLength":768},
+    "C2":{"start":640.000,"end":716.700,"scanLength":768}
 }

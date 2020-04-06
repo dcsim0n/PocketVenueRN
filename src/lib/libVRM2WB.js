@@ -8,7 +8,7 @@
 import Device from './libDevice';
 import events from './events'
 
-const DEBUG = false;
+const DEBUG = true;
 const blocks = require('./blocks.json');
 
 export default class VRM2WB extends Device {
