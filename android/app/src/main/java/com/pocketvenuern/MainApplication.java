@@ -6,7 +6,6 @@ import com.facebook.react.ReactApplication;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.rnfs.RNFSPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
-import com.reactnativecommunity.slider.ReactSliderPackage;
 import com.horcrux.svg.SvgPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.peel.react.TcpSocketsModule;
@@ -33,7 +32,6 @@ public class MainApplication extends Application implements ReactApplication {
             new VectorIconsPackage(),
             new RNFSPackage(),
             new AsyncStoragePackage(),
-            new ReactSliderPackage(),
             new SvgPackage(),
             new RNGestureHandlerPackage(),
             new TcpSocketsModule()
