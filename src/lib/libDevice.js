@@ -5,7 +5,7 @@
 | 2019 Dana Simmons
 |--------------------------------------------------
 */
-const DEBUG = true //switch to true to turn on more console.logs
+const DEBUG = false //switch to true to turn on more console.logs
 
 const net = require('react-native-tcp')
 const Queue = require('queue')
