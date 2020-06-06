@@ -117,6 +117,7 @@ export default class ImportData extends Component<Props> {
         const url = this.props.navigation.getParam("url")
         ParseFFX(url)
         .then(ffx => this.setState({channels: ffx.TX}))
+        .catch( err => alertError(err));
     }
     render() {
       return (
