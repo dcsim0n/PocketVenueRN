@@ -6,41 +6,89 @@
 |--------------------------------------------------
 */
 
-import React, { useState, useEffect } from 'react'
-import { View, Text } from 'react-native'
+import React, { useState, useEffect, Component} from 'react'
+import { View, Text , StyleSheet , Picker} from 'react-native'
 import {ParseFFX} from '../lib/libFFX'
 import alertError from './alertError'
 
+const data = {
+  channels: [
+    { name: "FFX Import 1"},
+    { name: "FFX Import 2"},
+    { name: "FFX Import 3"},
+    { name: "FFX Import 4"},
+    { name: "FFX Import 5"},
+    { name: "FFX Import 6"}
+  ],
+
+  devices: [
+    {
+      name: "Venue 1",
+      channels: [
+        { label: "Channel 1"},
+        { label: "Channel 2"},
+        { label: "Channel 3"},
+        { label: "Channel 4"},
+        { label: "Channel 5"},
+        { label: "Channel 6"}
+      ],
+    },
+    {
+      name: "Venue 2",
+      channels:[
+        { label: "Channel 1"},
+        { label: "Channel 2"},
+        { label: "Channel 3"},
+        { label: "Channel 4"},
+        { label: "Channel 5"},
+        { label: "Channel 6"}
+      ],
+    },
+    {
+      name: "Venue 3",
+      channels:[
+        { label: "Channel 1"},
+        { label: "Channel 2"},
+        { label: "Channel 3"},
+        { label: "Channel 4"},
+        { label: "Channel 5"},
+        { label: "Channel 6"}
+      ],
+    },
+    {
+      name: "Venue 4",
+      channels:[
+        { label: "Channel 1"},
+        { label: "Channel 2"},
+        { label: "Channel 3"},
+        { label: "Channel 4"},
+        { label: "Channel 5"},
+        { label: "Channel 6"}
+      ],
+    },
+  ]
+}
 
 export default class ImportData extends Component<Props> {
-    // Need to add this functionality  
-    // const url = props.navigation.getParam("url")
-    // const [txList, setTxList] = useState(null)
     
-    // useEffect(( ) => {
-    //     if(txList === null){
-    //         ParseFFX(url)
-    //         .then(ffx => setTxList(ffx.TX))
-    //     }
-        
-    // })
-
-    // console.log(url)
-    state = {
-      channels: data.channels,
-      devices: data.devices,
-      selectedFreq: 0,
-      selectedDevice: 0,
-      selectedChannel: 0
+    constructor(props){
+      super(props)
+      this.state = {
+        channels: [],
+        devices: data.devices,
+        selectedFreq: 0,
+        selectedDevice: 0,
+        selectedChannel: 0
+      }
     }
   
     selectFreq = ( value ) =>{
-      const deviceIdx = this.state.channels[value].device.index
-      const chanIdx = this.state.channels[value].device.ch
+      // const deviceIdx = this.state.channels[value].device.index
+      // const chanIdx = this.state.channels[value].device.ch
       this.setState({
         selectedFreq: value,
-        selectedDevice: deviceIdx,
-        selectedChannel: chanIdx
+        // selectedDevice: deviceIdx,
+        // selectedChannel: chanIdx
       })
     }
     selectDevice = ( value ) =>{
@@ -66,21 +114,25 @@ export default class ImportData extends Component<Props> {
       })
     }
     componentDidMount(){
-        const url = props.navigation.getParam("url")
+        const url = this.props.navigation.getParam("url")
         ParseFFX(url)
-        .then(ffx => this.setState({ffx.TX))
+        .then(ffx => this.setState({channels: ffx.TX}))
     }
     render() {
       return (
         <View style={styles.container}>
+
+          {/* Pick the imported frequency to map */}
+          {/* Items are imported from an FFX File */}
           <Picker 
           style={{ flex: 1 }}
           selectedValue={this.state.selectedFreq}
           onValueChange={this.selectFreq}
           >
-            {this.state.channels.map(( chan,i ) => <Picker.Item label={chan.label}  value={i} />)}
+            {this.state.channels.map(( chan,i ) => <Picker.Item label={chan.name}  value={i} />)}
           </Picker>
-  
+
+          {/*  Pick the device to send the selected frequency too */}
           <Picker 
           style={{ flex: 1 }}
           selectedValue={this.state.selectedDevice}
@@ -88,35 +140,43 @@ export default class ImportData extends Component<Props> {
           >
             {this.state.devices.map(( dev, i) => <Picker.Item label={dev.name} value={i} />)}
           </Picker>
-  
+
+          {/* Pick the device channel to send the selected frequency too */}
           <Picker
           style={{ flex: 1 }}
           selectedValue={this.state.selectedChannel}
           onValueChange={this.selectChannel}
           >
-            {this.state.devices[this.state.selectedDevice].channels.map(( chan, i ) => <Picker.Item value={ i } label={ chan } />)}
+            {this.state.devices[this.state.selectedDevice].channels.map(( chan, i ) => <Picker.Item value={ i } label={ chan.label } />)}
           </Picker>
         </View>
       );
     }
-  }
+}
   
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: '#F5FCFF',
-      flexDirection: 'row',
-    },
-    welcome: {
-      fontSize: 20,
-      textAlign: 'center',
-      margin: 10,
-    },
-    instructions: {
-      textAlign: 'center',
-      color: '#333333',
-      marginBottom: 5,
-    },
-  });
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+    flexDirection: 'row',
+  },
+  welcome: {
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 10,
+  },
+  instructions: {
+    textAlign: 'center',
+    color: '#333333',
+    marginBottom: 5,
+  },
+});
+
+const mapStateToProps = (state, props) => {
+  return {
+    ...state,
+    ...props
+  }
+}
