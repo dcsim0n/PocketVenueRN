@@ -3,7 +3,7 @@ import "react-native";
 
 import { ParseFFX } from "../src/lib/libFFX";
 
-jest.mock('fs');
+jest.mock('react-native-fs');
 
 
 describe("Use React Native FS Mock", () => {
