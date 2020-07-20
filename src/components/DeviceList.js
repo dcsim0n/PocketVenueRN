@@ -8,7 +8,7 @@
 import React, { Component } from "react";
 import { FlatList, Alert, Linking } from "react-native";
 import NewDevice from "./NewDevice";
-import DeviceListItem from "./DeviceListItem";
+import DeviceListRowItem from "./DeviceListRowItem";
 import { Button, Header, Icon, Container, Content, Left, Body, Right, Title } from "native-base";
 import { newVenue, removeVenue, setActiveVenue, addSetting} from '../actions/actions'
 import styles from '../stylesheets/appStyles'
@@ -46,7 +46,7 @@ class DeviceList extends Component {
   };
 
   renderItem = ({ item }) => (
-    <DeviceListItem
+    <DeviceListRowItem
       device={item}
       onPressItem={this.onPressItem}
       removeDevice={this.removeDevice}

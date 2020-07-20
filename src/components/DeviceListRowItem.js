@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Text, Animated } from "react-native";
 import { Icon, ListItem, Body, Right, Button } from "native-base";
 
-const DeviceListItem = props => {
+const DeviceListRowItem = props => {
   const { device } = props;
   const [opacity, setOpacity] = useState(new Animated.Value(0))
   useEffect(() => {
@@ -38,4 +38,4 @@ const DeviceListItem = props => {
   );
 };
 
-export default DeviceListItem;
+export default DeviceListRowItem;
