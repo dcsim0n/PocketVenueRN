@@ -14,7 +14,7 @@ import DetailListItem from "./DetailListItem";
 import styles from "../stylesheets/appStyles";
 import  BlurListener  from './BlurListener';
 
-class DeviceDetails extends Component {
+class RxDataGridView extends Component {
   _onBlockPress = item => {
     const { device } = this.props;
     this.props.navigateWithDevice("Data", { item });
@@ -57,9 +57,9 @@ class DeviceDetails extends Component {
     );
   }
 }
-DeviceDetails.propTypes = {
+RxDataGridView.propTypes = {
   deviceData: PropTypes.array,
   scanData: PropTypes.array,
   device: PropTypes.object
 };
-export default withDevice(DeviceDetails);
+export default withDevice(RxDataGridView);

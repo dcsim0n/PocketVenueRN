@@ -14,7 +14,7 @@ import { store, persistor } from './store'
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import DeviceList from './src/components/DeviceList';
-import DeviceDetails from './src/components/DeviceDetails'
+import RxDataGridView from './src/components/RxDataGridView'
 import DataDetails from './src/components/DataDetails'
 import Scanner from './src/components/Scaner'
 import ImportData from './src/components/ImportData'
@@ -26,7 +26,7 @@ const AppNavigator = createStackNavigator({
       screen : DeviceList
     },
     Device: {
-      screen: DeviceDetails
+      screen: RxDataGridView
     },
     Data: {
       screen: DataDetails
