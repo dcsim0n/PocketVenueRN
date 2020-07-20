@@ -15,7 +15,7 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import DeviceList from './src/components/DeviceList';
 import RxDataGridView from './src/components/RxDataGridView'
-import DataDetails from './src/components/DataDetails'
+import RxChannelSettingsView from './src/components/RxChannelSettingsView'
 import Scanner from './src/components/Scaner'
 import ImportData from './src/components/ImportData'
 import DeviceSettings from './src/components/DeviceSettings';
@@ -29,7 +29,7 @@ const AppNavigator = createStackNavigator({
       screen: RxDataGridView
     },
     Data: {
-      screen: DataDetails
+      screen: RxChannelSettingsView
     },
     Scan: {
       screen: Scanner

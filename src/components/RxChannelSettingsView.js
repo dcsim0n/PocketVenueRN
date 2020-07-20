@@ -6,7 +6,12 @@ import styles from "../stylesheets/appStyles";
 
 const blocks = require("../lib/blocks.json");
 
-const DataDetails = ( props ) => {
+/**
+ *  RxChannelSettingsView: Interface for changing channel settings
+ *  Dana Simmons 2020
+ */
+
+const RxChannelSettingsView = ( props ) => {
 
   const item = props.navigation.getParam("item");
   const [frequency, changeFrequency] = useState(item.frequency);
@@ -78,7 +83,7 @@ const DataDetails = ( props ) => {
   );
 };
 
-DataDetails.propTypes = {
+RxChannelSettingsView.propTypes = {
   item: PropTypes.shape({
     frequency: PropTypes.number.isRequired,
     block: PropTypes.string.isRequired,
@@ -88,4 +93,4 @@ DataDetails.propTypes = {
   })
 };
 
-export default DataDetails;
+export default RxChannelSettingsView;
