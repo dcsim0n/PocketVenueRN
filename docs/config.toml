@@ -1,0 +1,5 @@
+baseURL = "http://simmons-audio.com"
+languageCode = "en-us"
+title = "Pocket Venue"
+description = "Remote control for Lectrosonics wireless receivers"
+theme = "sodium"

@@ -1,0 +1,9 @@
+{
+  "components" : [
+    "cover",
+    "features",
+    "pricing",
+    "contact"
+  ],
+  "email" : "dana@simmons-audio.com"
+}

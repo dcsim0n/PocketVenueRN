@@ -1,0 +1,9 @@
+{
+  "title" : "Pocket Venue",
+  "description" : "Remote control for Lectrosonics wireless receivers",
+  "image" : "spectrum.png",
+  "button" : {
+    "text" : "Get the App",
+    "href" : "/#contact"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "title" : "Features",
+  "description" : "",
+  "content" : [
+    {
+      "icon" : "bell",
+      "title" : "Data",
+      "description" : "View transmitter and receiver status in real time."
+    },
+    {
+      "icon" : "rocket",
+      "title" : "Control",
+      "description" : "Control receiver settings from any WiFi connected mobile device"
+    },
+    {
+      "icon" : "clock",
+      "title" : "Speed",
+      "description" : "Save time with integrations for popular apps like FreqFinder"
+    }
+  ]  
+}

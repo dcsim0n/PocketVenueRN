@@ -1,0 +1,22 @@
+{
+  "brand" : "Pocket Venue",
+  "logo" : "venue-icon.png",
+  "links" : [
+    {
+      "title" : "Home",
+      "href" : ""
+    },
+    {
+      "title" : "Features",
+      "href" : "#features"
+    },
+    {
+      "title" : "Help & Docs",
+      "href" : "docs/"
+    },
+    {
+      "title" : "Contact",
+      "href" : "#contact"
+    }
+  ]
+}

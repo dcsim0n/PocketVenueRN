@@ -1,0 +1,18 @@
+{
+  "title" : "Pricing",
+  "description" : "Pricing subtitle",
+  "content" : [
+    {
+      "title" : "iOS / Play Store",
+      "price" : "$29.99",
+      "features" : [
+        "Lifetime upgrades",
+        "Free support and service"
+      ],
+      "button" : {
+        "text" : "Contact",
+        "href" : "/#contact"
+      }
+    }
+  ]
+}
